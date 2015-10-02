@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p" 
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/mvc 
+			http://www.springframework.org/schema/mvc/spring-mvc.xsd
+			http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="propertyConfigurer"
+	      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<!-- PROTOCOL_PROPERTY_FILE is taken from the tomcat environment -->
+				<value>file:${PROTOCOL_PROPERTY_FILE}</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Scan package for @Component, @Service and @Repository annotations 
+	which can be @Autowired later on-->
+	<context:component-scan base-package="com.bits.protocolanalyzer" />
+	<import resource="classpath:spring/spring-data.xml" />
+	<import resource="classpath:spring/mvc-config.xml" />
+	<!--<import resource="classpath:spring/spring-security.xml" />-->
+
+</beans>
