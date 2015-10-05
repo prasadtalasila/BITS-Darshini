@@ -149,6 +149,12 @@
             <artifactId>postgresql</artifactId>
             <version>9.1-901.jdbc4</version>
         </dependency>
+        <!--    JNetPcap Library -->
+<!--        <dependency>
+            <groupId>jnetpcap</groupId>
+            <artifactId>jnetpcap</artifactId>
+            <version>1.4.r1425-1d</version>
+        </dependency>-->
     </dependencies>
 
     <build>
