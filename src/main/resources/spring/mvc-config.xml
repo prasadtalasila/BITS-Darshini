@@ -18,10 +18,7 @@
 	      class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 <!--		<property name="formatters">
 			<set>
-				<bean class="bits.ewallet.formatter.ClientFormatter"/>
-				<bean class="bits.ewallet.formatter.AccountFormatter"/>
-				<bean class="bits.ewallet.formatter.TransactionRecordFormatter"/>
-				<bean class="bits.ewallet.formatter.BillFormatter"/>
+				<bean class="com.bits.protocolanalyzer.mvc.formatter.HomeFormatter"/>
 			</set>
 		</property>-->
 	</bean>

@@ -5,7 +5,7 @@
  */
 package com.bits.protocolanalyzer.mvc.repository;
 
-import com.bits.protocolanalyzer.entity.TransportAnalyzer;
+import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

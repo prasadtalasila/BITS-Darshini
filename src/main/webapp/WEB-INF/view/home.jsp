@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,5 +14,10 @@
     </head>
     <body>
         <h1>Spring Loaded! Dispatcher Servlet working!</h1>
-    </body>
+        <c:forEach items="${paths}" var="path">
+        <tr>      
+            <td>${path}</td> 
+        </tr>
+    </c:forEach>
+</body>
 </html>
