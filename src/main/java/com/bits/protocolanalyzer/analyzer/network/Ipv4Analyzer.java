@@ -19,10 +19,10 @@ public class Ipv4Analyzer extends NetworkAnalyzer{
 	private IpV4Packet ipv4Packet;
 	IpV4Packet.IpV4Header ipv4Header;
 
-	public Ipv4Analyzer(IpV4Packet ipv4Packet) {
-		this.ipv4Packet = ipv4Packet;
-		ipv4Header = ipv4Packet.getHeader();
-	}
+//	public Ipv4Analyzer(IpV4Packet ipv4Packet) {
+//		this.ipv4Packet = ipv4Packet;
+//		ipv4Header = ipv4Packet.getHeader();
+//	}
 
 	
 
@@ -62,8 +62,8 @@ public class Ipv4Analyzer extends NetworkAnalyzer{
 	}
 
 	@Override
-	public short getLength() {
-		return ipv4Header.getTotalLength();
+	public int getLength() {
+		return ipv4Header.getTotalLengthAsInt();
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class Ipv4Analyzer extends NetworkAnalyzer{
 	}
 
 	@Override
-	public short getHeaderChecksum() {
+	public int getHeaderChecksum() {
 		return ipv4Header.getHeaderChecksum();
 	}
 

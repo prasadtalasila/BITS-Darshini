@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Analyze Data</h1>
+        <h1>${packetList}</h1>
     </body>
 </html>

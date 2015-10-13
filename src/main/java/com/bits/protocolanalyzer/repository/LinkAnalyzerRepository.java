@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bits.protocolanalyzer.mvc.repository;
+package com.bits.protocolanalyzer.repository;
 
-import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzer;
+import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author amit
  */
-public interface NetworkAnalyzerRepository extends JpaRepository<NetworkAnalyzer, Long>{
+public interface LinkAnalyzerRepository extends JpaRepository<LinkAnalyzerEntity, Long>{
 	
 }

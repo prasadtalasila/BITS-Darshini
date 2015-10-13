@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="network_analyzer")
-public class NetworkAnalyzer implements Serializable {
+public class NetworkAnalyzerEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -134,10 +134,10 @@ public class NetworkAnalyzer implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof NetworkAnalyzer)) {
+		if (!(object instanceof NetworkAnalyzerEntity)) {
 			return false;
 		}
-		NetworkAnalyzer other = (NetworkAnalyzer) object;
+		NetworkAnalyzerEntity other = (NetworkAnalyzerEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}

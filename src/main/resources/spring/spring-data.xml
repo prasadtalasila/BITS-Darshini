@@ -14,7 +14,7 @@
 
 	<!-- Activate Spring Data JPA repository support -->
 	<!-- Scan for Classes extending JPARepository -->
-	<jpa:repositories base-package="bits.protocolanalyzer" 
+	<jpa:repositories base-package="com.bits.protocolanalyzer" 
 		      transaction-manager-ref="transactionManager"/>
 
 	<!-- Declare a datasource that has pooling capabilities -->

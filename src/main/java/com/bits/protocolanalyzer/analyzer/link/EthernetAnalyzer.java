@@ -5,9 +5,18 @@
  */
 package com.bits.protocolanalyzer.analyzer.link;
 
+import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
+import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.util.MacAddress;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -16,32 +25,40 @@ import org.pcap4j.util.MacAddress;
 public class EthernetAnalyzer extends LinkAnalyzer{
 	
 	private EthernetPacket ethernetPacket;
-
-	public EthernetAnalyzer(EthernetPacket ethernetPacket, Packet packet) {
-		super(packet);
-		this.ethernetPacket = ethernetPacket;
-	}
 	
-	public Packet getPacket() {
-		return ethernetPacket;
-	}
-
-	public void setPacket(EthernetPacket packet) {
-		this.ethernetPacket = packet;
-	}
+	@Autowired
+	private LinkAnalyzerRepository linkAnalyzerRepository;
 	
-	
-
 	@Override
-	public MacAddress getSource() {
+	public byte[] getSource() {
 		EthernetPacket.EthernetHeader eh = ethernetPacket.getHeader();
-		return eh.getSrcAddr();
+		MacAddress dest = eh.getSrcAddr();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutput o;
+		try {
+			o = new ObjectOutputStream(bos);
+			o.writeObject(dest);
+		} catch (IOException ex) {
+			Logger.getLogger(EthernetAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		byte[] destByte = bos.toByteArray();
+		return destByte;
 	}
 
 	@Override
-	public MacAddress getDestination() {
+	public byte[] getDestination() {
 		EthernetPacket.EthernetHeader eh = ethernetPacket.getHeader();
-		return eh.getDstAddr();
+		MacAddress dest = eh.getDstAddr();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutput o;
+		try {
+			o = new ObjectOutputStream(bos);
+			o.writeObject(dest);
+		} catch (IOException ex) {
+			Logger.getLogger(EthernetAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		byte[] destByte = bos.toByteArray();
+		return destByte;
 	}
 
 	@Override
@@ -49,6 +66,12 @@ public class EthernetAnalyzer extends LinkAnalyzer{
 		return ethernetPacket.getPayload();
 	}
 	
-	
-	
+	public void analyzeEthernetLayer(EthernetPacket ep, LinkAnalyzerEntity lae){
+		this.ethernetPacket = ep;
+//		byte[] src = getSource();
+//		byte[] dst = getDestination();
+//		lae.setSource(src);
+//		lae.setDestination(dst);
+		linkAnalyzerRepository.save(lae);
+	}
 }

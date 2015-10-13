@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="transport_analyzer")
-public class TransportAnalyzer implements Serializable {
+public class TransportAnalyzerEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,10 +58,10 @@ public class TransportAnalyzer implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof TransportAnalyzer)) {
+		if (!(object instanceof TransportAnalyzerEntity)) {
 			return false;
 		}
-		TransportAnalyzer other = (TransportAnalyzer) object;
+		TransportAnalyzerEntity other = (TransportAnalyzerEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
