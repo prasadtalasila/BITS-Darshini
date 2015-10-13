@@ -90,7 +90,7 @@ public class NetworkAnalyzer {
 //		ethernetAnalyzer.analyzeEthernetLayer((EthernetPacket) packetWrapper.getPacket(), lae);
 	}
 
-	public void analyzeLinkLayer() {
+	public void analyzeNetworkLayer() {
 
 		passToHook();
 

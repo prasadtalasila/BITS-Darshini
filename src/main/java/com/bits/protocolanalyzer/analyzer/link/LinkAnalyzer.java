@@ -70,7 +70,7 @@ public class LinkAnalyzer {
 		Packet p = getPayload();
 		packetWrapper.setPacket(p);
 		networkAnalyzer.setPacket(packetWrapper);
-		networkAnalyzer.analyzeLinkLayer();
+		networkAnalyzer.analyzeNetworkLayer();
 	}
 
 }
