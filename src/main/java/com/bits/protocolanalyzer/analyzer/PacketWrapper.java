@@ -6,6 +6,7 @@
 package com.bits.protocolanalyzer.analyzer;
 
 import java.io.Serializable;
+import org.pcap4j.packet.Packet;
 
 /**
  *
@@ -15,7 +16,21 @@ public class PacketWrapper implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	private Packet packet;
 	private int packetId;
+
+	public PacketWrapper(Packet packet, int packetId) {
+		this.packet = packet;
+		this.packetId = packetId;
+	}
+
+	public Packet getPacket() {
+		return packet;
+	}
+
+	public void setPacket(Packet packet) {
+		this.packet = packet;
+	}
 
 	public int getPacketId() {
 		return packetId;

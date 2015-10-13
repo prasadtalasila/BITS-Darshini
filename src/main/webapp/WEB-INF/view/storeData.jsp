@@ -1,6 +1,6 @@
 <%-- 
-    Document   : packetCount
-    Created on : 6 Oct, 2015, 2:26:36 AM
+    Document   : storeData
+    Created on : 13 Oct, 2015, 1:33:25 PM
     Author     : amit
 --%>
 
@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>${count}</h1>
+        <h1>Store Data</h1>
     </body>
 </html>

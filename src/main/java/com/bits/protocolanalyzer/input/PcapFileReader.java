@@ -5,6 +5,7 @@
  */
 package com.bits.protocolanalyzer.input;
 
+import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,14 +21,18 @@ import org.pcap4j.packet.Packet;
  */
 public class PcapFileReader {
 
-	public ArrayList<Packet> readFile() {
-		ArrayList<Packet> packets = new ArrayList<>();
+	public ArrayList<PacketWrapper> readFile() {
+//		ArrayList<Packet> packets = new ArrayList<>();
+		ArrayList<PacketWrapper> packetWrappers = new ArrayList<>();
 		String sysFile = System.getProperty("PROTOCOL_DATA_FILE");
 		try {
 			PcapHandle captor = Pcaps.openOffline(sysFile);
 			Packet p = captor.getNextPacket();
+			int packetId = 1;
 			while(p != null){
-				packets.add(p);
+				PacketWrapper pr = new PacketWrapper(p, packetId);
+				packetWrappers.add(pr);
+				packetId++;
 				p = captor.getNextPacket();
 			}
 		} catch (PcapNativeException ex) {
@@ -35,7 +40,8 @@ public class PcapFileReader {
 		} catch (NotOpenException ex) {
 			Logger.getLogger(PcapFileReader.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		return packets;
+		
+		return packetWrappers;
 	}
 
 }

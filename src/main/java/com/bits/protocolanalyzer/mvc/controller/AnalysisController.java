@@ -5,8 +5,6 @@
  */
 package com.bits.protocolanalyzer.mvc.controller;
 
-import java.net.URL;
-import java.net.URLClassLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,15 +14,15 @@ import org.springframework.web.servlet.ModelAndView;
  * @author amit
  */
 @Controller
-@RequestMapping("/")
-public class HomeController {
-	
+@RequestMapping("/analyze")
+public class AnalysisController {
+
 	@RequestMapping
-	public ModelAndView home() {
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		URL[] urls = ((URLClassLoader)cl).getURLs();
-		ModelAndView mav = new ModelAndView("home");
-		mav.addObject("paths", urls);
+	public ModelAndView analyzePackets() {
+//		PcapAnalyzer pcapAnalyzer = new PcapAnalyzer(packets);
+//		pcapAnalyzer.analyzePackets();
+		ModelAndView mav = new ModelAndView("analyzeData");
 		return mav;
 	}
+
 }
