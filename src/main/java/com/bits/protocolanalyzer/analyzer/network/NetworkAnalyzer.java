@@ -9,7 +9,6 @@ import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.transport.TransportAnalyzer;
 import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.NetworkAnalyzerRepository;
-import java.net.Inet4Address;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.namednumber.IpNumber;
 import org.pcap4j.packet.namednumber.IpVersion;
@@ -27,10 +26,10 @@ public class NetworkAnalyzer {
 
 	@Autowired
 	private NetworkAnalyzerRepository networkAnalyzerRepository;
-	
+
 	@Autowired
 	private TransportAnalyzer transportAnalyzer;
-	
+
 	private PacketWrapper packetWrapper;
 
 	public PacketWrapper getPacket() {
@@ -41,11 +40,11 @@ public class NetworkAnalyzer {
 		this.packetWrapper = packet;
 	}
 
-	public Inet4Address getSource() {
+	public String getSource() {
 		return null;
 	}
 
-	public Inet4Address getDestination() {
+	public String getDestination() {
 		return null;
 	}
 
@@ -72,31 +71,34 @@ public class NetworkAnalyzer {
 	public int getHeaderChecksum() {
 		return 0;
 	}
-	
+
 	public Packet getPayload() {
-		//extract packet
-		//get packet payload and return.
-		return null;
+		Packet p = packetWrapper.getPacket();
+		return p.getPayload();
 	}
 
-	public void passToHook() {
-		NetworkAnalyzerEntity nae = new NetworkAnalyzerEntity();
-		nae.setPacketId(packetWrapper.getPacketId());
-		networkAnalyzerRepository.save(nae);
+	public void passToHook(NetworkAnalyzerEntity nae) {
+		Ipv4Analyzer ipv4Analyzer = new Ipv4Analyzer();
+		ipv4Analyzer.analyzeIpv4Layer(packetWrapper, nae);
 
-		//Send packet to hooks for further analysis.
-//		Ipv4Analyzer ia = new Ipv4Analyzer();
-//		ea.analyzeEthernetLayer(null, lae);
-//		ethernetAnalyzer.analyzeEthernetLayer((EthernetPacket) packetWrapper.getPacket(), lae);
+		//pass to all hooks and save after returning.
+		networkAnalyzerRepository.save(nae);
 	}
 
 	public void analyzeNetworkLayer() {
-
-		passToHook();
-
+		
+		//analyze and pass to hooks
+		NetworkAnalyzerEntity nae = new NetworkAnalyzerEntity();
+		nae.setPacketId(packetWrapper.getPacketId());
+		networkAnalyzerRepository.save(nae);
+		passToHook(nae);
+		
+		//get payload and pass to next analyzer
 		Packet p = getPayload();
 		packetWrapper.setPacket(p);
-//		networkAnalyzer.setPacket(packetWrapper);
-//		networkAnalyzer.analyzeNetworkLayer();
+		if (p != null) {
+			transportAnalyzer.setPacket(packetWrapper);
+			transportAnalyzer.analyzeTransportLayer();
+		}
 	}
 }

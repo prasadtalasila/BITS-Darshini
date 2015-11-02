@@ -33,10 +33,10 @@ public class TransportAnalyzerEntity implements Serializable {
 	private long packetId;
 	
 	@Column(name="source_port")
-	private int sourcePort;
+	private String sourcePort;
 	
 	@Column(name="destination_port")
-	private int destinationPort;
+	private String destinationPort;
 	
 	@Column(name="ack_number")
 	private long ackNumber;
@@ -47,6 +47,48 @@ public class TransportAnalyzerEntity implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	public long getPacketId() {
+		return packetId;
+	}
+
+	public void setPacketId(long packetId) {
+		this.packetId = packetId;
+	}
+
+	public String getSourcePort() {
+		return sourcePort;
+	}
+
+	public void setSourcePort(String sourcePort) {
+		this.sourcePort = sourcePort;
+	}
+
+	public String getDestinationPort() {
+		return destinationPort;
+	}
+
+	public void setDestinationPort(String destinationPort) {
+		this.destinationPort = destinationPort;
+	}
+
+	public long getAckNumber() {
+		return ackNumber;
+	}
+
+	public void setAckNumber(long ackNumber) {
+		this.ackNumber = ackNumber;
+	}
+
+	public long getSeqNumber() {
+		return seqNumber;
+	}
+
+	public void setSeqNumber(long seqNumber) {
+		this.seqNumber = seqNumber;
+	}
+	
+	
 
 	@Override
 	public int hashCode() {

@@ -24,7 +24,7 @@ public class LinkAnalyzer {
 
 	@Autowired
 	private NetworkAnalyzer networkAnalyzer;
-	
+
 	@Autowired
 	private LinkAnalyzerRepository linkAnalyzerRepository;
 
@@ -38,39 +38,41 @@ public class LinkAnalyzer {
 		this.packetWrapper = packet;
 	}
 
-	public byte[] getSource() {
+	public String getSource() {
 		return null;
 	}
 
-	public byte[] getDestination() {
+	public String getDestination() {
 		return null;
 	}
 
 	public Packet getPayload() {
-		//extract packet
-		//get packet payload and return.
-		return null;
+		Packet p = packetWrapper.getPacket();
+		return p.getPayload();
 	}
 
-	public void passToHook() {
-		LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
-		EthernetAnalyzer ea = new EthernetAnalyzer();
-		lae.setPacketId(packetWrapper.getPacketId());
+	public void passToHook(LinkAnalyzerEntity lae) {
+
+		EthernetAnalyzer ethernetAnalyzer = new EthernetAnalyzer();
+		ethernetAnalyzer.analyzeEthernetLayer(packetWrapper, lae);
 		linkAnalyzerRepository.save(lae);
-		
-		//Send packet to hooks for further analysis.
-//		ea.analyzeEthernetLayer(null, lae);
-//		ethernetAnalyzer.analyzeEthernetLayer((EthernetPacket) packetWrapper.getPacket(), lae);
 	}
 
 	public void analyzeLinkLayer() {
 
-		passToHook();
-		
+		//analyze and pass to hooks
+		LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
+		lae.setPacketId(packetWrapper.getPacketId());
+		linkAnalyzerRepository.save(lae);
+		passToHook(lae);
+
+		//get payload and pass to next analyzer
 		Packet p = getPayload();
 		packetWrapper.setPacket(p);
-		networkAnalyzer.setPacket(packetWrapper);
-		networkAnalyzer.analyzeNetworkLayer();
+		if (p != null) {
+			networkAnalyzer.setPacket(packetWrapper);
+			networkAnalyzer.analyzeNetworkLayer();
+		}
 	}
 
 }

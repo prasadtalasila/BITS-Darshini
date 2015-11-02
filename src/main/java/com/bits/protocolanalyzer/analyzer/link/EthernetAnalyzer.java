@@ -5,73 +5,44 @@
  */
 package com.bits.protocolanalyzer.analyzer.link;
 
-import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
+import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.util.MacAddress;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author amit
  */
-public class EthernetAnalyzer extends LinkAnalyzer{
-	
+public class EthernetAnalyzer extends LinkAnalyzer {
+
 	private EthernetPacket ethernetPacket;
-	
-	@Autowired
-	private LinkAnalyzerRepository linkAnalyzerRepository;
-	
+
 	@Override
-	public byte[] getSource() {
+	public String getSource() {
 		EthernetPacket.EthernetHeader eh = ethernetPacket.getHeader();
-		MacAddress dest = eh.getSrcAddr();
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput o;
-		try {
-			o = new ObjectOutputStream(bos);
-			o.writeObject(dest);
-		} catch (IOException ex) {
-			Logger.getLogger(EthernetAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		byte[] destByte = bos.toByteArray();
-		return destByte;
+		MacAddress src = eh.getSrcAddr();
+		return src.toString();
 	}
 
 	@Override
-	public byte[] getDestination() {
+	public String getDestination() {
 		EthernetPacket.EthernetHeader eh = ethernetPacket.getHeader();
 		MacAddress dest = eh.getDstAddr();
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput o;
-		try {
-			o = new ObjectOutputStream(bos);
-			o.writeObject(dest);
-		} catch (IOException ex) {
-			Logger.getLogger(EthernetAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		byte[] destByte = bos.toByteArray();
-		return destByte;
+		return dest.toString();
 	}
 
 	@Override
 	public Packet getPayload() {
 		return ethernetPacket.getPayload();
 	}
-	
-	public void analyzeEthernetLayer(EthernetPacket ep, LinkAnalyzerEntity lae){
-		this.ethernetPacket = ep;
-//		byte[] src = getSource();
-//		byte[] dst = getDestination();
-//		lae.setSource(src);
-//		lae.setDestination(dst);
-		linkAnalyzerRepository.save(lae);
+
+	public void analyzeEthernetLayer(PacketWrapper packetWrapper, LinkAnalyzerEntity lae) {
+		if (packetWrapper.getPacket().getHeader() instanceof EthernetPacket.EthernetHeader) {
+			this.ethernetPacket = (EthernetPacket) packetWrapper.getPacket();
+			lae.setSource(getSource());
+			lae.setDestination(getDestination());
+		}
 	}
 }

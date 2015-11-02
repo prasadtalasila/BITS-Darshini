@@ -29,10 +29,10 @@ public class LinkAnalyzerEntity implements Serializable {
 	private int packetId;
 	
 	@Column(name="source")
-	private byte[] source;
+	private String source;
 	
 	@Column(name="destination")
-	private byte[] destination;
+	private String destination;
 
 	public Long getId() {
 		return id;
@@ -50,19 +50,19 @@ public class LinkAnalyzerEntity implements Serializable {
 		this.packetId = packetId;
 	}
 
-	public byte[] getSource() {
+	public String getSource() {
 		return source;
 	}
 
-	public void setSource(byte[] source) {
+	public void setSource(String source) {
 		this.source = source;
 	}
 
-	public byte[] getDestination() {
+	public String getDestination() {
 		return destination;
 	}
 
-	public void setDestination(byte[] destination) {
+	public void setDestination(String destination) {
 		this.destination = destination;
 	}
 	

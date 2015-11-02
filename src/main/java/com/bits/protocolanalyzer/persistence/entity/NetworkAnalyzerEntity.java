@@ -26,10 +26,10 @@ public class NetworkAnalyzerEntity implements Serializable {
 	private Long id;
 	
 	@Column(name="source")
-	private byte[] source;
+	private String source;
 	
 	@Column(name="destination")
-	private byte[] destination;
+	private String destination;
 	
 	@Column(name="packet_id")
 	private long packetId;
@@ -66,19 +66,19 @@ public class NetworkAnalyzerEntity implements Serializable {
 		this.packetId = packetId;
 	}
 
-	public byte[] getSource() {
+	public String getSource() {
 		return source;
 	}
 
-	public void setSource(byte[] source) {
+	public void setSource(String source) {
 		this.source = source;
 	}
 
-	public byte[] getDestination() {
+	public String getDestination() {
 		return destination;
 	}
 
-	public void setDestination(byte[] destination) {
+	public void setDestination(String destination) {
 		this.destination = destination;
 	}
 
