@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -29,8 +30,8 @@ public class TransportAnalyzerEntity implements Serializable {
 		return id;
 	}
 	
-	@Column(name="packet_id")
-	private long packetId;
+	@OneToOne
+	private PacketIdEntity packetIdEntity;
 	
 	@Column(name="source_port")
 	private String sourcePort;
@@ -48,12 +49,12 @@ public class TransportAnalyzerEntity implements Serializable {
 		this.id = id;
 	}
 
-	public long getPacketId() {
-		return packetId;
+	public PacketIdEntity getPacketIdEntity() {
+		return packetIdEntity;
 	}
 
-	public void setPacketId(long packetId) {
-		this.packetId = packetId;
+	public void setPacketIdEntity(PacketIdEntity packetId) {
+		this.packetIdEntity = packetId;
 	}
 
 	public String getSourcePort() {

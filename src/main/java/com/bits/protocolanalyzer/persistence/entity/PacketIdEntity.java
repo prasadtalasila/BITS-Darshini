@@ -6,65 +6,46 @@
 package com.bits.protocolanalyzer.persistence.entity;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.eclipse.persistence.annotations.ReturnInsert;
 
 /**
  *
  * @author amit
  */
 @Entity
-@Table(name="link_analyzer")
-public class LinkAnalyzerEntity implements Serializable {
+@Table(name="packet_id")
+public class PacketIdEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
-	@OneToOne
-	private PacketIdEntity packetIdEntity;
-	
-	@Column(name="source")
-	private String source;
-	
-	@Column(name="destination")
-	private String destination;
 
 	public Long getId() {
 		return id;
 	}
+	
+	@Column(name="packet_id",columnDefinition="serial")
+	@Basic
+	@ReturnInsert(returnOnly = true)
+	private int packetId;
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public PacketIdEntity getPacketIdEntity() {
-		return packetIdEntity;
+	public int getPacketId() {
+		return packetId;
 	}
 
-	public void setPacketIdEntity(PacketIdEntity packetId) {
-		this.packetIdEntity = packetId;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public String getDestination() {
-		return destination;
-	}
-
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void setPacketId(int packetId) {
+		this.packetId = packetId;
 	}
 	
 	
@@ -79,10 +60,10 @@ public class LinkAnalyzerEntity implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof LinkAnalyzerEntity)) {
+		if (!(object instanceof PacketIdEntity)) {
 			return false;
 		}
-		LinkAnalyzerEntity other = (LinkAnalyzerEntity) object;
+		PacketIdEntity other = (PacketIdEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -91,7 +72,7 @@ public class LinkAnalyzerEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity[ id=" + id + " ]";
+		return "com.bits.protocolanalyzer.persistence.entity.PacketIdEntity[ id=" + id + " ]";
 	}
 	
 }

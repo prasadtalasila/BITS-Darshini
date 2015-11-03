@@ -65,7 +65,7 @@ public class TransportAnalyzer {
 		
 		//analyze and pass to hooks
 		TransportAnalyzerEntity tae = new TransportAnalyzerEntity();
-		tae.setPacketId(packetWrapper.getPacketId());
+		tae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
 		transportAnalyzerRepository.save(tae);
 		passToHook(tae);
 		

@@ -89,7 +89,7 @@ public class NetworkAnalyzer {
 		
 		//analyze and pass to hooks
 		NetworkAnalyzerEntity nae = new NetworkAnalyzerEntity();
-		nae.setPacketId(packetWrapper.getPacketId());
+		nae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
 		networkAnalyzerRepository.save(nae);
 		passToHook(nae);
 		

@@ -8,6 +8,9 @@ package com.bits.protocolanalyzer.mvc.controller;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.PcapAnalyzer;
 import com.bits.protocolanalyzer.input.PcapFileReader;
+import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
+import com.bits.protocolanalyzer.repository.NetworkAnalyzerRepository;
+import com.bits.protocolanalyzer.repository.TransportAnalyzerRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,15 @@ public class InputController {
 
 	@Autowired
 	private PcapAnalyzer pcapAnalyzer;
+	
+	@Autowired 
+	private LinkAnalyzerRepository linkAnalyzerRepository;
+	
+	@Autowired
+	private NetworkAnalyzerRepository networkAnalyzerRepository;
+	
+	@Autowired
+	private TransportAnalyzerRepository transportAnalyzerRepository;
 			
 	List<PacketWrapper> packets;
 
@@ -42,7 +54,7 @@ public class InputController {
 		return mav;
 	}
 
-	@RequestMapping("/analyze")
+	@RequestMapping("/analysis")
 	public ModelAndView analyzePackets() {
 		ModelAndView mav = new ModelAndView("analyzeData");
 		if (packets != null && !packets.isEmpty() && pcapAnalyzer!= null) {

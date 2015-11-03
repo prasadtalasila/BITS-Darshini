@@ -62,7 +62,7 @@ public class LinkAnalyzer {
 
 		//analyze and pass to hooks
 		LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
-		lae.setPacketId(packetWrapper.getPacketId());
+		lae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
 		linkAnalyzerRepository.save(lae);
 		passToHook(lae);
 

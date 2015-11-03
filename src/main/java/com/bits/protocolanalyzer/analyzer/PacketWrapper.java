@@ -5,6 +5,7 @@
  */
 package com.bits.protocolanalyzer.analyzer;
 
+import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import java.io.Serializable;
 import org.pcap4j.packet.Packet;
 
@@ -17,11 +18,11 @@ public class PacketWrapper implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Packet packet;
-	private int packetId;
+	private PacketIdEntity packetIdEntity;
 
-	public PacketWrapper(Packet packet, int packetId) {
+	public PacketWrapper(Packet packet, PacketIdEntity packetIdEntity) {
 		this.packet = packet;
-		this.packetId = packetId;
+		this.packetIdEntity = packetIdEntity;
 	}
 
 	public Packet getPacket() {
@@ -32,12 +33,12 @@ public class PacketWrapper implements Serializable{
 		this.packet = packet;
 	}
 
-	public int getPacketId() {
-		return packetId;
+	public PacketIdEntity getPacketIdEntity() {
+		return packetIdEntity;
 	}
 
-	public void setPacketId(int packetId) {
-		this.packetId = packetId;
+	public void setPacketIdEntity(PacketIdEntity packetIdEntity) {
+		this.packetIdEntity = packetIdEntity;
 	}
 	
 	

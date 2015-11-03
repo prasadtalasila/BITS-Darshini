@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -31,8 +32,8 @@ public class NetworkAnalyzerEntity implements Serializable {
 	@Column(name="destination")
 	private String destination;
 	
-	@Column(name="packet_id")
-	private long packetId;
+	@OneToOne
+	private PacketIdEntity packetIdEntity;
 	
 	@Column(name="version")
 	private int version;
@@ -58,12 +59,12 @@ public class NetworkAnalyzerEntity implements Serializable {
 		this.id = id;
 	}
 
-	public long getPacketId() {
-		return packetId;
+	public PacketIdEntity getPacketIdEntity() {
+		return packetIdEntity;
 	}
 
-	public void setPacketId(long packetId) {
-		this.packetId = packetId;
+	public void setPacketIdEntity(PacketIdEntity packetId) {
+		this.packetIdEntity = packetId;
 	}
 
 	public String getSource() {

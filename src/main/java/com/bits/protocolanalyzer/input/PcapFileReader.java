@@ -6,6 +6,7 @@
 package com.bits.protocolanalyzer.input;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,11 +29,10 @@ public class PcapFileReader {
 		try {
 			PcapHandle captor = Pcaps.openOffline(sysFile);
 			Packet p = captor.getNextPacket();
-			int packetId = 1;
 			while(p != null){
-				PacketWrapper pr = new PacketWrapper(p, packetId);
+				PacketIdEntity packetIdEntity = new PacketIdEntity();
+				PacketWrapper pr = new PacketWrapper(p, packetIdEntity);
 				packetWrappers.add(pr);
-				packetId++;
 				p = captor.getNextPacket();
 			}
 		} catch (PcapNativeException ex) {

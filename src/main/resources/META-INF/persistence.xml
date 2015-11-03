@@ -5,6 +5,7 @@
     <class>com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity</class>
     <class>com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity</class>
     <class>com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity</class>
+    <class>com.bits.protocolanalyzer.persistence.entity.PacketIdEntity</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/protocol"/>

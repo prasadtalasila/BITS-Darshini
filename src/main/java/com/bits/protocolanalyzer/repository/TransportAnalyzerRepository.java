@@ -5,6 +5,7 @@
  */
 package com.bits.protocolanalyzer.repository;
 
+import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author amit
  */
 public interface TransportAnalyzerRepository extends JpaRepository<TransportAnalyzerEntity, Long>{
+	
+	public TransportAnalyzerEntity findByPacketIdEntity(PacketIdEntity packetIdEntity);
 	
 }

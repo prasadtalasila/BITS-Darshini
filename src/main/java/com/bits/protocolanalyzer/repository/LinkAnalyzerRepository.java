@@ -6,6 +6,7 @@
 package com.bits.protocolanalyzer.repository;
 
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,5 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author amit
  */
 public interface LinkAnalyzerRepository extends JpaRepository<LinkAnalyzerEntity, Long>{
+	
+	public LinkAnalyzerEntity findByPacketIdEntity(PacketIdEntity packetIdEntity);
 	
 }
