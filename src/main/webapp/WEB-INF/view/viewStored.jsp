@@ -36,7 +36,7 @@
                     <tbody>
                         <c:forEach items="${packetList}" var="packet">
                             <tr>
-                                <td><c:out value="${packet.linkAnalyzerEntity.source}"/></td>
+                                <td><c:out value="${packet.packetId}"/></td>
                                 <td><c:out value="${packet.linkAnalyzerEntity.source}"/></td>
                                 <td><c:out value="${packet.linkAnalyzerEntity.destination}"/></td>
                                 <td><c:out value="${packet.networkAnalyzerEntity.source}"/></td>
