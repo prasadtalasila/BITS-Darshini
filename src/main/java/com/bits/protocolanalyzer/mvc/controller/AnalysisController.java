@@ -17,12 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/analyze")
 public class AnalysisController {
 
-	@RequestMapping
-	public ModelAndView analyzePackets() {
-//		PcapAnalyzer pcapAnalyzer = new PcapAnalyzer(packets);
-//		pcapAnalyzer.analyzePackets();
-		ModelAndView mav = new ModelAndView("analyzeData");
-		return mav;
-	}
+    @RequestMapping
+    public ModelAndView analyzePackets() {
+        ModelAndView mav = new ModelAndView("analyzeData");
+        return mav;
+    }
 
 }

@@ -14,44 +14,44 @@ import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
  * @author amit
  */
 public class StoredPacket {
-	
-	private int packetId;
-	private LinkAnalyzerEntity linkAnalyzerEntity;
-	private NetworkAnalyzerEntity networkAnalyzerEntity;
-	private TransportAnalyzerEntity transportAnalyzerEntity;
 
-	public int getPacketId() {
-		return packetId;
-	}
+    private int packetId;
+    private LinkAnalyzerEntity linkAnalyzerEntity;
+    private NetworkAnalyzerEntity networkAnalyzerEntity;
+    private TransportAnalyzerEntity transportAnalyzerEntity;
 
-	public void setPacketId(int packetId) {
-		this.packetId = packetId;
-	}
+    public int getPacketId() {
+        return packetId;
+    }
 
-	public LinkAnalyzerEntity getLinkAnalyzerEntity() {
-		return linkAnalyzerEntity;
-	}
+    public void setPacketId(int packetId) {
+        this.packetId = packetId;
+    }
 
-	public void setLinkAnalyzerEntity(LinkAnalyzerEntity linkAnalyzerEntity) {
-		this.linkAnalyzerEntity = linkAnalyzerEntity;
-	}
+    public LinkAnalyzerEntity getLinkAnalyzerEntity() {
+        return linkAnalyzerEntity;
+    }
 
-	public NetworkAnalyzerEntity getNetworkAnalyzerEntity() {
-		return networkAnalyzerEntity;
-	}
+    public void setLinkAnalyzerEntity(LinkAnalyzerEntity linkAnalyzerEntity) {
+        this.linkAnalyzerEntity = linkAnalyzerEntity;
+    }
 
-	public void setNetworkAnalyzerEntity(NetworkAnalyzerEntity networkAnalyzerEntity) {
-		this.networkAnalyzerEntity = networkAnalyzerEntity;
-	}
+    public NetworkAnalyzerEntity getNetworkAnalyzerEntity() {
+        return networkAnalyzerEntity;
+    }
 
-	public TransportAnalyzerEntity getTransportAnalyzerEntity() {
-		return transportAnalyzerEntity;
-	}
+    public void setNetworkAnalyzerEntity(
+            NetworkAnalyzerEntity networkAnalyzerEntity) {
+        this.networkAnalyzerEntity = networkAnalyzerEntity;
+    }
 
-	public void setTransportAnalyzerEntity(TransportAnalyzerEntity transportAnalyzerEntity) {
-		this.transportAnalyzerEntity = transportAnalyzerEntity;
-	}
-	
-	
-	
+    public TransportAnalyzerEntity getTransportAnalyzerEntity() {
+        return transportAnalyzerEntity;
+    }
+
+    public void setTransportAnalyzerEntity(
+            TransportAnalyzerEntity transportAnalyzerEntity) {
+        this.transportAnalyzerEntity = transportAnalyzerEntity;
+    }
+
 }

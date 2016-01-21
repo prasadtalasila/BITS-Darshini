@@ -5,42 +5,42 @@
  */
 package com.bits.protocolanalyzer.analyzer;
 
-import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import java.io.Serializable;
+
 import org.pcap4j.packet.Packet;
+
+import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 
 /**
  *
  * @author amit
  */
-public class PacketWrapper implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
-	
-	private Packet packet;
-	private PacketIdEntity packetIdEntity;
+public class PacketWrapper implements Serializable {
 
-	public PacketWrapper(Packet packet, PacketIdEntity packetIdEntity) {
-		this.packet = packet;
-		this.packetIdEntity = packetIdEntity;
-	}
+    private static final long serialVersionUID = 1L;
 
-	public Packet getPacket() {
-		return packet;
-	}
+    private Packet packet;
+    private PacketIdEntity packetIdEntity;
 
-	public void setPacket(Packet packet) {
-		this.packet = packet;
-	}
+    public PacketWrapper(Packet packet, PacketIdEntity packetIdEntity) {
+        this.packet = packet;
+        this.packetIdEntity = packetIdEntity;
+    }
 
-	public PacketIdEntity getPacketIdEntity() {
-		return packetIdEntity;
-	}
+    public Packet getPacket() {
+        return packet;
+    }
 
-	public void setPacketIdEntity(PacketIdEntity packetIdEntity) {
-		this.packetIdEntity = packetIdEntity;
-	}
-	
-	
-	
+    public void setPacket(Packet packet) {
+        this.packet = packet;
+    }
+
+    public PacketIdEntity getPacketIdEntity() {
+        return packetIdEntity;
+    }
+
+    public void setPacketIdEntity(PacketIdEntity packetIdEntity) {
+        this.packetIdEntity = packetIdEntity;
+    }
+
 }

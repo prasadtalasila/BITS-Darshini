@@ -6,6 +6,7 @@
 package com.bits.protocolanalyzer.persistence.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,79 +20,80 @@ import javax.persistence.Table;
  * @author amit
  */
 @Entity
-@Table(name="link_analyzer")
+@Table(name = "link_analyzer")
 public class LinkAnalyzerEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
-	@Id
+    private static final long serialVersionUID = 1L;
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@OneToOne
-	private PacketIdEntity packetIdEntity;
-	
-	@Column(name="source")
-	private String source;
-	
-	@Column(name="destination")
-	private String destination;
+    private Long id;
 
-	public Long getId() {
-		return id;
-	}
+    @OneToOne
+    private PacketIdEntity packetIdEntity;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Column(name = "source")
+    private String source;
 
-	public PacketIdEntity getPacketIdEntity() {
-		return packetIdEntity;
-	}
+    @Column(name = "destination")
+    private String destination;
 
-	public void setPacketIdEntity(PacketIdEntity packetId) {
-		this.packetIdEntity = packetId;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setSource(String source) {
-		this.source = source;
-	}
+    public PacketIdEntity getPacketIdEntity() {
+        return packetIdEntity;
+    }
 
-	public String getDestination() {
-		return destination;
-	}
+    public void setPacketIdEntity(PacketIdEntity packetId) {
+        this.packetIdEntity = packetId;
+    }
 
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
-	
-	
+    public String getSource() {
+        return source;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (id != null ? id.hashCode() : 0);
-		return hash;
-	}
+    public void setSource(String source) {
+        this.source = source;
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof LinkAnalyzerEntity)) {
-			return false;
-		}
-		LinkAnalyzerEntity other = (LinkAnalyzerEntity) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-			return false;
-		}
-		return true;
-	}
+    public String getDestination() {
+        return destination;
+    }
 
-	@Override
-	public String toString() {
-		return "com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity[ id=" + id + " ]";
-	}
-	
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are
+        // not set
+        if (!(object instanceof LinkAnalyzerEntity)) {
+            return false;
+        }
+        LinkAnalyzerEntity other = (LinkAnalyzerEntity) object;
+        if ((this.id == null && other.id != null)
+                || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity[ id="
+                + id + " ]";
+    }
+
 }

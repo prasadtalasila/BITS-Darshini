@@ -5,14 +5,15 @@
  */
 package com.bits.protocolanalyzer.analyzer.link;
 
-import com.bits.protocolanalyzer.analyzer.PacketWrapper;
-import com.bits.protocolanalyzer.analyzer.network.NetworkAnalyzer;
-import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
-import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
 import org.pcap4j.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
+
+import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.network.NetworkAnalyzer;
+import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
 
 /**
  *
@@ -22,57 +23,57 @@ import org.springframework.stereotype.Service;
 @Configurable
 public class LinkAnalyzer {
 
-	@Autowired
-	private NetworkAnalyzer networkAnalyzer;
+    @Autowired
+    private NetworkAnalyzer networkAnalyzer;
 
-	@Autowired
-	private LinkAnalyzerRepository linkAnalyzerRepository;
+    @Autowired
+    private LinkAnalyzerRepository linkAnalyzerRepository;
 
-	private PacketWrapper packetWrapper;
+    private PacketWrapper packetWrapper;
 
-	public PacketWrapper getPacket() {
-		return packetWrapper;
-	}
+    public PacketWrapper getPacket() {
+        return packetWrapper;
+    }
 
-	public void setPacket(PacketWrapper packet) {
-		this.packetWrapper = packet;
-	}
+    public void setPacket(PacketWrapper packet) {
+        this.packetWrapper = packet;
+    }
 
-	public String getSource() {
-		return null;
-	}
+    public String getSource() {
+        return null;
+    }
 
-	public String getDestination() {
-		return null;
-	}
+    public String getDestination() {
+        return null;
+    }
 
-	public Packet getPayload() {
-		Packet p = packetWrapper.getPacket();
-		return p.getPayload();
-	}
+    public Packet getPayload() {
+        Packet p = packetWrapper.getPacket();
+        return p.getPayload();
+    }
 
-	public void passToHook(LinkAnalyzerEntity lae) {
+    public void passToHook(LinkAnalyzerEntity lae) {
 
-		EthernetAnalyzer ethernetAnalyzer = new EthernetAnalyzer();
-		ethernetAnalyzer.analyzeEthernetLayer(packetWrapper, lae);
-		linkAnalyzerRepository.save(lae);
-	}
+        EthernetAnalyzer ethernetAnalyzer = new EthernetAnalyzer();
+        ethernetAnalyzer.analyzeEthernetLayer(packetWrapper, lae);
+        linkAnalyzerRepository.save(lae);
+    }
 
-	public void analyzeLinkLayer() {
+    public void analyzeLinkLayer() {
 
-		//analyze and pass to hooks
-		LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
-		lae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
-		linkAnalyzerRepository.save(lae);
-		passToHook(lae);
+        // analyze and pass to hooks
+        LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
+        lae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+        linkAnalyzerRepository.save(lae);
+        passToHook(lae);
 
-		//get payload and pass to next analyzer
-		Packet p = getPayload();
-		packetWrapper.setPacket(p);
-		if (p != null) {
-			networkAnalyzer.setPacket(packetWrapper);
-			networkAnalyzer.analyzeNetworkLayer();
-		}
-	}
+        // get payload and pass to next analyzer
+        Packet p = getPayload();
+        packetWrapper.setPacket(p);
+        if (p != null) {
+            networkAnalyzer.setPacket(packetWrapper);
+            networkAnalyzer.analyzeNetworkLayer();
+        }
+    }
 
 }

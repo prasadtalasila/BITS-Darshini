@@ -5,29 +5,32 @@
  */
 package com.bits.protocolanalyzer.mvc.formatter;
 
-import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
-import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import java.text.ParseException;
 import java.util.Locale;
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
+
+import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
 
 /**
  *
  * @author amit
  */
-public class LinkFormatter implements Formatter<LinkAnalyzerEntity>{
-	
-	@Autowired
-	private LinkAnalyzerRepository linkAnalyzerRepository;
+public class LinkFormatter implements Formatter<LinkAnalyzerEntity> {
 
-	public String print(LinkAnalyzerEntity object, Locale locale) {
-		return Objects.toString(object.getId());
-	}
+    @Autowired
+    private LinkAnalyzerRepository linkAnalyzerRepository;
 
-	public LinkAnalyzerEntity parse(String string, Locale locale) throws ParseException {
-		return linkAnalyzerRepository.findOne(Long.valueOf(string));
-	}
-	
+    public String print(LinkAnalyzerEntity object, Locale locale) {
+        return Objects.toString(object.getId());
+    }
+
+    public LinkAnalyzerEntity parse(String string, Locale locale)
+            throws ParseException {
+        return linkAnalyzerRepository.findOne(Long.valueOf(string));
+    }
+
 }

@@ -16,13 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/store")
 public class PersistenceController {
-	
-	@RequestMapping
-	public ModelAndView analyzePackets() {
-//		PcapAnalyzer pcapAnalyzer = new PcapAnalyzer(packets);
-//		pcapAnalyzer.analyzePackets();
-		ModelAndView mav = new ModelAndView("storeData");
-		return mav;
-	}
-	
+
+    @RequestMapping
+    public ModelAndView analyzePackets() {
+        ModelAndView mav = new ModelAndView("storeData");
+        return mav;
+    }
+
 }

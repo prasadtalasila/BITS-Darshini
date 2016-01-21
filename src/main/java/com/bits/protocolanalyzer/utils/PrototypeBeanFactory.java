@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PrototypeBeanFactory {
-	
-	@Autowired
-	private ApplicationContext context;
-	
-	public Object create(Class<?> c){
-		return context.getBean(c);
-	}
+
+    @Autowired
+    private ApplicationContext context;
+
+    public Object create(Class<?> c) {
+        return context.getBean(c);
+    }
 }

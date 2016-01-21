@@ -10,5 +10,5 @@ package com.bits.protocolanalyzer.mvc.formatter;
  * @author amit
  */
 public class HomeFormatter {
-	
+
 }

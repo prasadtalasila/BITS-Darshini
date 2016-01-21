@@ -10,5 +10,5 @@ package com.bits.protocolanalyzer.formatter;
  * @author amit
  */
 public class InputFormatter {
-	
+
 }

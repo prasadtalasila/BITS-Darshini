@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans
-	xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
@@ -11,16 +9,13 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<mvc:annotation-driven conversion-service="conversionService"/>
+	<mvc:annotation-driven conversion-service="conversionService" />
 
 	<!-- Register the formatters -->
 	<bean id="conversionService"
-	      class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-<!--		<property name="formatters">
-			<set>
-				<bean class="com.bits.protocolanalyzer.mvc.formatter.LinkFormatter"/>
-			</set>
-		</property>-->
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<!-- <property name="formatters"> <set> <bean class="com.bits.protocolanalyzer.mvc.formatter.LinkFormatter"/> 
+			</set> </property> -->
 	</bean>
 
 	<context:component-scan base-package="com.bits.protocolanalyzer" />
@@ -33,4 +28,3 @@
 	</bean>
 
 </beans>
-

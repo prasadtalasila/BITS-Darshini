@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
 			http://www.springframework.org/schema/beans 
 			http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/data/jpa 
@@ -14,40 +14,36 @@
 
 	<!-- Activate Spring Data JPA repository support -->
 	<!-- Scan for Classes extending JPARepository -->
-	<jpa:repositories base-package="com.bits.protocolanalyzer" 
-		      transaction-manager-ref="transactionManager"/>
+	<jpa:repositories base-package="com.bits.protocolanalyzer"
+		transaction-manager-ref="transactionManager" />
 
 	<!-- Declare a datasource that has pooling capabilities -->
 	<bean id="jpaDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-	  destroy-method="close" 
-	  p:driverClass="${app.jdbc.driverClassName}"
-	  p:jdbcUrl="${app.jdbc.url}"
-	  p:user="${app.jdbc.username}" 
-	  p:password="${app.jdbc.password}"
-	  p:acquireIncrement="5" 
-	  p:idleConnectionTestPeriod="60" 
-	  p:maxPoolSize="100"
-	  p:maxStatements="50" p:minPoolSize="10" />
+		destroy-method="close" p:driverClass="${app.jdbc.driverClassName}"
+		p:jdbcUrl="${app.jdbc.url}" p:user="${app.jdbc.username}" p:password="${app.jdbc.password}"
+		p:acquireIncrement="5" p:idleConnectionTestPeriod="60" p:maxPoolSize="100"
+		p:maxStatements="50" p:minPoolSize="10" />
 
 	<!-- Declare a JPA entityManagerFactory -->
 	<bean id="entityManagerFactory"
-	  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml" />
 		<property name="persistenceUnitName" value="eclipselink_persistence_unit" />
 		<property name="dataSource" ref="jpaDataSource" />
-		<property name="jpaVendorAdapter" ref="jpaAdapter" />    
+		<property name="jpaVendorAdapter" ref="jpaAdapter" />
 	</bean>
 
 	<!-- Specify our ORM vendor -->
-	<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
-		<property name="databasePlatform" value="org.eclipse.persistence.platform.database.PostgreSQLPlatform" />
+	<bean id="jpaAdapter"
+		class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
+		<property name="databasePlatform"
+			value="org.eclipse.persistence.platform.database.PostgreSQLPlatform" />
 		<property name="showSql" value="true" />
 	</bean>
 
-	<tx:annotation-driven/>
+	<tx:annotation-driven />
 	<!-- Declare a transaction manager -->
-	<bean id="transactionManager"
-	  class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 

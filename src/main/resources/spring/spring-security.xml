@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-	     xmlns:beans="http://www.springframework.org/schema/beans" 
-	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	     xmlns:p="http://www.springframework.org/schema/p" 
-	     xmlns:util="http://www.springframework.org/schema/util"
-	     xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security.xsd
@@ -17,16 +15,12 @@
 	<http pattern="/resources/**" security="none" />
 
 	<http use-expressions="true">
-		<form-login login-page="/login" 
-			    authentication-failure-url="/login/failure"
-			    username-parameter="username"
-			    password-parameter="password"
-			    default-target-url="/" 
-			    login-processing-url="/dologin"
-			    always-use-default-target="true" />
+		<form-login login-page="/login" authentication-failure-url="/login/failure"
+			username-parameter="username" password-parameter="password"
+			default-target-url="/" login-processing-url="/dologin"
+			always-use-default-target="true" />
 
-		<logout invalidate-session="true" 
-			logout-success-url="/logout/success"
+		<logout invalidate-session="true" logout-success-url="/logout/success"
 			logout-url="/logout" />
 
 		<access-denied-handler error-page="/denied" />
@@ -40,18 +34,20 @@
 	</http>
 
 	<!-- Custom UserDetailsService for manual user detection -->
-	<beans:bean id="customUserDetailsService" class="in.co.webexports.jobber.service.CustomUserDetailsService" />
+	<beans:bean id="customUserDetailsService"
+		class="in.co.webexports.jobber.service.CustomUserDetailsService" />
 	<authentication-manager>
 		<authentication-provider user-service-ref="customUserDetailsService">
-			<!-- <password-encoder hash="md5" />-->
+			<!-- <password-encoder hash="md5" /> -->
 		</authentication-provider>
 	</authentication-manager>
 
-	<beans:bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+	<beans:bean id="roleVoter"
+		class="org.springframework.security.access.vote.RoleHierarchyVoter">
 		<beans:constructor-arg ref="roleHierarchy" />
 	</beans:bean>
 	<beans:bean id="roleHierarchy"
-	      class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
 		<beans:property name="hierarchy">
 			<beans:value>
 				ROLE_ADMIN > ROLE_DESIGNER

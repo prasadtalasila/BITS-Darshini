@@ -5,16 +5,19 @@
  */
 package com.bits.protocolanalyzer.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author amit
  */
-public interface NetworkAnalyzerRepository extends JpaRepository<NetworkAnalyzerEntity, Long>{
-	
-	public NetworkAnalyzerEntity findByPacketIdEntity(PacketIdEntity packetIdEntity);
-	
+public interface NetworkAnalyzerRepository extends
+        JpaRepository<NetworkAnalyzerEntity, Long> {
+
+    public NetworkAnalyzerEntity findByPacketIdEntity(
+            PacketIdEntity packetIdEntity);
+
 }
