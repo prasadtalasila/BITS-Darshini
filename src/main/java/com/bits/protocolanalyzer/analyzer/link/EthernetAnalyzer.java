@@ -10,7 +10,9 @@ import org.pcap4j.packet.Packet;
 import org.pcap4j.util.MacAddress;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import com.google.common.eventbus.Subscribe;
 
 /**
  *
@@ -39,8 +41,10 @@ public class EthernetAnalyzer extends LinkAnalyzer {
         return ethernetPacket.getPayload();
     }
 
-    public void analyzeEthernetLayer(PacketWrapper packetWrapper,
-            LinkAnalyzerEntity lae) {
+    @Subscribe
+    public void analyzeEthernetLayer(LinkLayerEvent linkLayerEvent) {
+        PacketWrapper packetWrapper = linkLayerEvent.getPacketWrapper();
+        LinkAnalyzerEntity lae = linkLayerEvent.getLinkAnalyzerEntity();
         if (packetWrapper.getPacket().getHeader() instanceof EthernetPacket.EthernetHeader) {
             this.ethernetPacket = (EthernetPacket) packetWrapper.getPacket();
             lae.setSource(getSource());

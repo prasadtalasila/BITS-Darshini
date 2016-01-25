@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
 import com.bits.protocolanalyzer.analyzer.network.NetworkAnalyzer;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
+import com.google.common.eventbus.EventBus;
 
 /**
  *
@@ -54,8 +56,9 @@ public class LinkAnalyzer {
 
     public void passToHook(LinkAnalyzerEntity lae) {
 
-        EthernetAnalyzer ethernetAnalyzer = new EthernetAnalyzer();
-        ethernetAnalyzer.analyzeEthernetLayer(packetWrapper, lae);
+        // post the event to corresponding event-bus
+        EventBus linkLayerEventBus = LinkLayerEventBus.getLinkLayerEventBus();
+        linkLayerEventBus.post(new LinkLayerEvent(packetWrapper, lae));
         linkAnalyzerRepository.save(lae);
     }
 
@@ -65,6 +68,7 @@ public class LinkAnalyzer {
         LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
         lae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
         linkAnalyzerRepository.save(lae);
+
         passToHook(lae);
 
         // get payload and pass to next analyzer

@@ -10,7 +10,9 @@ import org.pcap4j.packet.namednumber.IpNumber;
 import org.pcap4j.packet.namednumber.IpVersion;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.event.NetworkLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
+import com.google.common.eventbus.Subscribe;
 
 /**
  *
@@ -69,8 +71,11 @@ public class Ipv4Analyzer extends NetworkAnalyzer {
         return ipv4Header.getHeaderChecksum();
     }
 
-    public void analyzeIpv4Layer(PacketWrapper packetWrapper,
-            NetworkAnalyzerEntity nae) {
+    @Subscribe
+    public void analyzeIpv4Layer(NetworkLayerEvent networkLayerEvent) {
+        PacketWrapper packetWrapper = networkLayerEvent.getPacketWrapper();
+        NetworkAnalyzerEntity nae = networkLayerEvent
+                .getNetworkAnalyzerEntity();
         if (packetWrapper.getPacket().getHeader() instanceof IpV4Packet.IpV4Header) {
             this.ipv4Packet = (IpV4Packet) packetWrapper.getPacket();
             this.ipv4Header = ipv4Packet.getHeader();

@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.event.TransportLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.TransportAnalyzerRepository;
+import com.google.common.eventbus.EventBus;
 
 /**
  *
@@ -56,9 +58,11 @@ public class TransportAnalyzer {
 
     public void passToHook(TransportAnalyzerEntity tae) {
 
-        TcpAnalyzer tcpAnalyzer = new TcpAnalyzer();
-        tcpAnalyzer.analyzeTcpLayer(packetWrapper, tae);
-
+        // post the event to corresponding event-bus
+        EventBus transportLayerEventBus = TransportLayerEventBus
+                .getTransportLayerEventBus();
+        transportLayerEventBus
+                .post(new TransportLayerEvent(packetWrapper, tae));
         transportAnalyzerRepository.save(tae);
     }
 
@@ -68,6 +72,7 @@ public class TransportAnalyzer {
         TransportAnalyzerEntity tae = new TransportAnalyzerEntity();
         tae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
         transportAnalyzerRepository.save(tae);
+
         passToHook(tae);
 
         // pass to next layer

@@ -8,7 +8,9 @@ package com.bits.protocolanalyzer.analyzer.transport;
 import org.pcap4j.packet.TcpPacket;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.event.TransportLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
+import com.google.common.eventbus.Subscribe;
 
 /**
  *
@@ -39,8 +41,11 @@ public class TcpAnalyzer extends TransportAnalyzer {
         return this.tcpHeader.getSequenceNumberAsLong();
     }
 
-    public void analyzeTcpLayer(PacketWrapper packetWrapper,
-            TransportAnalyzerEntity tae) {
+    @Subscribe
+    public void analyzeTcpLayer(TransportLayerEvent transportLayerEvent) {
+        PacketWrapper packetWrapper = transportLayerEvent.getPacketWrapper();
+        TransportAnalyzerEntity tae = transportLayerEvent
+                .getTransportAnalyzerEntity();
         if (packetWrapper.getPacket().getHeader() instanceof TcpPacket.TcpHeader) {
             this.tcpPacket = (TcpPacket) packetWrapper.getPacket();
             this.tcpHeader = tcpPacket.getHeader();
@@ -51,5 +56,4 @@ public class TcpAnalyzer extends TransportAnalyzer {
             tae.setSeqNumber(getSeqNumber());
         }
     }
-
 }

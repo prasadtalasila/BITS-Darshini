@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.event.NetworkLayerEvent;
 import com.bits.protocolanalyzer.analyzer.transport.TransportAnalyzer;
 import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.NetworkAnalyzerRepository;
+import com.google.common.eventbus.EventBus;
 
 /**
  *
@@ -79,11 +81,12 @@ public class NetworkAnalyzer {
     }
 
     public void passToHook(NetworkAnalyzerEntity nae) {
-        Ipv4Analyzer ipv4Analyzer = new Ipv4Analyzer();
-        ipv4Analyzer.analyzeIpv4Layer(packetWrapper, nae);
-
-        // pass to all hooks and save after returning.
+        // post the event to corresponding event-bus
+        EventBus networkLayerEventBus = NetworkLayerEventBus
+                .getNetworkLayerEventBus();
+        networkLayerEventBus.post(new NetworkLayerEvent(packetWrapper, nae));
         networkAnalyzerRepository.save(nae);
+
     }
 
     public void analyzeNetworkLayer() {
@@ -92,6 +95,7 @@ public class NetworkAnalyzer {
         NetworkAnalyzerEntity nae = new NetworkAnalyzerEntity();
         nae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
         networkAnalyzerRepository.save(nae);
+
         passToHook(nae);
 
         // get payload and pass to next analyzer

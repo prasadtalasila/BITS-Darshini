@@ -24,14 +24,23 @@
                     <button type="submit" class="btn btn-success btn-lg">Analyze Packets</button>
                 </form>
             </div>
-            <!--            <div class="col-md-4">
-                            <div class="list-group">
-            <c:forEach items="${packetList}" var="packet">
-                <h3 class="list-group-item-heading">Packet Id : <b>${packet.packetIdEntity.packetId}</b></h3>
-                <br>
-            </c:forEach>
         </div>
-    </div>-->
+        <div class="row">
+            <div class="col-md-4">
+                <form accept-charset="UTF-8" role="form" method="GET" action="<c:url value="/addHook/ethernetHook"/>">
+                    <button type="submit" class="btn btn-success btn-lg">Add Ethernet Hook</button>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form accept-charset="UTF-8" role="form" method="GET" action="<c:url value="/addHook/ipHook"/>">
+                    <button type="submit" class="btn btn-success btn-lg">Add IP Hook</button>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form accept-charset="UTF-8" role="form" method="GET" action="<c:url value="/addHook/tcpHook"/>">
+                    <button type="submit" class="btn btn-success btn-lg">Add TCP Hook</button>
+                </form>
+            </div>
         </div>
     </body>
 </html>
