@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.PcapAnalyzer;
+import com.bits.protocolanalyzer.analyzer.TimeSeriesAnalyzer;
 import com.bits.protocolanalyzer.input.PcapFileReader;
 import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
 import com.bits.protocolanalyzer.repository.NetworkAnalyzerRepository;
@@ -29,6 +30,9 @@ public class InputController {
 
     @Autowired
     private PcapAnalyzer pcapAnalyzer;
+
+    @Autowired
+    private TimeSeriesAnalyzer timeSeriesAnalyzer;
 
     @Autowired
     private LinkAnalyzerRepository linkAnalyzerRepository;
@@ -66,6 +70,17 @@ public class InputController {
         } else {
             mav.addObject("packetList", "No Packets retrived");
         }
+        return mav;
+    }
+
+    @RequestMapping("/stats-analysis")
+    public ModelAndView analyzePcapStats() {
+        ModelAndView mav = new ModelAndView("packetStats");
+        timeSeriesAnalyzer.updateStats(packets);
+        mav.addObject("meanTimeStamp",
+                timeSeriesAnalyzer.getMeanTimeofArrival());
+        mav.addObject("standardDeviation",
+                timeSeriesAnalyzer.getStandardDeviation());
         return mav;
     }
 

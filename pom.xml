@@ -159,18 +159,25 @@
 			<artifactId>pcap4j-packetfactory-static</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		<!-- Google Guava Library -->
 		<dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>19.0</version>
 		</dependency>
+		<!-- Project Lombok -->
 		<dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
-
+        <!-- Apache Commons math library -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.5</version>
+        </dependency>
 	</dependencies>
 
 	<build>
