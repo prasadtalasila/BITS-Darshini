@@ -15,6 +15,7 @@ import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
 import com.bits.protocolanalyzer.analyzer.network.NetworkAnalyzer;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
+import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
 
 /**
@@ -30,6 +31,9 @@ public class LinkAnalyzer {
 
     @Autowired
     private LinkAnalyzerRepository linkAnalyzerRepository;
+
+    @Autowired
+    private EventBusFactory eventBusFactory;
 
     private PacketWrapper packetWrapper;
 
@@ -55,10 +59,9 @@ public class LinkAnalyzer {
     }
 
     public void passToHook(LinkAnalyzerEntity lae) {
-
-        // post the event to corresponding event-bus
-        EventBus linkLayerEventBus = LinkLayerEventBus.getLinkLayerEventBus();
-        linkLayerEventBus.post(new LinkLayerEvent(packetWrapper, lae));
+        /* post the event to corresponding event-bus */
+        EventBus layerEventBus = eventBusFactory.getEventBus("layer_event_bus");
+        layerEventBus.post(new LinkLayerEvent(packetWrapper, lae));
         linkAnalyzerRepository.save(lae);
     }
 

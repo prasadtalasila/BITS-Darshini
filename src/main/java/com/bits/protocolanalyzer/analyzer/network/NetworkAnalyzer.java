@@ -17,6 +17,7 @@ import com.bits.protocolanalyzer.analyzer.event.NetworkLayerEvent;
 import com.bits.protocolanalyzer.analyzer.transport.TransportAnalyzer;
 import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.NetworkAnalyzerRepository;
+import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
 
 /**
@@ -32,6 +33,9 @@ public class NetworkAnalyzer {
 
     @Autowired
     private TransportAnalyzer transportAnalyzer;
+
+    @Autowired
+    private EventBusFactory eventBusFactory;
 
     private PacketWrapper packetWrapper;
 
@@ -81,12 +85,10 @@ public class NetworkAnalyzer {
     }
 
     public void passToHook(NetworkAnalyzerEntity nae) {
-        // post the event to corresponding event-bus
-        EventBus networkLayerEventBus = NetworkLayerEventBus
-                .getNetworkLayerEventBus();
-        networkLayerEventBus.post(new NetworkLayerEvent(packetWrapper, nae));
+        /* post the event to corresponding event-bus */
+        EventBus layerEventBus = eventBusFactory.getEventBus("layer_event_bus");
+        layerEventBus.post(new NetworkLayerEvent(packetWrapper, nae));
         networkAnalyzerRepository.save(nae);
-
     }
 
     public void analyzeNetworkLayer() {

@@ -13,6 +13,7 @@ import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.event.TransportLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
 import com.bits.protocolanalyzer.repository.TransportAnalyzerRepository;
+import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
 
 /**
@@ -24,6 +25,9 @@ public class TransportAnalyzer {
 
     @Autowired
     private TransportAnalyzerRepository transportAnalyzerRepository;
+
+    @Autowired
+    private EventBusFactory eventBusFactory;
 
     private PacketWrapper packetWrapper;
 
@@ -58,11 +62,9 @@ public class TransportAnalyzer {
 
     public void passToHook(TransportAnalyzerEntity tae) {
 
-        // post the event to corresponding event-bus
-        EventBus transportLayerEventBus = TransportLayerEventBus
-                .getTransportLayerEventBus();
-        transportLayerEventBus
-                .post(new TransportLayerEvent(packetWrapper, tae));
+        /* post the event to corresponding event-bus */
+        EventBus layerEventBus = eventBusFactory.getEventBus("layer_event_bus");
+        layerEventBus.post(new TransportLayerEvent(packetWrapper, tae));
         transportAnalyzerRepository.save(tae);
     }
 
