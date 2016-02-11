@@ -36,8 +36,8 @@ public class NetworkAnalyzerEntity implements Serializable {
     @OneToOne
     private PacketIdEntity packetIdEntity;
 
-    @Column(name = "version")
-    private int version;
+    @Column(name = "ip_version")
+    private int iPVersion;
 
     @Column(name = "header_length")
     private int headerLength;
@@ -83,12 +83,12 @@ public class NetworkAnalyzerEntity implements Serializable {
         this.destination = destination;
     }
 
-    public int getVersion() {
-        return version;
+    public int getIPVersion() {
+        return iPVersion;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setVersion(int iPVersion) {
+        this.iPVersion = iPVersion;
     }
 
     public int getHeaderLength() {

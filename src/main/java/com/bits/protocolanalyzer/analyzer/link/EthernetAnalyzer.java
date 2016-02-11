@@ -5,50 +5,132 @@
  */
 package com.bits.protocolanalyzer.analyzer.link;
 
-import org.pcap4j.packet.EthernetPacket;
-import org.pcap4j.packet.Packet;
-import org.pcap4j.util.MacAddress;
+import java.util.Arrays;
 
+import org.pcap4j.packet.Packet;
+
+import com.bits.protocolanalyzer.address.MacAddress;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
+import com.bits.protocolanalyzer.analyzer.Protocol;
 import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
+import com.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 /**
  *
- * @author amit
+ * @author crygnus
  */
+
 public class EthernetAnalyzer extends LinkAnalyzer {
 
-    private EthernetPacket ethernetPacket;
+    private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.ETHERNET;
+    private EventBus eventBus;
 
-    @Override
-    public String getSource() {
-        EthernetPacket.EthernetHeader eh = ethernetPacket.getHeader();
-        MacAddress src = eh.getSrcAddr();
-        return src.toString();
+    private byte[] ethernetHeader;
+    private int startByte;
+    private int endByte;
+
+    /**
+     * Constructs the object and registers itself on the eventbus of the
+     * corresponding cell
+     * 
+     * @param eventBus
+     */
+    public EthernetAnalyzer(EventBus eventBus) {
+        this.eventBus = eventBus;
+        this.eventBus.register(this);
     }
 
     @Override
-    public String getDestination() {
-        EthernetPacket.EthernetHeader eh = ethernetPacket.getHeader();
-        MacAddress dest = eh.getDstAddr();
-        return dest.toString();
+    public String getSource(PacketWrapper packetWrapper) {
+        Packet packet = packetWrapper.getPacket();
+        int startByte = packetWrapper.getStartByte();
+        byte[] rawPacket = packet.getRawData();
+        byte[] rawHeader = Arrays.copyOfRange(rawPacket, startByte,
+                EthernetHeader.HEADER_LENGTH_IN_BYTES);
+
+        MacAddress srcAddr = EthernetHeader.getSource(rawHeader);
+        return srcAddr.toString();
     }
 
     @Override
-    public Packet getPayload() {
-        return ethernetPacket.getPayload();
+    public String getDestination(PacketWrapper packetWrapper) {
+        Packet packet = packetWrapper.getPacket();
+        int startByte = packetWrapper.getStartByte();
+        byte[] rawPacket = packet.getRawData();
+        byte[] rawHeader = Arrays.copyOfRange(rawPacket, startByte,
+                EthernetHeader.HEADER_LENGTH_IN_BYTES);
+
+        MacAddress dstAddr = EthernetHeader.getDestination(rawHeader);
+        return dstAddr.toString();
+    }
+
+    private void setEthernetHeader(PacketWrapper packetWrapper) {
+        Packet packet = packetWrapper.getPacket();
+        int startByte = packetWrapper.getStartByte();
+        byte[] rawPacket = packet.getRawData();
+        this.ethernetHeader = Arrays.copyOfRange(rawPacket, startByte,
+                EthernetHeader.HEADER_LENGTH_IN_BYTES);
+    }
+
+    private void setStartByte(PacketWrapper packetWrapper) {
+        this.startByte = packetWrapper.getStartByte()
+                + EthernetHeader.HEADER_LENGTH_IN_BYTES;
+    }
+
+    private void setEndByte(PacketWrapper packetWrapper) {
+        /* Account for last 4 bytes of trailer */
+        this.endByte = packetWrapper.getEndByte() - 4;
     }
 
     @Subscribe
-    public void analyzeEthernetLayer(LinkLayerEvent linkLayerEvent) {
+    public void analyzePacket(LinkLayerEvent linkLayerEvent) {
+
         PacketWrapper packetWrapper = linkLayerEvent.getPacketWrapper();
-        LinkAnalyzerEntity lae = linkLayerEvent.getLinkAnalyzerEntity();
-        if (packetWrapper.getPacket().getHeader() instanceof EthernetPacket.EthernetHeader) {
-            this.ethernetPacket = (EthernetPacket) packetWrapper.getPacket();
-            lae.setSource(getSource());
-            lae.setDestination(getDestination());
+        if (PACKET_TYPE_OF_RELEVANCE
+                .equalsIgnoreCase(packetWrapper.getPacketType())) {
+
+            /* Set ethernet header */
+            setEthernetHeader(packetWrapper);
+            /* Do type detection first and publish the event */
+            String nextPacketType = setNextPacketType(packetWrapper);
+            setStartByte(packetWrapper);
+            setEndByte(packetWrapper);
+            publishTypeDetectionEvent(nextPacketType, startByte, endByte);
+
+            /*
+             * Save corresponding field values to DB (can be spun off as a
+             * separate thread)
+             */
+            LinkAnalyzerEntity lae = linkLayerEvent.getLinkAnalyzerEntity();
+            lae.setSource(getSource(packetWrapper));
+            lae.setDestination(getDestination(packetWrapper));
         }
+
+    }
+
+    private String setNextPacketType(PacketWrapper packetWrapper) {
+
+        String nextHeaderTypeHex = EthernetHeader
+                .getEtherType(this.ethernetHeader);
+
+        switch (nextHeaderTypeHex) {
+        case "0x0800":
+            return Protocol.IPV4;
+        case "0x86DD":
+            return Protocol.IPV6;
+
+        default:
+            return Protocol.IPV4;
+        }
+
+    }
+
+    private void publishTypeDetectionEvent(String nextPacketType, int startByte,
+            int endByte) {
+        this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType,
+                startByte, endByte));
     }
 }

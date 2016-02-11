@@ -32,8 +32,8 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-4">
-                        <form accept-charset="UTF-8" role="form" method="GET" action="<c:url value="/reader"/>">
-                            <button type="submit" class="btn btn-success btn-lg">Read Pcap File</button>
+                        <form accept-charset="UTF-8" role="form" method="GET" action="<c:url value="/session"/>">
+                            <button type="submit" class="btn btn-success btn-lg">Go to Session Page</button>
                         </form>
                     </div>
                     <div class="col-md-4"></div>

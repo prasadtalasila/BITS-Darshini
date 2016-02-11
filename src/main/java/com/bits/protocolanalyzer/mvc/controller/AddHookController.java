@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bits.protocolanalyzer.analyzer.link.EthernetAnalyzer;
-import com.bits.protocolanalyzer.analyzer.network.Ipv4Analyzer;
+import com.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
 import com.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
 import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
@@ -27,7 +27,7 @@ public class AddHookController {
     @RequestMapping("/ethernetHook")
     public ModelAndView addEthernetHook() {
         EventBus layerEventBus = eventBusFactory.getEventBus("layer_event_bus");
-        layerEventBus.register(new EthernetAnalyzer());
+        layerEventBus.register(new EthernetAnalyzer(layerEventBus));
         ModelAndView mav = new ModelAndView("addHook");
         mav.addObject("addHookMsg",
                 "Hook for Ethernet analyzer is successfully added!");
@@ -37,7 +37,7 @@ public class AddHookController {
     @RequestMapping("/ipHook")
     public ModelAndView addIPHook() {
         EventBus layerEventBus = eventBusFactory.getEventBus("layer_event_bus");
-        layerEventBus.register(new Ipv4Analyzer());
+        layerEventBus.register(new IPv4Analyzer(layerEventBus));
         ModelAndView mav = new ModelAndView("addHook");
         mav.addObject("addHookMsg",
                 "Hook for IP analyzer is successfully added!");
@@ -47,7 +47,7 @@ public class AddHookController {
     @RequestMapping("/tcpHook")
     public ModelAndView addTCPHook() {
         EventBus layerEventBus = eventBusFactory.getEventBus("layer_event_bus");
-        layerEventBus.register(new TcpAnalyzer());
+        layerEventBus.register(new TcpAnalyzer(layerEventBus));
         ModelAndView mav = new ModelAndView("addHook");
         mav.addObject("addHookMsg",
                 "Hook for TCP analyzer is successfully added!");

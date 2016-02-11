@@ -22,11 +22,7 @@ public class EventBusFactory {
     private HashMap<String, EventBus> eventBuses = new HashMap<String, EventBus>();
 
     public EventBus getEventBus(String id) {
-        if (id == null) {
-            // TODO: Define a custom exception for application to throw. Avoid
-            // returning null anywhere
-            return null;
-        } else if (!eventBusIds.contains(id)) {
+        if (!eventBusIds.contains(id)) {
             EventBus eventBus = new EventBus(id);
             eventBusIds.add(id);
             eventBuses.put(id, eventBus);

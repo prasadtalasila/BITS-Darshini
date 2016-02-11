@@ -8,12 +8,12 @@ package com.bits.protocolanalyzer.analyzer;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.pcap4j.packet.Packet;
 
 import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -28,10 +28,17 @@ public class PacketWrapper implements Serializable {
     private Packet packet;
     private PacketIdEntity packetIdEntity;
     private Timestamp packetTimestamp;
+    private String packetType;
+    private int startByte;
+    private int endByte;
 
-    public PacketWrapper(Packet packet, PacketIdEntity packetIdEntity) {
+    public PacketWrapper(Packet packet, PacketIdEntity packetIdEntity,
+            String packetType, int startByte, int endByte) {
         this.packet = packet;
         this.packetIdEntity = packetIdEntity;
+        this.packetType = packetType;
+        this.startByte = startByte;
+        this.endByte = endByte;
     }
 
 }

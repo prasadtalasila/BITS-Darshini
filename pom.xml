@@ -178,6 +178,12 @@
             <artifactId>commons-math3</artifactId>
             <version>3.5</version>
         </dependency>
+        <!-- Apache Commons codec library -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
 	</dependencies>
 
 	<build>
