@@ -44,26 +44,26 @@ public class TcpHeader {
     public static final int URGENT_PTR_START_BYTE = 18;
     public static final int URGENT_PTR_END_BYTE = 19;
 
-    public static int getSoucePort(byte[] tcpHeader) {
+    public static int getSourcePort(byte[] tcpHeader) {
         byte[] soucePortBytes = Arrays.copyOf(tcpHeader, 2);
         return ByteOperator.parseBytes(soucePortBytes);
     }
 
     public static int getDestinationPort(byte[] tcpHeader) {
         byte[] dstPortBytes = Arrays.copyOfRange(tcpHeader,
-                DESTINATION_PORT_START_BYTE, DESTINATION_PORT_END_BYTE);
+                DESTINATION_PORT_START_BYTE, DESTINATION_PORT_END_BYTE + 1);
         return ByteOperator.parseBytes(dstPortBytes);
     }
 
     public static int getSequenceNumber(byte[] tcpHeader) {
         byte[] sequenceNoBytes = Arrays.copyOfRange(tcpHeader,
-                SEQUENCE_NUMBER_START_BYTE, SEQUENCE_NUMBER_END_BYTE);
+                SEQUENCE_NUMBER_START_BYTE, SEQUENCE_NUMBER_END_BYTE + 1);
         return ByteOperator.parseBytes(sequenceNoBytes);
     }
 
     public static int getAckNumber(byte[] tcpHeader) {
         byte[] ackBytes = Arrays.copyOfRange(tcpHeader, ACK_START_BYTE,
-                ACK_END_BYTE);
+                ACK_END_BYTE + 1);
         return ByteOperator.parseBytes(ackBytes);
     }
 
@@ -167,7 +167,7 @@ public class TcpHeader {
     public static int getUrgentPointer(byte[] tcpHeader) {
         if (isURGFlagSet(tcpHeader)) {
             byte[] urgPointerBytes = Arrays.copyOfRange(tcpHeader,
-                    URGENT_PTR_START_BYTE, URGENT_PTR_END_BYTE);
+                    URGENT_PTR_START_BYTE, URGENT_PTR_END_BYTE + 1);
             return ByteOperator.parseBytes(urgPointerBytes);
         } else {
             return -1;

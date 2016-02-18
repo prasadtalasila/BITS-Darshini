@@ -38,7 +38,7 @@ public class TcpAnalyzer extends TransportAnalyzer {
 
     @Override
     public String getSourcePort() {
-        return String.valueOf(TcpHeader.getSoucePort(this.tcpHeader));
+        return String.valueOf(TcpHeader.getSourcePort(this.tcpHeader));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TcpAnalyzer extends TransportAnalyzer {
         byte[] rawPacket = packet.getRawData();
         int startByte = packetWrapper.getStartByte();
         this.tcpHeader = Arrays.copyOfRange(rawPacket, startByte,
-                startByte + TcpHeader.DEFAULT_HEADER_LENGTH_IN_BYTES);
+                startByte + TcpHeader.DEFAULT_HEADER_LENGTH_IN_BYTES + 1);
     }
 
     private void setStartByte(PacketWrapper packetWrapper) {

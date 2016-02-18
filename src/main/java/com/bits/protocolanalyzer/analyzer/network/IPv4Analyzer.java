@@ -42,7 +42,7 @@ public class IPv4Analyzer extends NetworkAnalyzer {
         byte[] rawPacket = packet.getRawData();
         int startByte = packetWrapper.getStartByte();
         this.ipv4Header = Arrays.copyOfRange(rawPacket, startByte,
-                startByte + IPv4Header.DEFAULT_HEADER_LENTH_IN_BYTES);
+                startByte + IPv4Header.DEFAULT_HEADER_LENTH_IN_BYTES + 1);
     }
 
     private void setStartByte(PacketWrapper packetWrapper) {

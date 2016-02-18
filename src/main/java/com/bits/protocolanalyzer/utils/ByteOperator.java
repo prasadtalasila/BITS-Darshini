@@ -9,7 +9,7 @@ public class ByteOperator {
                     "Byte array length exceeds 4!");
         } else {
             int val = 0;
-            for (int i = bytes.length - 1; i >= 0; i--) {
+            for (int i = 0; i < bytes.length; i++) {
                 val = val << 8;
                 val = val | bytes[i] & 0xFF;
             }

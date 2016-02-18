@@ -45,25 +45,13 @@ public class EthernetAnalyzer extends LinkAnalyzer {
 
     @Override
     public String getSource(PacketWrapper packetWrapper) {
-        Packet packet = packetWrapper.getPacket();
-        int startByte = packetWrapper.getStartByte();
-        byte[] rawPacket = packet.getRawData();
-        byte[] rawHeader = Arrays.copyOfRange(rawPacket, startByte,
-                EthernetHeader.HEADER_LENGTH_IN_BYTES);
-
-        MacAddress srcAddr = EthernetHeader.getSource(rawHeader);
+        MacAddress srcAddr = EthernetHeader.getSource(this.ethernetHeader);
         return srcAddr.toString();
     }
 
     @Override
     public String getDestination(PacketWrapper packetWrapper) {
-        Packet packet = packetWrapper.getPacket();
-        int startByte = packetWrapper.getStartByte();
-        byte[] rawPacket = packet.getRawData();
-        byte[] rawHeader = Arrays.copyOfRange(rawPacket, startByte,
-                EthernetHeader.HEADER_LENGTH_IN_BYTES);
-
-        MacAddress dstAddr = EthernetHeader.getDestination(rawHeader);
+        MacAddress dstAddr = EthernetHeader.getDestination(this.ethernetHeader);
         return dstAddr.toString();
     }
 
@@ -72,7 +60,7 @@ public class EthernetAnalyzer extends LinkAnalyzer {
         int startByte = packetWrapper.getStartByte();
         byte[] rawPacket = packet.getRawData();
         this.ethernetHeader = Arrays.copyOfRange(rawPacket, startByte,
-                EthernetHeader.HEADER_LENGTH_IN_BYTES);
+                EthernetHeader.HEADER_LENGTH_IN_BYTES + 1);
     }
 
     private void setStartByte(PacketWrapper packetWrapper) {
