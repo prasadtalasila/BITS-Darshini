@@ -105,13 +105,13 @@ public class EthernetAnalyzer extends LinkAnalyzer {
                 .getEtherType(this.ethernetHeader);
 
         switch (nextHeaderTypeHex) {
-        case "0x0800":
+        case "0800":
             return Protocol.IPV4;
-        case "0x86DD":
+        case "86DD":
             return Protocol.IPV6;
 
         default:
-            return Protocol.IPV4;
+            return Protocol.END_PROTOCOL;
         }
 
     }

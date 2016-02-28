@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import com.bits.protocolanalyzer.analyzer.link.EthernetAnalyzer;
 import com.bits.protocolanalyzer.analyzer.link.LinkAnalyzer;
 import com.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
@@ -69,8 +70,7 @@ public class Session {
     }
 
     private void setLinkCell() {
-        linkCell.configure(sessionName, linkAnalyzer, "link_layer_bus",
-                factory);
+        linkCell.configure(sessionName, "linkCell", linkAnalyzer);
         /* Attach Ethernet Analyzer Hook */
         EventBus linkEventBus = linkCell.getEventBus();
         linkEventBus.register(new EthernetAnalyzer(linkEventBus));
@@ -78,8 +78,7 @@ public class Session {
     }
 
     private void setNetworkCell() {
-        networkCell.configure(sessionName, networkAnalyzer, "network_layer_bus",
-                factory);
+        networkCell.configure(sessionName, "networkCell", networkAnalyzer);
         /* Attach IPv4 Analyzer Hook */
         EventBus networkEventBus = networkCell.getEventBus();
         networkEventBus.register(new IPv4Analyzer(networkEventBus));
@@ -87,8 +86,8 @@ public class Session {
     }
 
     private void setTransportCell() {
-        transportCell.configure(sessionName, transportAnalyzer,
-                "transport_layer_bus", factory);
+        transportCell.configure(sessionName, "transportCell",
+                transportAnalyzer);
         /* Attach TCP Analyzer Hook */
         EventBus transportEventBus = transportCell.getEventBus();
         transportEventBus.register(new TcpAnalyzer(transportEventBus));
@@ -105,15 +104,26 @@ public class Session {
 
         /* Create pcap analyzer and connect linkCell with it */
         this.pcapAnalyzer.setNextAnalyzerCell(linkCell);
+        /* Register pcap analyzer to controller event bus */
+        factory.getEventBus("pipeline_controller_bus").register(pcapAnalyzer);
 
         linkCell.configureDestinationStageMap(Protocol.IPV4, networkCell);
         networkCell.configureDestinationStageMap(Protocol.TCP, transportCell);
+
+        linkCell.start();
+        networkCell.start();
+        transportCell.start();
         /*
          * Configure each cell with default graph
          * graphParser.configureCellWithDefaultGraph(linkCell);
          * graphParser.configureCellWithDefaultGraph(networkCell);
          * graphParser.configureCellWithDefaultGraph(transportCell);
          */
+    }
+
+    public void endSession() {
+        factory.getEventBus("pipeline_controller_bus")
+                .post(new EndAnalysisEvent());
     }
 
 }

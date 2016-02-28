@@ -103,9 +103,10 @@ public class IPv4Analyzer extends NetworkAnalyzer {
         if (PACKET_TYPE_OF_RELEVANCE
                 .equalsIgnoreCase(packetWrapper.getPacketType())) {
 
-            /* Do type detection first and publish the event */
-
-            /* Set the ipv4 header */
+            /*
+             * Do type detection first and publish the event. Set the ipv4
+             * header
+             */
             this.setIpv4Header(packetWrapper);
             /* Set start and end bytes */
             this.setStartByte(packetWrapper);
@@ -137,7 +138,7 @@ public class IPv4Analyzer extends NetworkAnalyzer {
             return Protocol.UDP;
 
         default:
-            return Protocol.TCP;
+            return Protocol.END_PROTOCOL;
         }
     }
 

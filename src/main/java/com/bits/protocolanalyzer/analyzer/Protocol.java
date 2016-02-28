@@ -8,4 +8,5 @@ public class Protocol {
     public static final String TCP = "TCP";
     public static final String UDP = "UDP";
     public static final String HTTP = "HTTP";
+    public static final String END_PROTOCOL = "End or Unknown Protocol";
 }

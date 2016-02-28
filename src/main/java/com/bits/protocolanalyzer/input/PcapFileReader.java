@@ -62,6 +62,7 @@ public class PcapFileReader {
                 packet = handle.getNextPacket();
                 packetCount++;
             }
+            pcapAnalyzer.endAnalysis(packetCount);
             handle.close();
         } catch (PcapNativeException ex) {
             Logger.getLogger(PcapFileReader.class.getName()).log(Level.SEVERE,
