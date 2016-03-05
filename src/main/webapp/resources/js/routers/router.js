@@ -10,7 +10,6 @@ var app = app || {};
 
 		setFilter: function () {       
           var experimentView = new app.ExperimentView({ el: $("#experiment-template") });
-          window.location.href ="first.html";
           experimentView.render();
 		}
 	});

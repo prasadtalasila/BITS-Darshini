@@ -2,8 +2,9 @@ package com.bits.protocolanalyzer.analyzer;
 
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -39,7 +40,7 @@ public class AnalyzerCell extends Thread {
     private EventBus eventBus;
     private GenericAnalyzer genericAnalyzer;
     private PacketWrapper packetProcessing;
-    private Queue<PacketWrapper> inputQueue;
+    private ArrayBlockingQueue<PacketWrapper> inputQueue;
     private boolean isProcessing;
     private boolean isRunning;
     private Map<String, AnalyzerCell> destinationStageMap;
@@ -63,7 +64,7 @@ public class AnalyzerCell extends Thread {
         this.genericAnalyzer.setEventBus(eventBus);
         this.eventBus.register(this);
         eventBusFactory.getEventBus("pipeline_controller_bus").register(this);
-        this.inputQueue = new ConcurrentLinkedQueue<PacketWrapper>();
+        this.inputQueue = new ArrayBlockingQueue<PacketWrapper>(100);
         this.isProcessing = false;
         this.isRunning = true;
         this.destinationStageMap = new ConcurrentHashMap<String, AnalyzerCell>();
@@ -75,9 +76,18 @@ public class AnalyzerCell extends Thread {
      * the corresponding analyzer in this cell itself)
      * 
      * @param packet
+     * @return true if packet is inserted in queue false if otherwise
      */
-    public void takePacket(PacketWrapper packet) {
-        this.inputQueue.add(packet);
+    public boolean takePacket(PacketWrapper packet) {
+        System.out.println("Packet recieved in " + this.cellID
+                + " with current queue size = " + this.inputQueue.size());
+        try {
+            return this.inputQueue.offer(packet, 1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted while waiting!!");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Subscribe
