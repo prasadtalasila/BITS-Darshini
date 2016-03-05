@@ -20,7 +20,11 @@
 
 	<context:component-scan base-package="com.bits.protocolanalyzer" />
 
-	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<!-- <mvc:resources mapping="/resources/**" location="/resources/" /> -->
+	<mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
+	<mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
+	<mvc:resources mapping="/view/**" location="/WEB-INF/view/" />
+	
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Analysis Page</title>
+    <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="analysis.css" rel="stylesheet">
+    <script src="../assets/js/ie-emulation-modes-warning.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Profile</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a href="#">Logout</a></li>
+          </ul>
+          <form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">VIEWS<span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Tabular</a></li>
+            <li><a href="#">Pie</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Stored Packets Analysis</h1>
+
+          <h2 class="sub-header">Packet Attributes</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Packet ID</th>
+                  <th>Source MAC</th>
+                  <th>Destination MAC</th>
+                  <th>Source IP</th>
+                  <th>Destination IP</th>
+                  <th>Header Length</th>
+                  <th>Packet Length</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>   
+                  <td>00:0f:f8:ef:e9:40</td>
+                  <td>c0:38:96:23:73:35</td>
+                  <td>/54.208.202.178</td>
+                  <td>/10.30.11.3</td>
+                  <td>5</td>
+                  <td>392</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>c0:38:96:23:73:35</td>
+                  <td>00:00:0c:07:ac:7c</td>
+                  <td> /10.30.11.3</td>
+                  <td>/54.208.202.178</td>
+                  <td>5</td>
+                  <td>40</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../dist/js/bootstrap.min.js"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="../assets/js/vendor/holder.min.js"></script>
+  </body>
+</html>
