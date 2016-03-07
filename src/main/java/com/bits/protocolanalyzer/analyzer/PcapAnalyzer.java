@@ -27,6 +27,8 @@ public class PcapAnalyzer {
     @Autowired
     private Session session;
 
+    private int sequenceValue = -1;
+
     private AnalyzerCell nextAnalyzerCell;
     private long packetProcessedCount = 0;
     private long packetReadCount = 0;
@@ -54,9 +56,11 @@ public class PcapAnalyzer {
     }
 
     public void analyzePacket(PacketWrapper currentPacket) {
-        Object[] temp = packetIdRepository.findSequenceValue();
-        currentPacket.getPacketIdEntity()
-                .setPacketId(Integer.parseInt((temp[0].toString()) + 1));
+        if (this.sequenceValue == -1) {
+            this.sequenceValue = Integer.parseInt(
+                    packetIdRepository.findSequenceValue()[0].toString());
+        }
+        currentPacket.getPacketIdEntity().setPacketId(this.sequenceValue++);
 
         packetIdRepository.save(currentPacket.getPacketIdEntity());
         AnalyzerCell cell = getNextAnalyzerCell();

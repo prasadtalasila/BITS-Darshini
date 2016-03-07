@@ -110,6 +110,8 @@ public class Session {
         linkCell.configureDestinationStageMap(Protocol.IPV4, networkCell);
         networkCell.configureDestinationStageMap(Protocol.TCP, transportCell);
 
+        System.out.println("Pipeline generation time stop = "
+                + System.currentTimeMillis());
         linkCell.start();
         networkCell.start();
         transportCell.start();

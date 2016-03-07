@@ -79,8 +79,10 @@ public class AnalyzerCell extends Thread {
      * @return true if packet is inserted in queue false if otherwise
      */
     public boolean takePacket(PacketWrapper packet) {
-        System.out.println("Packet recieved in " + this.cellID
-                + " with current queue size = " + this.inputQueue.size());
+        /*
+         * System.out.println("Packet recieved in " + this.cellID +
+         * " with current queue size = " + this.inputQueue.size());
+         */
         try {
             return this.inputQueue.offer(packet, 1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -105,6 +107,8 @@ public class AnalyzerCell extends Thread {
                 }
             }
         }
+        System.out.println(this.cellID + " execution stop time = "
+                + System.currentTimeMillis());
     }
 
     private void process(PacketWrapper packet) {

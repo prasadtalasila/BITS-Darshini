@@ -58,6 +58,8 @@ public class SessionController {
     @RequestMapping("/default")
     public ModelAndView setDefaultSession() {
         session.configureSession("default_session", factory);
+        System.out.println("Pipeline generation time start = "
+                + System.currentTimeMillis());
         session.setDefault();
         ModelAndView mav = new ModelAndView("packetData");
         mav.addObject("sessionName", session.getSessionName());
