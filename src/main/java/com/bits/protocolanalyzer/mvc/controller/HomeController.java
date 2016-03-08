@@ -35,13 +35,13 @@ public class HomeController {
         return mav;
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
-    public @ResponseBody boolean login(@RequestBody LoginInfo loginInfo,
+    @RequestMapping(value = "signin", method = RequestMethod.POST)
+    public @ResponseBody String login(@RequestBody LoginInfo loginInfo,
             HttpServletRequest request) {
         String email = loginInfo.getEmail();
         String password = loginInfo.getPassword();
         System.out.println("Email = " + email + " and Password = " + password);
-        return true;
+        return "success";
     }
 
     @RequestMapping("experiment")

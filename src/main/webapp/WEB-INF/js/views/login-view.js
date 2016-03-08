@@ -14,10 +14,12 @@ window.LoginView = Backbone.View.extend({
             	password: $('#inputPassword').val()
         	};
         	 $.ajax({
-            url:'/signin',
+            url:'/protocolanalyzer/signin',
              type:'POST',
+             contentType: 'application/json; charset=utf-8',
              dataType:"json",
-             data: formValues,
+             data: JSON.stringify(formValues),
+             async: false,
              success:function (data) {
                  if(data === "success") { 
                     app.navigate("#/home");
