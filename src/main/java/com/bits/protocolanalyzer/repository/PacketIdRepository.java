@@ -17,6 +17,6 @@ import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 public interface PacketIdRepository extends JpaRepository<PacketIdEntity, Long> {
 
     @Query(nativeQuery = true, value = "SELECT last_value FROM packet_id_packet_id_seq")
-    public Object[] findSequenceValue();
+    public long findSequenceValue();
 
 }

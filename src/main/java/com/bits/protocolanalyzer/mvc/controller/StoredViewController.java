@@ -58,7 +58,7 @@ public class StoredViewController {
         List<PacketIdEntity> packets = packetIdRepository.findAll();
         for (PacketIdEntity pie : packets) {
             StoredPacket sp = new StoredPacket();
-            int packetId = pie.getPacketId();
+            long packetId = pie.getPacketId();
 
             LinkAnalyzerEntity lae = linkAnalyzerRepository
                     .findByPacketIdEntity(pie);

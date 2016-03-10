@@ -15,16 +15,16 @@ import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
  */
 public class StoredPacket {
 
-    private int packetId;
+    private long packetId;
     private LinkAnalyzerEntity linkAnalyzerEntity;
     private NetworkAnalyzerEntity networkAnalyzerEntity;
     private TransportAnalyzerEntity transportAnalyzerEntity;
 
-    public int getPacketId() {
+    public long getPacketId() {
         return packetId;
     }
 
-    public void setPacketId(int packetId) {
+    public void setPacketId(long packetId) {
         this.packetId = packetId;
     }
 

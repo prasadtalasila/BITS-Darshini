@@ -26,7 +26,7 @@ import org.eclipse.persistence.annotations.ReturnInsert;
 public class PacketIdEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     public Long getId() {
@@ -36,17 +36,17 @@ public class PacketIdEntity implements Serializable {
     @Column(name = "packet_id", columnDefinition = "serial")
     @Basic
     @ReturnInsert(returnOnly = true)
-    private int packetId;
+    private long packetId;
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public int getPacketId() {
+    public long getPacketId() {
         return packetId;
     }
 
-    public void setPacketId(int packetId) {
+    public void setPacketId(long packetId) {
         this.packetId = packetId;
     }
 
