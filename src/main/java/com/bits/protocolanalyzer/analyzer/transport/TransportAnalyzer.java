@@ -43,11 +43,11 @@ public class TransportAnalyzer implements GenericAnalyzer {
         return null;
     }
 
-    public int getAckNumber() {
+    public long getAckNumber() {
         return 0;
     }
 
-    public int getSeqNumber() {
+    public long getSeqNumber() {
         return 0;
     }
 

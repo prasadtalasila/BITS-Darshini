@@ -17,4 +17,17 @@ public class ByteOperator {
         }
     }
 
+    public static long parseBytesLong(byte[] bytes) {
+        if (bytes.length > 8) {
+            throw new ArrayIndexOutOfBoundsException();
+        } else {
+            long val = 0l;
+            for (int i = 0; i < bytes.length; i++) {
+                val = val << 8;
+                val = val | bytes[i] & 0xFF;
+            }
+            return val;
+        }
+    }
+
 }

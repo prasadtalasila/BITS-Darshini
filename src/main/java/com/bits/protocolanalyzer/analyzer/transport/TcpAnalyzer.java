@@ -47,12 +47,12 @@ public class TcpAnalyzer extends TransportAnalyzer {
     }
 
     @Override
-    public int getAckNumber() {
+    public long getAckNumber() {
         return TcpHeader.getAckNumber(this.tcpHeader);
     }
 
     @Override
-    public int getSeqNumber() {
+    public long getSeqNumber() {
         return TcpHeader.getSequenceNumber(this.tcpHeader);
     }
 

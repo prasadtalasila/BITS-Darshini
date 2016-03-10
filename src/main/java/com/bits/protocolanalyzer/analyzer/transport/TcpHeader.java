@@ -55,16 +55,16 @@ public class TcpHeader {
         return ByteOperator.parseBytes(dstPortBytes);
     }
 
-    public static int getSequenceNumber(byte[] tcpHeader) {
+    public static long getSequenceNumber(byte[] tcpHeader) {
         byte[] sequenceNoBytes = Arrays.copyOfRange(tcpHeader,
                 SEQUENCE_NUMBER_START_BYTE, SEQUENCE_NUMBER_END_BYTE + 1);
-        return ByteOperator.parseBytes(sequenceNoBytes);
+        return ByteOperator.parseBytesLong(sequenceNoBytes);
     }
 
-    public static int getAckNumber(byte[] tcpHeader) {
+    public static long getAckNumber(byte[] tcpHeader) {
         byte[] ackBytes = Arrays.copyOfRange(tcpHeader, ACK_START_BYTE,
                 ACK_END_BYTE + 1);
-        return ByteOperator.parseBytes(ackBytes);
+        return ByteOperator.parseBytesLong(ackBytes);
     }
 
     public static int getDataOffset(byte[] tcpHeader) {
