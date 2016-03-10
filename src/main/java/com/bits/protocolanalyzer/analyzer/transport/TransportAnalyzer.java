@@ -12,7 +12,7 @@ import com.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.event.TransportLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
-import com.bits.protocolanalyzer.repository.TransportAnalyzerRepository;
+import com.bits.protocolanalyzer.persistence.repository.TransportAnalyzerRepository;
 import com.google.common.eventbus.EventBus;
 
 /**

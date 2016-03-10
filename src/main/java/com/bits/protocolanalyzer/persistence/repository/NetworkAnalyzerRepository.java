@@ -3,21 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bits.protocolanalyzer.repository;
+package com.bits.protocolanalyzer.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
-import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
 
 /**
  *
  * @author amit
  */
-public interface TransportAnalyzerRepository extends
-        JpaRepository<TransportAnalyzerEntity, Long> {
+public interface NetworkAnalyzerRepository extends
+        JpaRepository<NetworkAnalyzerEntity, Long> {
 
-    public TransportAnalyzerEntity findByPacketIdEntity(
+    public NetworkAnalyzerEntity findByPacketIdEntity(
             PacketIdEntity packetIdEntity);
 
 }

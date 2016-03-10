@@ -3,21 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bits.protocolanalyzer.repository;
+package com.bits.protocolanalyzer.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 
 /**
  *
  * @author amit
  */
-public interface NetworkAnalyzerRepository extends
-        JpaRepository<NetworkAnalyzerEntity, Long> {
+public interface PacketIdRepository extends JpaRepository<PacketIdEntity, Long> {
 
-    public NetworkAnalyzerEntity findByPacketIdEntity(
-            PacketIdEntity packetIdEntity);
+    @Query(nativeQuery = true, value = "SELECT last_value FROM packet_id_packet_id_seq")
+    public long findSequenceValue();
 
 }

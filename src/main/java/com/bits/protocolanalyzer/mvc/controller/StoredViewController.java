@@ -13,15 +13,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bits.protocolanalyzer.mvc.model.StoredPacket;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import com.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
-import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
-import com.bits.protocolanalyzer.repository.NetworkAnalyzerRepository;
-import com.bits.protocolanalyzer.repository.PacketIdRepository;
-import com.bits.protocolanalyzer.repository.TransportAnalyzerRepository;
-import com.bits.protocolanalyzer.utils.StoredPacket;
+import com.bits.protocolanalyzer.persistence.repository.LinkAnalyzerRepository;
+import com.bits.protocolanalyzer.persistence.repository.NetworkAnalyzerRepository;
+import com.bits.protocolanalyzer.persistence.repository.PacketIdRepository;
+import com.bits.protocolanalyzer.persistence.repository.TransportAnalyzerRepository;
 
 /**
  *

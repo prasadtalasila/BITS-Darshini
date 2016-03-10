@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import com.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import com.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
-import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 

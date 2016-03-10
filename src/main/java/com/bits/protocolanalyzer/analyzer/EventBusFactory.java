@@ -1,4 +1,4 @@
-package com.bits.protocolanalyzer.utils;
+package com.bits.protocolanalyzer.analyzer;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.google.common.eventbus.EventBus;
 
 /**
+ * Factory object for eventbuses. A unique eventbus id will belong to a unique
+ * eventbus
  * 
  * @author crygnus
  *

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
-import com.bits.protocolanalyzer.repository.PacketIdRepository;
+import com.bits.protocolanalyzer.persistence.repository.PacketIdRepository;
 import com.google.common.eventbus.Subscribe;
 
 /**

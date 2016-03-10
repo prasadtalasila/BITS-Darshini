@@ -5,10 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bits.protocolanalyzer.analyzer.EventBusFactory;
 import com.bits.protocolanalyzer.analyzer.link.EthernetAnalyzer;
 import com.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
 import com.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
-import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
 
 /**

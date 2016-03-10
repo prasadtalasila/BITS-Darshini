@@ -13,7 +13,6 @@ import com.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
 import com.bits.protocolanalyzer.analyzer.network.NetworkAnalyzer;
 import com.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
 import com.bits.protocolanalyzer.analyzer.transport.TransportAnalyzer;
-import com.bits.protocolanalyzer.utils.EventBusFactory;
 import com.google.common.eventbus.EventBus;
 
 import lombok.Getter;

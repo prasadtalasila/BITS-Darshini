@@ -12,7 +12,7 @@ import com.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
-import com.bits.protocolanalyzer.repository.LinkAnalyzerRepository;
+import com.bits.protocolanalyzer.persistence.repository.LinkAnalyzerRepository;
 import com.google.common.eventbus.EventBus;
 
 /**

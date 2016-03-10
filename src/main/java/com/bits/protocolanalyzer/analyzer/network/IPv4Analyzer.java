@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import org.pcap4j.packet.Packet;
 
-import com.bits.protocolanalyzer.address.IPv4Address;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.Protocol;
 import com.bits.protocolanalyzer.analyzer.event.NetworkLayerEvent;

@@ -1,4 +1,4 @@
-package com.bits.protocolanalyzer.address;
+package com.bits.protocolanalyzer.analyzer.link;
 
 public class MacAddress {
 

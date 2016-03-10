@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Hex;
 
-import com.bits.protocolanalyzer.address.MacAddress;
-
 /**
  * This class defines the properties of standard Ethernet-II Header as per
  * specified in P4 language

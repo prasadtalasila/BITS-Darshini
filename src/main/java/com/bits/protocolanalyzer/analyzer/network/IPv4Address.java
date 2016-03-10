@@ -1,4 +1,4 @@
-package com.bits.protocolanalyzer.address;
+package com.bits.protocolanalyzer.analyzer.network;
 
 public class IPv4Address {
 
