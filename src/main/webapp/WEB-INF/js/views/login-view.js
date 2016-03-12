@@ -24,9 +24,12 @@ window.LoginView = Backbone.View.extend({
                  if(data === "success") { 
                     app.navigate("#/home");
                  }
-                 else { 
-                    console.log("Error logging in");
+                 else if(data ==="failure"){ 
+                     alert("Error logging in, please check your details");
                  }
+             },
+             error:function(){
+                console.log("Error logging in");
              }
         	 });			
     	},
@@ -45,9 +48,12 @@ window.LoginView = Backbone.View.extend({
                  	alert("User successfully registered.");
                     app.navigate("#");
                  }
-                 else { 
-                     console.log("Error logging in");
+                 else if(data === "failure"){ 
+                     alert("An account with this email ID already exists");
                  }
+             },
+             error:function(){
+                alert("There was an issue connecting at this time, please try again later");
              }
         	 });
     	},
