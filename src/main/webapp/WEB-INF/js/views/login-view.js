@@ -1,5 +1,5 @@
 window.LoginView = Backbone.View.extend({
-		el : '.container',
+		el : $('.container'),
       	initialize: function () {
       	},
       	events: {
@@ -17,9 +17,8 @@ window.LoginView = Backbone.View.extend({
             url:'/protocolanalyzer/signin',
              type:'POST',
              contentType: 'application/json; charset=utf-8',
-             dataType:"json",
+             dataType:'text',
              data: JSON.stringify(formValues),
-             async: false,
              success:function (data) {
                  if(data === "success") { 
                     app.navigate("#/home");
@@ -39,10 +38,11 @@ window.LoginView = Backbone.View.extend({
             	password: $('#inputPassword').val()
         	};
         	$.ajax({
-            url:'/signup',
+            url:'/protocolanalyzer/signup',
              type:'POST',
-             dataType:"json",
-             data: formValues,
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: JSON.stringify(formValues),
              success:function (data) {
                  if(data === "success") {
                  	alert("User successfully registered.");

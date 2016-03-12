@@ -16,8 +16,8 @@ $.ajaxSetup({
 
 window.Router = Backbone.Router.extend({
     routes: {
-        'home': 'experimentViewDisplay'
-        //"": "home",
+        'home': 'experimentViewDisplay',
+        'config': 'configPlaygroundViewDisplay'
         //"contact": "contact",
         //"employees/:id": "employeeDetails",
         //"login" : "login"
@@ -31,11 +31,15 @@ window.Router = Backbone.Router.extend({
        this.experimentView = new ExperimentView();
        this.experimentView.render();
     },
+    configPlaygroundViewDisplay: function () {
+       this.configView = new ConfigPlaygroundView();
+       this.configView.render();
+    }
 
 
 });
 
-templateLoader.load(["LoginView","ExperimentView"],
+templateLoader.load(["LoginView","ExperimentView","ConfigPlaygroundView"],
     function () {
         app = new Router();
         Backbone.history.start();

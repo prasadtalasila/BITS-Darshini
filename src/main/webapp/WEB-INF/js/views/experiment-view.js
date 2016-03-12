@@ -1,19 +1,36 @@
 window.ExperimentView = Backbone.View.extend({
-		el : '.container',
+		el : $('.container'),
 
 		events: {
-			 'click #newExperiment' : 'newExperimentLoad'
+			 'click #newExperiment' : 'newExperiment',
+			 'click #loadExperiment' : 'loadExperiment'
 		},
 
-		newExperimentLoad : function(authenticate) {
-        	alert("Hello");
+		newExperiment : function() {
+        	var formValues = {
+        		experimentName : $('#experimentName').val(),
+        		description : $('#description').val(),
+        		experimenter : $('#experimenter').val(),
+        		testid : $('#testid').val(),
+        		pcapfiles : $('#pcapfiles').val()
+        	};
+            //do backend check here
+        	app.navigate("#/config");
+
     	},
-
-		initialize: function () {
-
+    	loadExperiment : function() {
+        	
+    	},
+		initialize: function () {       
 		},
-		render: function () {
+		render: function () { 
 			$(this.el).html(this.template());
-        	return this;
+        //	$('#description').wysihtml5({
+        //    "lists": true,  
+        //    "link": true, 
+        //    "image": true, 
+        //    "color": true 
+        //});
+            return this;
 		}
 	});
