@@ -8,12 +8,14 @@ package com.bits.protocolanalyzer.analyzer.link;
 import java.util.Arrays;
 
 import org.pcap4j.packet.Packet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.Protocol;
-import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
 import com.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
-import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
+import com.bits.protocolanalyzer.persistence.entity.EthernetEntity;
+import com.bits.protocolanalyzer.persistence.repository.EthernetRepository;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -22,9 +24,14 @@ import com.google.common.eventbus.Subscribe;
  * @author crygnus
  */
 
-public class EthernetAnalyzer extends LinkAnalyzer {
+@Component
+public class EthernetAnalyzer {
 
     private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.ETHERNET;
+
+    @Autowired
+    private EthernetRepository ethernetRepository;
+
     private EventBus eventBus;
 
     private byte[] ethernetHeader;
@@ -37,18 +44,16 @@ public class EthernetAnalyzer extends LinkAnalyzer {
      * 
      * @param eventBus
      */
-    public EthernetAnalyzer(EventBus eventBus) {
+    public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.register(this);
     }
 
-    @Override
     public String getSource(PacketWrapper packetWrapper) {
         MacAddress srcAddr = EthernetHeader.getSource(this.ethernetHeader);
         return srcAddr.toString();
     }
 
-    @Override
     public String getDestination(PacketWrapper packetWrapper) {
         MacAddress dstAddr = EthernetHeader.getDestination(this.ethernetHeader);
         return dstAddr.toString();
@@ -73,9 +78,7 @@ public class EthernetAnalyzer extends LinkAnalyzer {
     }
 
     @Subscribe
-    public void analyzePacket(LinkLayerEvent linkLayerEvent) {
-
-        PacketWrapper packetWrapper = linkLayerEvent.getPacketWrapper();
+    public void analyzePacket(PacketWrapper packetWrapper) {
         if (PACKET_TYPE_OF_RELEVANCE
                 .equalsIgnoreCase(packetWrapper.getPacketType())) {
 
@@ -88,12 +91,14 @@ public class EthernetAnalyzer extends LinkAnalyzer {
             publishTypeDetectionEvent(nextPacketType, startByte, endByte);
 
             /*
-             * Save corresponding field values to DB (can be spun off as a
-             * separate thread)
+             * Save corresponding field values to DB
              */
-            LinkAnalyzerEntity lae = linkLayerEvent.getLinkAnalyzerEntity();
-            lae.setSource(getSource(packetWrapper));
-            lae.setDestination(getDestination(packetWrapper));
+            EthernetEntity entity = new EthernetEntity();
+            entity.setSourceAddr(getSource(packetWrapper));
+            entity.setDstAddr(getDestination(packetWrapper));
+            entity.setEtherType(nextPacketType);
+            entity.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+            ethernetRepository.save(entity);
         }
 
     }

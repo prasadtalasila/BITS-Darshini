@@ -8,12 +8,14 @@ package com.bits.protocolanalyzer.analyzer.network;
 import java.util.Arrays;
 
 import org.pcap4j.packet.Packet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.Protocol;
-import com.bits.protocolanalyzer.analyzer.event.NetworkLayerEvent;
 import com.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
-import com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
+import com.bits.protocolanalyzer.persistence.entity.IPv4Entity;
+import com.bits.protocolanalyzer.persistence.repository.IPv4Repository;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -21,9 +23,14 @@ import com.google.common.eventbus.Subscribe;
  *
  * @author crygnus
  */
-public class IPv4Analyzer extends NetworkAnalyzer {
+@Component
+public class IPv4Analyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.IPV4;
+
+    @Autowired
+    private IPv4Repository ipPv4Repository;
+
     private EventBus eventBus;
 
     private byte[] ipv4Header;
@@ -31,7 +38,7 @@ public class IPv4Analyzer extends NetworkAnalyzer {
     private int startByte;
     private int endByte;
 
-    public IPv4Analyzer(EventBus eventBus) {
+    public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.register(this);
     }
@@ -46,7 +53,6 @@ public class IPv4Analyzer extends NetworkAnalyzer {
 
     private void setStartByte(PacketWrapper packetWrapper) {
         int ihl = IPv4Header.getIhl(this.ipv4Header);
-        /* this.headerLength = IPv4Header.getIhl(this.ipv4Header) * 4; */
         this.headerLength = IPv4Header.DEFAULT_HEADER_LENTH_IN_BYTES;
         this.startByte = packetWrapper.getStartByte() + headerLength;
     }
@@ -56,7 +62,6 @@ public class IPv4Analyzer extends NetworkAnalyzer {
         this.endByte = packetWrapper.getStartByte() + totalPacketLength;
     }
 
-    @Override
     public String getSource() {
         byte[] sourceBytes = IPv4Header.getSouceAddress(ipv4Header);
         IPv4Address srcAddr = new IPv4Address(sourceBytes);
@@ -64,66 +69,58 @@ public class IPv4Analyzer extends NetworkAnalyzer {
 
     }
 
-    @Override
     public String getDestination() {
         byte[] dstBytes = IPv4Header.getDestinationAddress(ipv4Header);
         IPv4Address dstAddr = new IPv4Address(dstBytes);
         return dstAddr.toString();
     }
 
-    @Override
-    public int getIPversion() {
-        return 4;
-    }
-
-    @Override
     public int getHeaderLength() {
         return this.headerLength;
     }
 
-    @Override
-    public int getLength() {
-        return IPv4Header.getTotalLength(ipv4Header);
-    }
-
-    @Override
-    public int getId() {
-        return IPv4Header.getIdentification(ipv4Header);
-    }
-
-    @Override
-    public int getHeaderChecksum() {
-        return IPv4Header.getHeaderChecksum(ipv4Header);
-    }
-
     @Subscribe
-    public void analyzePacket(NetworkLayerEvent networkLayerEvent) {
-        PacketWrapper packetWrapper = networkLayerEvent.getPacketWrapper();
+    public void analyzePacket(PacketWrapper packetWrapper) {
         if (PACKET_TYPE_OF_RELEVANCE
                 .equalsIgnoreCase(packetWrapper.getPacketType())) {
 
             /*
-             * Do type detection first and publish the event. Set the ipv4
-             * header
+             * Do type detection first and publish the event.
              */
             this.setIpv4Header(packetWrapper);
-            /* Set start and end bytes */
             this.setStartByte(packetWrapper);
             this.setEndByte(packetWrapper);
-
             String nextPacketType = getNextProtocol(ipv4Header);
-
             publishTypeDetectionEvent(nextPacketType, this.startByte,
                     this.endByte);
 
-            NetworkAnalyzerEntity nae = networkLayerEvent
-                    .getNetworkAnalyzerEntity();
+            /*
+             * Persist the packet attributes to ipv4_analysis table
+             */
+            IPv4Entity entity = new IPv4Entity();
 
-            nae.setHeaderLength(this.headerLength);
-            nae.setChecksum(getHeaderChecksum());
-            nae.setPacketLength(getLength());
-            nae.setSource(getSource());
-            nae.setDestination(getDestination());
+            entity.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+            entity.setVersion(IPv4Header.IP_VERSION);
+            entity.setIhl(IPv4Header.getIhl(ipv4Header));
+            entity.setTotalLength(IPv4Header.getTotalLength(ipv4Header));
+            entity.setIdentification(IPv4Header.getIdentification(ipv4Header));
+            if (IPv4Header.getDontFragmentBit(ipv4Header) == 0) {
+                entity.setDontFragment(false);
+            } else {
+                entity.setDontFragment(true);
+            }
+            if (IPv4Header.getMoreFragmentBit(ipv4Header) == 0) {
+                entity.setMoreFragment(false);
+            } else {
+                entity.setMoreFragment(true);
+            }
+            entity.setTtl(IPv4Header.getTTL(ipv4Header));
+            entity.setNextProtocol(nextPacketType);
+            entity.setChecksum(IPv4Header.getHeaderChecksum(ipv4Header));
+            entity.setSourceAddr(this.getSource());
+            entity.setDestinationAddr(this.getDestination());
+
+            ipPv4Repository.save(entity);
         }
     }
 

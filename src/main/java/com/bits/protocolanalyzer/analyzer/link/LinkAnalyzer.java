@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
-import com.bits.protocolanalyzer.analyzer.event.LinkLayerEvent;
 import com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import com.bits.protocolanalyzer.persistence.repository.LinkAnalyzerRepository;
 import com.google.common.eventbus.EventBus;
@@ -33,30 +32,19 @@ public class LinkAnalyzer implements GenericAnalyzer {
         this.linkLayerEventBus = eventBus;
     }
 
-    public String getSource(PacketWrapper packetWrapper) {
-        return null;
-    }
-
-    public String getDestination(PacketWrapper packetWrapper) {
-        return null;
-    }
-
-    private void publishToEventBus(LinkAnalyzerEntity lae,
-            PacketWrapper packetWrapper) {
-
+    private void publishToEventBus(PacketWrapper packetWrapper) {
         /* post the event to corresponding event-bus */
-        linkLayerEventBus.post(new LinkLayerEvent(packetWrapper, lae));
-        linkAnalyzerRepository.save(lae);
+        linkLayerEventBus.post(packetWrapper);
     }
 
-    @Override
     public void analyzePacket(PacketWrapper packetWrapper) {
 
         LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
         lae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+        lae.setTimestamp(packetWrapper.getPacketTimestamp());
         linkAnalyzerRepository.save(lae);
 
-        publishToEventBus(lae, packetWrapper);
+        publishToEventBus(packetWrapper);
     }
 
 }

@@ -38,16 +38,22 @@ public class Session {
     private AnalyzerCell linkCell;
     @Autowired
     private LinkAnalyzer linkAnalyzer;
+    @Autowired
+    private EthernetAnalyzer ethernetAnalyzer;
 
     @Autowired
     private AnalyzerCell networkCell;
     @Autowired
     private NetworkAnalyzer networkAnalyzer;
+    @Autowired
+    private IPv4Analyzer ipv4Analyzer;
 
     @Autowired
     private AnalyzerCell transportCell;
     @Autowired
     private TransportAnalyzer transportAnalyzer;
+    @Autowired
+    private TcpAnalyzer tcpAnalyzer;
 
     private String sessionName;
     private Map<String, AnalyzerCell> cellMap;
@@ -72,7 +78,7 @@ public class Session {
         linkCell.configure(sessionName, "linkCell", linkAnalyzer);
         /* Attach Ethernet Analyzer Hook */
         EventBus linkEventBus = linkCell.getEventBus();
-        linkEventBus.register(new EthernetAnalyzer(linkEventBus));
+        ethernetAnalyzer.configure(linkEventBus);
         this.cellMap.put(defaultCellStageOne, linkCell);
     }
 
@@ -80,7 +86,7 @@ public class Session {
         networkCell.configure(sessionName, "networkCell", networkAnalyzer);
         /* Attach IPv4 Analyzer Hook */
         EventBus networkEventBus = networkCell.getEventBus();
-        networkEventBus.register(new IPv4Analyzer(networkEventBus));
+        ipv4Analyzer.configure(networkEventBus);
         this.cellMap.put(defaultCellStageTwo, networkCell);
     }
 
@@ -89,7 +95,7 @@ public class Session {
                 transportAnalyzer);
         /* Attach TCP Analyzer Hook */
         EventBus transportEventBus = transportCell.getEventBus();
-        transportEventBus.register(new TcpAnalyzer(transportEventBus));
+        tcpAnalyzer.configure(transportEventBus);
         this.cellMap.put(defaultCellStageThree, transportCell);
     }
 

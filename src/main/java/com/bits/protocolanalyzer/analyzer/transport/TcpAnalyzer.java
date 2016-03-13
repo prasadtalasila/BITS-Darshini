@@ -8,12 +8,14 @@ package com.bits.protocolanalyzer.analyzer.transport;
 import java.util.Arrays;
 
 import org.pcap4j.packet.Packet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.Protocol;
 import com.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
-import com.bits.protocolanalyzer.analyzer.event.TransportLayerEvent;
-import com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity;
+import com.bits.protocolanalyzer.persistence.entity.TcpEntity;
+import com.bits.protocolanalyzer.persistence.repository.TcpRepository;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -22,38 +24,22 @@ import com.google.common.eventbus.Subscribe;
  * @author amit
  * @author crygnus
  */
-public class TcpAnalyzer extends TransportAnalyzer {
+@Component
+public class TcpAnalyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.TCP;
+
+    @Autowired
+    private TcpRepository tcpRepository;
 
     private EventBus eventBus;
     private byte[] tcpHeader;
     private int startByte;
     private int endByte;
 
-    public TcpAnalyzer(EventBus eventBus) {
+    public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         eventBus.register(this);
-    }
-
-    @Override
-    public String getSourcePort() {
-        return String.valueOf(TcpHeader.getSourcePort(this.tcpHeader));
-    }
-
-    @Override
-    public String getDestinationPort() {
-        return String.valueOf(TcpHeader.getDestinationPort(this.tcpHeader));
-    }
-
-    @Override
-    public long getAckNumber() {
-        return TcpHeader.getAckNumber(this.tcpHeader);
-    }
-
-    @Override
-    public long getSeqNumber() {
-        return TcpHeader.getSequenceNumber(this.tcpHeader);
     }
 
     private void setTcpHeader(PacketWrapper packetWrapper) {
@@ -74,32 +60,46 @@ public class TcpAnalyzer extends TransportAnalyzer {
     }
 
     @Subscribe
-    public void analyzePacket(TransportLayerEvent transportLayerEvent) {
-        PacketWrapper packetWrapper = transportLayerEvent.getPacketWrapper();
+    public void analyzePacket(PacketWrapper packetWrapper) {
         if (PACKET_TYPE_OF_RELEVANCE
                 .equalsIgnoreCase(packetWrapper.getPacketType())) {
-
             /* Do type detection first and publish the event */
-
             /* Set the tcp header */
             this.setTcpHeader(packetWrapper);
             /* Set start and end bytes */
             this.setStartByte(packetWrapper);
             this.setEndByte(packetWrapper);
-
             String nextProtocol = getNextProtocol(this.tcpHeader);
-
             publishTypeDetectionEvent(nextProtocol, this.startByte,
                     this.endByte);
+
+            /*
+             * Save to database
+             */
+            TcpEntity entity = new TcpEntity();
+
+            entity.setSourcePort(TcpHeader.getSourcePort(tcpHeader));
+            entity.setDestinationPort(TcpHeader.getDestinationPort(tcpHeader));
+            entity.setSequenceNumber(TcpHeader.getSequenceNumber(tcpHeader));
+            entity.setAckNumber(TcpHeader.getAckNumber(tcpHeader));
+            entity.setDataOffset(TcpHeader.getDataOffset(tcpHeader));
+            entity.setCwrFlagSet(TcpHeader.isCWRFlagSet(tcpHeader));
+            entity.setEceFlagSet(TcpHeader.isECEFlagSet(tcpHeader));
+            entity.setUrgFlagSet(TcpHeader.isURGFlagSet(tcpHeader));
+            entity.setAckFlagSet(TcpHeader.isACKFlagSet(tcpHeader));
+            entity.setPshFlagSet(TcpHeader.isPSHFlagSet(tcpHeader));
+            entity.setRstFlagSet(TcpHeader.isRSTFlagSet(tcpHeader));
+            entity.setSynFlagSet(TcpHeader.isSYNFlagSet(tcpHeader));
+            entity.setFinFlagSet(TcpHeader.isFINFlagSet(tcpHeader));
+            entity.setWindowSize(TcpHeader.getWindowSize(tcpHeader));
+            entity.setChecksum(TcpHeader.getChecksum(tcpHeader));
+            entity.setUrgentPointer(TcpHeader.getUrgentPointer(tcpHeader));
+            entity.setNextProtocol(nextProtocol);
+
+            entity.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+
+            tcpRepository.save(entity);
         }
-
-        TransportAnalyzerEntity tae = transportLayerEvent
-                .getTransportAnalyzerEntity();
-
-        tae.setSourcePort(getSourcePort());
-        tae.setDestinationPort(getDestinationPort());
-        tae.setAckNumber(getAckNumber());
-        tae.setSeqNumber(getSeqNumber());
     }
 
     private String getNextProtocol(byte[] tcpHeader) {
@@ -109,14 +109,17 @@ public class TcpAnalyzer extends TransportAnalyzer {
         case 80:
             return Protocol.HTTP;
 
+        case 443:
+            return Protocol.HTTPS;
+
         default:
             return Protocol.END_PROTOCOL;
         }
     }
 
-    private void publishTypeDetectionEvent(String nextPacketType, int startByte,
+    private void publishTypeDetectionEvent(String nextProtocol, int startByte,
             int endByte) {
-        this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType,
-                startByte, endByte));
+        this.eventBus.post(
+                new PacketTypeDetectionEvent(nextProtocol, startByte, endByte));
     }
 }

@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bits.protocolanalyzer.persistence.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,18 +16,23 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- *
- * @author amit
+ * Corresponding entity class for ethernet analysis. Corresponding table columns
+ * are source_addr, destination_addr and ether_type
+ * 
  * @author crygnus
+ *
  */
+
 @Getter
 @Setter
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "link_analyzer")
-public class LinkAnalyzerEntity implements Serializable {
+@Table(name = "ethernet_analysis")
+public class EthernetEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -41,7 +40,13 @@ public class LinkAnalyzerEntity implements Serializable {
     @OneToOne
     private PacketIdEntity packetIdEntity;
 
-    @Column(name = "time_stamp")
-    private Timestamp timestamp;
+    @Column(name = "source_addr")
+    private String sourceAddr;
+
+    @Column(name = "destination_addr")
+    private String dstAddr;
+
+    @Column(name = "ether_type")
+    private String etherType;
 
 }
