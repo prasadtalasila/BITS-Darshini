@@ -52,12 +52,12 @@ public class Session {
     private String sessionName;
     private Map<String, AnalyzerCell> cellMap;
 
+    @Autowired
     private EventBusFactory factory;
 
-    public void configureSession(String sessionName, EventBusFactory factory) {
+    public void configureSession(String sessionName) {
         this.sessionName = sessionName;
         this.cellMap = new HashMap<String, AnalyzerCell>();
-        this.factory = factory;
     }
 
     public String getSessionName() {

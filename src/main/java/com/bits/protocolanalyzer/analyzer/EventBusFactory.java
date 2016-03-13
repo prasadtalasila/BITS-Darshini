@@ -18,7 +18,7 @@ import com.google.common.eventbus.EventBus;
 
 @Service
 @Configurable
-public class EventBusFactory {
+class EventBusFactory {
 
     private HashSet<String> eventBusIds = new HashSet<String>();
     private HashMap<String, EventBus> eventBuses = new HashMap<String, EventBus>();

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bits.protocolanalyzer.analyzer.EventBusFactory;
 import com.bits.protocolanalyzer.analyzer.PacketWrapper;
 import com.bits.protocolanalyzer.analyzer.Session;
 import com.bits.protocolanalyzer.analyzer.TimeSeriesAnalyzer;
@@ -31,9 +30,6 @@ public class SessionController {
     private TimeSeriesAnalyzer timeSeriesAnalyzer;
 
     @Autowired
-    private EventBusFactory factory;
-
-    @Autowired
     private Session session;
 
     @Autowired
@@ -49,7 +45,7 @@ public class SessionController {
 
     @RequestMapping("/new")
     public ModelAndView setNewSession() {
-        session.configureSession("new_session", factory);
+        session.configureSession("new_session");
         ModelAndView mav = new ModelAndView();
         mav.addObject("sessionName", session.getSessionName());
         return mav;
@@ -57,7 +53,7 @@ public class SessionController {
 
     @RequestMapping("/default")
     public ModelAndView setDefaultSession() {
-        session.configureSession("default_session", factory);
+        session.configureSession("default_session");
         System.out.println("Pipeline generation time start = "
                 + System.currentTimeMillis());
         session.setDefault();
