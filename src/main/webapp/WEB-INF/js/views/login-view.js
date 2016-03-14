@@ -1,5 +1,5 @@
 window.LoginView = Backbone.View.extend({
-        el : $('.container'),
+        el : $('body'),
         initialize: function () {
         },
         events: {

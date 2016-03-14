@@ -1,5 +1,5 @@
 window.ExperimentView = Backbone.View.extend({
-		el : $('.container'),
+		el : $('body'),
 
 		events: {
 			 'click #newExperiment' : 'newExperiment',

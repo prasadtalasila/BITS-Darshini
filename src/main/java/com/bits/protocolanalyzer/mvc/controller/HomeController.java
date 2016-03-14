@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bits.protocolanalyzer.persistence.entity.LoginInfoEntity;
 import com.bits.protocolanalyzer.persistence.repository.LoginInfoRepository;
+import com.bits.protocolanalyzer.utils.Security;
 
 /**
  *
@@ -43,10 +44,12 @@ public class HomeController {
         LoginInfoEntity lie = loginInfoRepo.findByEmail(email);
         if (lie == null) {
             return "failure";
-        } else if(!lie.getPassword().equals(loginInfo.getPassword())) {
+        } else if (!lie.getPassword()
+                .equals(Security.createHash(loginInfo.getPassword()))) {
             return "failure";
         }
         return "success";
+
     }
 
     @RequestMapping(value = "signup", method = RequestMethod.POST)
@@ -54,6 +57,7 @@ public class HomeController {
             HttpServletRequest request) {
         LoginInfoEntity lie = loginInfoRepo.findByEmail(loginInfo.getEmail());
         if (lie == null) {
+            loginInfo.setPassword(Security.createHash(loginInfo.getPassword()));
             loginInfoRepo.save(loginInfo);
             return "success";
         } else {
