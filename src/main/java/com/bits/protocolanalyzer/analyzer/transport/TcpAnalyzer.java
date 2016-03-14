@@ -16,6 +16,8 @@ import com.bits.protocolanalyzer.analyzer.Protocol;
 import com.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import com.bits.protocolanalyzer.persistence.entity.TcpEntity;
 import com.bits.protocolanalyzer.persistence.repository.TcpRepository;
+import com.bits.protocolanalyzer.utils.BitOperator;
+import com.bits.protocolanalyzer.utils.ByteOperator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -41,6 +43,141 @@ public class TcpAnalyzer {
         this.eventBus = eventBus;
         eventBus.register(this);
     }
+
+    /* Field extraction methods - Start */
+    public int getSourcePort(byte[] tcpHeader) {
+        byte[] soucePortBytes = Arrays.copyOf(tcpHeader, 2);
+        return ByteOperator.parseBytes(soucePortBytes);
+    }
+
+    public int getDestinationPort(byte[] tcpHeader) {
+        byte[] dstPortBytes = Arrays.copyOfRange(tcpHeader,
+                TcpHeader.DESTINATION_PORT_START_BYTE,
+                TcpHeader.DESTINATION_PORT_END_BYTE + 1);
+        return ByteOperator.parseBytes(dstPortBytes);
+    }
+
+    public long getSequenceNumber(byte[] tcpHeader) {
+        byte[] sequenceNoBytes = Arrays.copyOfRange(tcpHeader,
+                TcpHeader.SEQUENCE_NUMBER_START_BYTE,
+                TcpHeader.SEQUENCE_NUMBER_END_BYTE + 1);
+        return ByteOperator.parseBytesLong(sequenceNoBytes);
+    }
+
+    public long getAckNumber(byte[] tcpHeader) {
+        byte[] ackBytes = Arrays.copyOfRange(tcpHeader,
+                TcpHeader.ACK_START_BYTE, TcpHeader.ACK_END_BYTE + 1);
+        return ByteOperator.parseBytesLong(ackBytes);
+    }
+
+    public int getDataOffset(byte[] tcpHeader) {
+        byte byteWithDataOffset = tcpHeader[TcpHeader.DATA_OFFSET_BYTE_INDEX];
+        return BitOperator.getNibble(byteWithDataOffset, 0);
+    }
+
+    public boolean isCWRFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.CWR_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isECEFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.ECE_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isURGFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.URG_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isACKFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.ACK_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPSHFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.PSH_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isRSTFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.RST_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isSYNFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.SYN_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isFINFlagSet(byte[] tcpHeader) {
+        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
+        int flag = BitOperator.getBit(flagByte, TcpHeader.FIN_FLAG_BIT_INDEX);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getWindowSize(byte[] tcpHeader) {
+        byte[] windowSizeBytes = Arrays.copyOfRange(tcpHeader,
+                TcpHeader.WINDOW_START_BYTE, TcpHeader.WINDOW_END_BYTE);
+        return ByteOperator.parseBytes(windowSizeBytes);
+    }
+
+    public int getChecksum(byte[] tcpHeader) {
+        byte[] checksumBytes = Arrays.copyOfRange(tcpHeader,
+                TcpHeader.CHECKSUM_START_BYTE, TcpHeader.CHECKSUM_END_BYTE);
+        return ByteOperator.parseBytes(checksumBytes);
+    }
+
+    public int getUrgentPointer(byte[] tcpHeader) {
+        if (isURGFlagSet(tcpHeader)) {
+            byte[] urgPointerBytes = Arrays.copyOfRange(tcpHeader,
+                    TcpHeader.URGENT_PTR_START_BYTE,
+                    TcpHeader.URGENT_PTR_END_BYTE + 1);
+            return ByteOperator.parseBytes(urgPointerBytes);
+        } else {
+            return -1;
+        }
+    }
+    /* Field extraction methods - End */
 
     private void setTcpHeader(PacketWrapper packetWrapper) {
         Packet packet = packetWrapper.getPacket();
@@ -78,22 +215,22 @@ public class TcpAnalyzer {
              */
             TcpEntity entity = new TcpEntity();
 
-            entity.setSourcePort(TcpHeader.getSourcePort(tcpHeader));
-            entity.setDestinationPort(TcpHeader.getDestinationPort(tcpHeader));
-            entity.setSequenceNumber(TcpHeader.getSequenceNumber(tcpHeader));
-            entity.setAckNumber(TcpHeader.getAckNumber(tcpHeader));
-            entity.setDataOffset(TcpHeader.getDataOffset(tcpHeader));
-            entity.setCwrFlagSet(TcpHeader.isCWRFlagSet(tcpHeader));
-            entity.setEceFlagSet(TcpHeader.isECEFlagSet(tcpHeader));
-            entity.setUrgFlagSet(TcpHeader.isURGFlagSet(tcpHeader));
-            entity.setAckFlagSet(TcpHeader.isACKFlagSet(tcpHeader));
-            entity.setPshFlagSet(TcpHeader.isPSHFlagSet(tcpHeader));
-            entity.setRstFlagSet(TcpHeader.isRSTFlagSet(tcpHeader));
-            entity.setSynFlagSet(TcpHeader.isSYNFlagSet(tcpHeader));
-            entity.setFinFlagSet(TcpHeader.isFINFlagSet(tcpHeader));
-            entity.setWindowSize(TcpHeader.getWindowSize(tcpHeader));
-            entity.setChecksum(TcpHeader.getChecksum(tcpHeader));
-            entity.setUrgentPointer(TcpHeader.getUrgentPointer(tcpHeader));
+            entity.setSourcePort(getSourcePort(tcpHeader));
+            entity.setDestinationPort(getDestinationPort(tcpHeader));
+            entity.setSequenceNumber(getSequenceNumber(tcpHeader));
+            entity.setAckNumber(getAckNumber(tcpHeader));
+            entity.setDataOffset(getDataOffset(tcpHeader));
+            entity.setCwrFlagSet(isCWRFlagSet(tcpHeader));
+            entity.setEceFlagSet(isECEFlagSet(tcpHeader));
+            entity.setUrgFlagSet(isURGFlagSet(tcpHeader));
+            entity.setAckFlagSet(isACKFlagSet(tcpHeader));
+            entity.setPshFlagSet(isPSHFlagSet(tcpHeader));
+            entity.setRstFlagSet(isRSTFlagSet(tcpHeader));
+            entity.setSynFlagSet(isSYNFlagSet(tcpHeader));
+            entity.setFinFlagSet(isFINFlagSet(tcpHeader));
+            entity.setWindowSize(getWindowSize(tcpHeader));
+            entity.setChecksum(getChecksum(tcpHeader));
+            entity.setUrgentPointer(getUrgentPointer(tcpHeader));
             entity.setNextProtocol(nextProtocol);
 
             entity.setPacketIdEntity(packetWrapper.getPacketIdEntity());
@@ -104,7 +241,7 @@ public class TcpAnalyzer {
 
     private String getNextProtocol(byte[] tcpHeader) {
 
-        int dstPortNo = TcpHeader.getDestinationPort(tcpHeader);
+        int dstPortNo = getDestinationPort(tcpHeader);
         switch (dstPortNo) {
         case 80:
             return Protocol.HTTP;

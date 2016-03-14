@@ -7,6 +7,7 @@ package com.bits.protocolanalyzer.analyzer.link;
 
 import java.util.Arrays;
 
+import org.apache.commons.codec.binary.Hex;
 import org.pcap4j.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,15 +50,34 @@ public class EthernetAnalyzer {
         this.eventBus.register(this);
     }
 
-    public String getSource(PacketWrapper packetWrapper) {
-        MacAddress srcAddr = EthernetHeader.getSource(this.ethernetHeader);
+    /* Field extraction methods - Start */
+    public String getSource(byte[] ethernetHeader) {
+        byte[] sourceAddr = Arrays.copyOfRange(ethernetHeader,
+                EthernetHeader.SOURCE_MAC_ADDR_START_BYTE,
+                EthernetHeader.SOURCE_MAC_ADDR_END_BYTE + 1);
+
+        MacAddress srcAddr = new MacAddress(Hex.encodeHexString(sourceAddr));
         return srcAddr.toString();
     }
 
-    public String getDestination(PacketWrapper packetWrapper) {
-        MacAddress dstAddr = EthernetHeader.getDestination(this.ethernetHeader);
+    public String getDestination(byte[] ethernetHeader) {
+        byte[] destinationAddr = Arrays.copyOfRange(ethernetHeader,
+                EthernetHeader.DESTINATION_MAC_ADDR_START_BYTE,
+                EthernetHeader.DESTINATION_MAC_ADDR_END_BYTE + 1);
+
+        MacAddress dstAddr = new MacAddress(
+                Hex.encodeHexString(destinationAddr));
         return dstAddr.toString();
     }
+
+    public String getEtherType(byte[] ethernetHeader) {
+        byte[] etherType = Arrays.copyOfRange(ethernetHeader,
+                EthernetHeader.ETHER_TYPE_START_BYTE,
+                EthernetHeader.ETHER_TYPE_END_BYTE + 1);
+
+        return Hex.encodeHexString(etherType);
+    }
+    /* Field extraction methods - End */
 
     private void setEthernetHeader(PacketWrapper packetWrapper) {
         Packet packet = packetWrapper.getPacket();
@@ -94,8 +114,8 @@ public class EthernetAnalyzer {
              * Save corresponding field values to DB
              */
             EthernetEntity entity = new EthernetEntity();
-            entity.setSourceAddr(getSource(packetWrapper));
-            entity.setDstAddr(getDestination(packetWrapper));
+            entity.setSourceAddr(getSource(ethernetHeader));
+            entity.setDstAddr(getDestination(ethernetHeader));
             entity.setEtherType(nextPacketType);
             entity.setPacketIdEntity(packetWrapper.getPacketIdEntity());
             ethernetRepository.save(entity);
@@ -105,8 +125,7 @@ public class EthernetAnalyzer {
 
     private String setNextPacketType(PacketWrapper packetWrapper) {
 
-        String nextHeaderTypeHex = EthernetHeader
-                .getEtherType(this.ethernetHeader);
+        String nextHeaderTypeHex = getEtherType(this.ethernetHeader);
 
         switch (nextHeaderTypeHex) {
         case "0800":
