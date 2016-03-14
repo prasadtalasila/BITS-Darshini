@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
@@ -35,7 +36,8 @@ import lombok.ToString;
 public class LinkAnalyzerEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="link_entity_seq")
+    @SequenceGenerator(name="link_entity_seq", sequenceName="LINK_ENTITY_SEQ")
     private Long id;
 
     @OneToOne

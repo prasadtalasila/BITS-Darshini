@@ -13,69 +13,37 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.eclipse.persistence.annotations.ReturnInsert;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  *
  * @author amit
+ * @author crygnus
  */
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "packet_id")
 public class PacketIdEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "packet_id_seq")
+    @SequenceGenerator(name = "packet_id_seq", sequenceName = "PACKET_ID_SEQ")
     private Long id;
-
-    public Long getId() {
-        return id;
-    }
 
     @Column(name = "packet_id", columnDefinition = "serial")
     @Basic
     @ReturnInsert(returnOnly = true)
     private long packetId;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public long getPacketId() {
-        return packetId;
-    }
-
-    public void setPacketId(long packetId) {
-        this.packetId = packetId;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are
-        // not set
-        if (!(object instanceof PacketIdEntity)) {
-            return false;
-        }
-        PacketIdEntity other = (PacketIdEntity) object;
-        if ((this.id == null && other.id != null)
-                || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.bits.protocolanalyzer.persistence.entity.PacketIdEntity[ id="
-                + id + " ]";
-    }
 
 }

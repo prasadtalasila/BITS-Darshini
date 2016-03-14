@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
@@ -33,7 +34,8 @@ public class IPv4Entity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="ipv4_entity_seq")
+    @SequenceGenerator(name="ipv4_entity_seq", sequenceName="IPV4_ENTITY_SEQ")
     private Long id;
 
     @OneToOne
