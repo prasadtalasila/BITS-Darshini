@@ -32,9 +32,8 @@ public class HomeController {
     LoginInfoRepository loginInfoRepo;
 
     @RequestMapping
-    public ModelAndView home() {
-        ModelAndView mav = new ModelAndView("home");
-        return mav;
+    public String home() {
+        return "view/index.html";
     }
 
     @RequestMapping(value = "signin", method = RequestMethod.POST)
