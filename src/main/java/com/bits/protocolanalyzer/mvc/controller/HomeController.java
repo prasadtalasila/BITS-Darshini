@@ -7,6 +7,7 @@ package com.bits.protocolanalyzer.mvc.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bits.protocolanalyzer.analyzer.Session;
 import com.bits.protocolanalyzer.persistence.entity.LoginInfoEntity;
 import com.bits.protocolanalyzer.persistence.repository.LoginInfoRepository;
 import com.bits.protocolanalyzer.utils.Security;
@@ -40,14 +42,23 @@ public class HomeController {
     public @ResponseBody String signin(@RequestBody LoginInfoEntity loginInfo,
             HttpServletRequest request) {
         String email = loginInfo.getEmail();
+        JSONObject response = new JSONObject();
+        String hashStr = "";
         LoginInfoEntity lie = loginInfoRepo.findByEmail(email);
         if (lie == null) {
-            return "failure";
+            response.put("status", "failure");
         } else if (!lie.getPassword()
                 .equals(Security.createHash(loginInfo.getPassword()))) {
-            return "failure";
+            response.put("status", "failure");
+        } else {
+            response.put("status", "success");
+            hashStr = Security.createHash(
+                    loginInfo.getEmail() + ";" + loginInfo.getPassword());
+            lie.setLoginHash(hashStr);
+            loginInfoRepo.save(lie);
         }
-        return "success";
+        response.put("loginHash", hashStr);
+        return response.toString();
 
     }
 

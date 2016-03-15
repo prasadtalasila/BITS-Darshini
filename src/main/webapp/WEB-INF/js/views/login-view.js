@@ -21,10 +21,14 @@ window.LoginView = Backbone.View.extend({
              dataType:'text',
              data: JSON.stringify(formValues),
              success:function (data) {
-                 if(data === "success") { 
+                 var jsonData = JSON.parse(data);
+                 var status = jsonData.status;
+                 var loginHash = jsonData.loginHash;
+                 //store the loginHash in window.localstorage with appropriate scope
+                 if(status === "success") {
                     app.navigate("#/home");
                  }
-                 else if(data ==="failure"){ 
+                 else if(status ==="failure"){
                     alert("Error logging in, please check your details");
                  }
              },

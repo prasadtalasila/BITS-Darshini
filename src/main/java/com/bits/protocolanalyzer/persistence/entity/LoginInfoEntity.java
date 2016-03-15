@@ -17,4 +17,6 @@ public class LoginInfoEntity {
     private String email;
 
     private String password;
+
+    private String loginHash;
 }
