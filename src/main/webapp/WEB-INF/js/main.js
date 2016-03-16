@@ -41,12 +41,17 @@ window.Router = Backbone.Router.extend({
                     this.experimentView.render();
                  }
                  else{
+                    Cookies.remove('userName');
+                    Cookies.remove('userAuth');
+                    app.navigate("#",{trigger:true});
                     alert("You have been logged out. Please login to continue");
                  }
              },
              error:function(){
+                Cookies.remove('userName');
+                Cookies.remove('userAuth');
+                app.navigate("#",{trigger:true});
                 alert("You have been logged out. Please login to continue");
-                app.navigate("#");
              }
              });
     },
@@ -63,19 +68,47 @@ window.Router = Backbone.Router.extend({
                     this.configView.render();
                  }
                  else{
+                    Cookies.remove('userName');
+                    Cookies.remove('userAuth');
+                    app.navigate("#",{trigger:true});
                     alert("You have been logged out. Please login to continue");
-                    app.navigate("#");
+                    
                  }
              },
              error:function(){
+                Cookies.remove('userName');
+                Cookies.remove('userAuth');
+                app.navigate("#",{trigger:true});
                 alert("You have been logged out. Please login to continue");
-                app.navigate("#");
              }
              });
     },
     analysisViewDisplay: function(){
-        this.analysisView = new AnalysisView();
-        this.analysisView.render();
+        $.ajax({
+            url:'/protocolanalyzer/auth',
+             type:'GET',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
+             success:function (data) {
+                 if(data==="success"){
+                    this.analysisView = new AnalysisView();
+                    this.analysisView.render();
+                 }
+                 else{
+                    Cookies.remove('userName');
+                    Cookies.remove('userAuth');
+                    app.navigate("#",{trigger:true});
+                    alert("You have been logged out. Please login to continue");
+                 }
+             },
+             error:function(){
+                Cookies.remove('userName');
+                Cookies.remove('userAuth');
+                app.navigate("#",{trigger:true});
+                alert("You have been logged out. Please login to continue");
+             }
+             });    
     }
 });
 
