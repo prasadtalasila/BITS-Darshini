@@ -25,6 +25,7 @@ window.LoginView = Backbone.View.extend({
                  var status = jsonData.status;
                  var loginHash = jsonData.loginHash;
                  if(status === "success") {
+                    Cookies.set('userName', $('#inputEmail').val(),{ expires: 1 });
                     Cookies.set('userAuth', loginHash,{ expires: 1 });
                     app.navigate("#/home");
                  }

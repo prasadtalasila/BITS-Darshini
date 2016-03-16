@@ -27,8 +27,8 @@ window.Router = Backbone.Router.extend({
         this.loginView = new LoginView();
         this.loginView.render();
     },
-    experimentViewDisplay: function () {
-        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth')})
+    experimentViewDisplay: function () {    
+        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')})
         .done(function(status){
             this.experimentView = new ExperimentView();
             this.experimentView.render();
@@ -39,7 +39,7 @@ window.Router = Backbone.Router.extend({
         });
     },
     configPlaygroundViewDisplay: function () {
-        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth')})
+        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')})
         .done(function(status){
             this.configView = new ConfigPlaygroundView();
             this.configView.render();
