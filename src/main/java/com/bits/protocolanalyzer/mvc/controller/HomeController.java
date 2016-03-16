@@ -13,10 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bits.protocolanalyzer.analyzer.Session;
 import com.bits.protocolanalyzer.persistence.entity.LoginInfoEntity;
 import com.bits.protocolanalyzer.persistence.repository.LoginInfoRepository;
 import com.bits.protocolanalyzer.utils.Security;
@@ -36,6 +36,18 @@ public class HomeController {
     @RequestMapping
     public String home() {
         return "view/index.html";
+    }
+
+    @RequestMapping(value = "auth", method = RequestMethod.GET)
+    public @ResponseBody String authenticate(@RequestParam("loginHash") String loginHash, @RequestParam("user") String email) {
+        LoginInfoEntity lie = loginInfoRepo.findByEmail(email);
+        if (lie == null) {
+            return "failure";
+        } else if (!lie.getLoginHash().equals(loginHash)) {
+            return "failure";
+        } else
+            return "success";
+
     }
 
     @RequestMapping(value = "signin", method = RequestMethod.POST)
