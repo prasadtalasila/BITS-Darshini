@@ -18,7 +18,8 @@ window.Router = Backbone.Router.extend({
     routes: {
         '':'loginViewDisplay',
         'home': 'experimentViewDisplay',
-        'config': 'configPlaygroundViewDisplay'
+        'config': 'configPlaygroundViewDisplay',
+        'analysis': 'analysisViewDisplay'
     },
 
     initialize: function () {
@@ -28,32 +29,57 @@ window.Router = Backbone.Router.extend({
         this.loginView.render();
     },
     experimentViewDisplay: function () {    
-        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')})
-        .done(function(status){
-            this.experimentView = new ExperimentView();
-            this.experimentView.render();
-        })
-        .fail(function(status){
-            alert("You have been logged out. Please login to continue");
-            app.navigate("#");
-        });
+        $.ajax({
+            url:'/protocolanalyzer/auth',
+             type:'GET',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
+             success:function (data) {
+                 if(data==="success"){
+                    this.experimentView = new ExperimentView();
+                    this.experimentView.render();
+                 }
+                 else{
+                    alert("You have been logged out. Please login to continue");
+                 }
+             },
+             error:function(){
+                alert("You have been logged out. Please login to continue");
+                app.navigate("#");
+             }
+             });
     },
     configPlaygroundViewDisplay: function () {
-        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')})
-        .done(function(status){
-            this.configView = new ConfigPlaygroundView();
-            this.configView.render();
-        })
-        .fail(function(status){
-            alert("You have been logged out. Please login to continue");
-            app.navigate("#");
-        });
-    
-
+        $.ajax({
+            url:'/protocolanalyzer/auth',
+             type:'GET',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
+             success:function (data) {
+                 if(data==="success"){
+                    this.configView = new ConfigPlaygroundView();
+                    this.configView.render();
+                 }
+                 else{
+                    alert("You have been logged out. Please login to continue");
+                    app.navigate("#");
+                 }
+             },
+             error:function(){
+                alert("You have been logged out. Please login to continue");
+                app.navigate("#");
+             }
+             });
+    },
+    analysisViewDisplay: function(){
+        this.analysisView = new AnalysisView();
+        this.analysisView.render();
     }
 });
 
-templateLoader.load(["LoginView","ExperimentView","ConfigPlaygroundView"],
+templateLoader.load(["LoginView","ExperimentView","ConfigPlaygroundView","AnalysisView"],
     function () {
         app = new Router();
         Backbone.history.start();
