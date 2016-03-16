@@ -9,34 +9,48 @@ $.ajaxSetup({
         },
         403: function() {
             // 403 -- Access denied
-            window.location.replace('#denied');
+            window.location.replace('#login');
         }
     }
 });
 
 window.Router = Backbone.Router.extend({
     routes: {
+        '':'loginViewDisplay',
         'home': 'experimentViewDisplay',
         'config': 'configPlaygroundViewDisplay'
-        //"contact": "contact",
-        //"employees/:id": "employeeDetails",
-        //"login" : "login"
     },
 
     initialize: function () {
+    },
+    loginViewDisplay: function () {
         this.loginView = new LoginView();
         this.loginView.render();
     },
     experimentViewDisplay: function () {
-       this.experimentView = new ExperimentView();
-       this.experimentView.render();
+        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth')})
+        .done(function(status){
+            this.experimentView = new ExperimentView();
+            this.experimentView.render();
+        })
+        .fail(function(status){
+            alert("You have been logged out. Please login to continue");
+            app.navigate("#");
+        });
     },
     configPlaygroundViewDisplay: function () {
-       this.configView = new ConfigPlaygroundView();
-       this.configView.render();
+        $.get( '/protocolanalyzer/auth', {loginHash : Cookies.get('userAuth')})
+        .done(function(status){
+            this.configView = new ConfigPlaygroundView();
+            this.configView.render();
+        })
+        .fail(function(status){
+            alert("You have been logged out. Please login to continue");
+            app.navigate("#");
+        });
+    
+
     }
-
-
 });
 
 templateLoader.load(["LoginView","ExperimentView","ConfigPlaygroundView"],

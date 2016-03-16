@@ -24,8 +24,8 @@ window.LoginView = Backbone.View.extend({
                  var jsonData = JSON.parse(data);
                  var status = jsonData.status;
                  var loginHash = jsonData.loginHash;
-                 //store the loginHash in window.localstorage with appropriate scope
                  if(status === "success") {
+                    Cookies.set('userAuth', loginHash,{ expires: 1 });
                     app.navigate("#/home");
                  }
                  else if(status ==="failure"){

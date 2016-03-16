@@ -103,3 +103,17 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+.container {
+  display:inline-block;
+  float: left;
+  border-color: red;
+  border-bottom: 10px;
+  background-color: blueviolet;
+}
+.container-menu{
+  display:inline-block;
+  float: left;
+  border-color: red;
+  border-bottom: 10px;
+  background-color: red;
+}
