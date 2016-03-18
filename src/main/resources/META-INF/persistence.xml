@@ -5,10 +5,10 @@
 	<persistence-unit name="eclipselink_persistence_unit"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>com.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity</class>
-		<class>com.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity</class>
-		<class>com.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity</class>
-		<class>com.bits.protocolanalyzer.persistence.entity.PacketIdEntity</class>
+		<class>in.ac.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity</class>
+		<class>in.ac.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity</class>
+		<class>in.ac.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity</class>
+		<class>in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/protocol" />
