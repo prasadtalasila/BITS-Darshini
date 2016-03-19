@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
+import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
 import in.ac.bits.protocolanalyzer.analyzer.Protocol;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
@@ -27,7 +28,7 @@ import in.ac.bits.protocolanalyzer.utils.ByteOperator;
  * @author crygnus
  */
 @Component
-public class IPv4Analyzer {
+public class IPv4Analyzer implements CustomAnalyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.IPV4;
 
@@ -136,7 +137,7 @@ public class IPv4Analyzer {
                 startByte + IPv4Header.DEFAULT_HEADER_LENTH_IN_BYTES + 1);
     }
 
-    private void setStartByte(PacketWrapper packetWrapper) {
+    public void setStartByte(PacketWrapper packetWrapper) {
         int ihl = getIhl(this.ipv4Header);
         this.headerLength = IPv4Header.DEFAULT_HEADER_LENTH_IN_BYTES;
         this.startByte = packetWrapper.getStartByte() + headerLength;
@@ -152,7 +153,7 @@ public class IPv4Analyzer {
     }
 
     @Subscribe
-    public void analyzePacket(PacketWrapper packetWrapper) {
+    public void analyze(PacketWrapper packetWrapper) {
         if (PACKET_TYPE_OF_RELEVANCE
                 .equalsIgnoreCase(packetWrapper.getPacketType())) {
 
@@ -162,7 +163,7 @@ public class IPv4Analyzer {
             this.setIpv4Header(packetWrapper);
             this.setStartByte(packetWrapper);
             this.setEndByte(packetWrapper);
-            String nextPacketType = getNextProtocol(ipv4Header);
+            String nextPacketType = setNextProtocolType();
             publishTypeDetectionEvent(nextPacketType, this.startByte,
                     this.endByte);
 
@@ -196,7 +197,7 @@ public class IPv4Analyzer {
         }
     }
 
-    private String getNextProtocol(byte[] ipv4Header) {
+    public String setNextProtocolType() {
         int protocolInt = getProtocol(ipv4Header);
 
         switch (protocolInt) {
@@ -210,7 +211,7 @@ public class IPv4Analyzer {
         }
     }
 
-    private void publishTypeDetectionEvent(String nextPacketType, int startByte,
+    public void publishTypeDetectionEvent(String nextPacketType, int startByte,
             int endByte) {
         this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType,
                 startByte, endByte));

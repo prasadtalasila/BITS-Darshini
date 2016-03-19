@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
+import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
 import in.ac.bits.protocolanalyzer.analyzer.Protocol;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
@@ -28,7 +29,7 @@ import in.ac.bits.protocolanalyzer.utils.ByteOperator;
  * @author crygnus
  */
 @Component
-public class TcpAnalyzer {
+public class TcpAnalyzer implements CustomAnalyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.TCP;
 
@@ -188,17 +189,17 @@ public class TcpAnalyzer {
                 startByte + TcpHeader.DEFAULT_HEADER_LENGTH_IN_BYTES + 1);
     }
 
-    private void setStartByte(PacketWrapper packetWrapper) {
+    public void setStartByte(PacketWrapper packetWrapper) {
         int startByte = packetWrapper.getStartByte();
         this.startByte = startByte + TcpHeader.DEFAULT_HEADER_LENGTH_IN_BYTES;
     }
 
-    private void setEndByte(PacketWrapper packetWrapper) {
+    public void setEndByte(PacketWrapper packetWrapper) {
         this.endByte = packetWrapper.getEndByte();
     }
 
     @Subscribe
-    public void analyzePacket(PacketWrapper packetWrapper) {
+    public void analyze(PacketWrapper packetWrapper) {
         if (PACKET_TYPE_OF_RELEVANCE
                 .equalsIgnoreCase(packetWrapper.getPacketType())) {
             /* Do type detection first and publish the event */
@@ -207,7 +208,7 @@ public class TcpAnalyzer {
             /* Set start and end bytes */
             this.setStartByte(packetWrapper);
             this.setEndByte(packetWrapper);
-            String nextProtocol = getNextProtocol(this.tcpHeader);
+            String nextProtocol = setNextProtocolType();
             publishTypeDetectionEvent(nextProtocol, this.startByte,
                     this.endByte);
 
@@ -240,7 +241,7 @@ public class TcpAnalyzer {
         }
     }
 
-    private String getNextProtocol(byte[] tcpHeader) {
+    public String setNextProtocolType() {
 
         int dstPortNo = getDestinationPort(tcpHeader);
         switch (dstPortNo) {
@@ -255,7 +256,7 @@ public class TcpAnalyzer {
         }
     }
 
-    private void publishTypeDetectionEvent(String nextProtocol, int startByte,
+    public void publishTypeDetectionEvent(String nextProtocol, int startByte,
             int endByte) {
         this.eventBus.post(
                 new PacketTypeDetectionEvent(nextProtocol, startByte, endByte));
