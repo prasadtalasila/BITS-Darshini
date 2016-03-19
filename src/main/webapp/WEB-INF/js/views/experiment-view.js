@@ -3,7 +3,8 @@ window.ExperimentView = Backbone.View.extend({
 
 		events: {
 			 'click #newExperiment' : 'newExperiment',
-			 'click #loadExperiment' : 'loadExperiment'
+			 'click #loadExperiment' : 'loadExperiment',
+             'click #logout' : 'userLogout'
 		},
 
 		newExperiment : function(event) {
@@ -23,14 +24,16 @@ window.ExperimentView = Backbone.View.extend({
     	},
 		initialize: function () {       
 		},
+        userLogout  : function(){
+            Cookies.remove('userName');
+            Cookies.remove('userAuth');     
+            app.navigate("#",{trigger: true});
+            alert("You have been logged out. Please login to continue");
+            return false;
+        },
 		render: function () { 
 			$(this.el).html(this.template());
-        //	$('#description').wysihtml5({
-        //    "lists": true,  
-        //    "link": true, 
-        //    "image": true, 
-        //    "color": true 
-        //});
+            $('#description').wysiwyg();
             return this;
 		}
 	});

@@ -4,84 +4,11 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	events: {
 		'click #help' :'userHelpPage',
 		'click #logout' : 'userLogout',
-		'click #analyzeBtn' : 'analysis'
+		'click #analyzeBtn' : 'analysis',
+        'click #analyzeBtn' : 'readSingleFile'
 	},
 	initialize: function () {
-    		$(function() {
-        		$( "#draggable" ).draggable();
-    		});
-		interact('.draggable')
-		.draggable({
-    		// enable inertial throwing
-    		inertia: true,
-    		// keep the element within the area of it's parent
-    		restrict: {
-    			restriction: "parent",
-    			endOnly: true,
-    			elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-    		},
-    		autoScroll: true,
-    		onmove: dragMoveListener,
-    		// call this function on every dragend event
-    		onend: function (event) {
-    		var textEl = event.target.querySelector('p');
-
-    		textEl && (textEl.textContent =
-    			'moved a distance of '
-    			+ (Math.sqrt(event.dx * event.dx +
-    			event.dy * event.dy)|0) + 'px');
-    		}
-		});
-
-		function dragMoveListener (event) {
-			var target = event.target,
-        	// keep the dragged position in the data-x/data-y attributes
-        	x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-        	y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-    		// translate the element
-   			target.style.webkitTransform =
-    		target.style.transform =
-    		'translate(' + x + 'px, ' + y + 'px)';
-
-    		// update the posiion attributes
-    		target.setAttribute('data-x', x);
-    		target.setAttribute('data-y', y);
-		}
-  		window.dragMoveListener = dragMoveListener;
-  		interact('.dropzone').dropzone({
-  			// only accept elements matching this CSS selector
-  			accept: '#yes-drop',
-  			overlap: 1,
-  			// listen for drop related events:
-
-  		ondropactivate: function (event) {
-    		// add active dropzone feedback
-    		event.target.classList.add('drop-active');
-		},
-		ondragenter: function (event) {
-			var draggableElement = event.relatedTarget,
-			dropzoneElement = event.target;
-    		// feedback the possibility of a drop
-    		dropzoneElement.classList.add('drop-target');
-    		draggableElement.classList.add('can-drop');
-    		draggableElement.textContent = 'Dragged in';
-		},
-		ondragleave: function (event) {
-    		// remove the drop feedback style
-    		event.target.classList.remove('drop-target');
-    		event.relatedTarget.classList.remove('can-drop');
-    		event.relatedTarget.textContent = 'Dragged out';
-		},
-		ondrop: function (event) {
-			event.relatedTarget.textContent = 'Dropped';
-		},
-		ondropdeactivate: function (event) {
-    		// remove active dropzone feedback
-    		event.target.classList.remove('drop-active');
-    		event.target.classList.remove('drop-target');
-		}
-		});
+    		
 	},	
 
 	userHelpPage : function(){
@@ -92,11 +19,46 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 		Cookies.remove('userAuth');		
 		app.navigate("#",{trigger: true});
 		alert("You have been logged out. Please login to continue");
+        return false;
 	},
 	analysis : function(event){
 		event.preventDefault();
 		app.navigate("#/analysis",{trigger: true});
 	},
+    readSingleFile : function(evt) {
+    //Retrieve the first (and only!) File from the FileList object
+    var f = document.getElementById("fileInput").files[0]; 
+
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+          var userParseGraph = e.target.result;
+          var temp = userParseGraph;
+          $.ajax({
+            url:'/protocolanalyzer/session/analysis',
+             type:'GET',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: {graph : userParseGraph},
+             success:function (data) {
+                 if(data==="success"){
+                    app.navigate("#/analysis");
+                 }
+                 else{
+                    alert("Error!!!");
+                 }
+             },
+             error:function(){
+                alert("Something went wrong. Please try again later.");
+             }
+             });
+      }
+      r.readAsText(f);
+     
+    } else { 
+      alert("Failed to load file");
+    }
+    },
 	render: function () {
 		$(this.el).html(this.template());
 		return this;
