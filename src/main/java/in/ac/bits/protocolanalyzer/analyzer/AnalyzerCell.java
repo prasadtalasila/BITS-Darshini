@@ -1,7 +1,8 @@
 package in.ac.bits.protocolanalyzer.analyzer;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +32,8 @@ import lombok.Setter;
 @Setter
 public class AnalyzerCell extends Thread {
 
+    public static final String CONTROLLER_BUS = "pipeline_controller_bus";
+
     @Autowired
     private EventBusFactory eventBusFactory;
 
@@ -38,6 +41,7 @@ public class AnalyzerCell extends Thread {
     private String eventBusName;
     private EventBus eventBus;
     private GenericAnalyzer genericAnalyzer;
+    private List<CustomAnalyzer> customAnalyzers;
     private PacketWrapper packetProcessing;
     private ArrayBlockingQueue<PacketWrapper> inputQueue;
     private boolean isProcessing;
@@ -60,14 +64,31 @@ public class AnalyzerCell extends Thread {
         this.eventBusName = sessionId + "_" + cellID + "_event_bus";
         this.eventBus = eventBusFactory.getEventBus(eventBusName);
         this.genericAnalyzer = analyzer;
+        this.customAnalyzers = new LinkedList<CustomAnalyzer>();
         this.genericAnalyzer.setEventBus(eventBus);
         this.eventBus.register(this);
-        eventBusFactory.getEventBus("pipeline_controller_bus").register(this);
+        eventBusFactory.getEventBus(CONTROLLER_BUS).register(this);
         this.inputQueue = new ArrayBlockingQueue<PacketWrapper>(100);
         this.isProcessing = false;
         this.isRunning = true;
         this.destinationStageMap = new ConcurrentHashMap<String, AnalyzerCell>();
 
+    }
+
+    /**
+     * Adds a {@link CustomAnalyzer} in the list maintained if it isn't already
+     * there and invokes its configure method with input parameter as this
+     * cell's eventBus
+     * 
+     * @param analyzer
+     */
+    public void addCustomAnalyzer(CustomAnalyzer analyzer) {
+        if (!this.customAnalyzers.contains(analyzer)) {
+            this.customAnalyzers.add(analyzer);
+            System.out.println(
+                    "Custom analyzer is being registerd to: " + eventBusName);
+            analyzer.configure(eventBus);
+        }
     }
 
     /**
@@ -82,6 +103,7 @@ public class AnalyzerCell extends Thread {
          * System.out.println("Packet recieved in " + this.cellID +
          * " with current queue size = " + this.inputQueue.size());
          */
+        System.out.println("Received a packet for processing in: " + cellID);
         try {
             return this.inputQueue.offer(packet, 1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -135,9 +157,15 @@ public class AnalyzerCell extends Thread {
     private void sendPacket() {
 
         String destinationStageKey = this.packetProcessing.getPacketType();
+        System.out.println(
+                "Destination stage key received from custom analyzer in "
+                        + cellID + "= " + destinationStageKey);
         if (destinationStageMap.containsKey(destinationStageKey)) {
+            System.out.println("Destination stage map contains key : "
+                    + destinationStageKey);
             AnalyzerCell nextCell = this.destinationStageMap
                     .get(destinationStageKey);
+            System.out.println("Next cell chosen = " + nextCell.getCellID());
             nextCell.takePacket(this.packetProcessing);
         } else {
             EventBus controllerEventBus = eventBusFactory
@@ -154,12 +182,12 @@ public class AnalyzerCell extends Thread {
      * Adds an entry (packetType, destinationCell) in the destinationStageMap
      * for this object
      * 
-     * @param packetType
+     * @param protocol
      * @param destinationCell
      */
-    public void configureDestinationStageMap(String packetType,
+    public void configureDestinationStageMap(String protocol,
             AnalyzerCell destinationCell) {
-        this.destinationStageMap.put(packetType, destinationCell);
+        this.destinationStageMap.put(protocol, destinationCell);
     }
 
 }

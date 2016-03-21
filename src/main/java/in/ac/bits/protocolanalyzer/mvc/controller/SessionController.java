@@ -5,100 +5,71 @@
  */
 package in.ac.bits.protocolanalyzer.mvc.controller;
 
-import java.util.List;
-
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
 import in.ac.bits.protocolanalyzer.analyzer.Session;
-import in.ac.bits.protocolanalyzer.analyzer.TimeSeriesAnalyzer;
-import in.ac.bits.protocolanalyzer.input.PcapFileReader;
+import in.ac.bits.protocolanalyzer.protocol.Protocol;
+import in.ac.bits.protocolanalyzer.protocol.ProtocolGraphParser;
+import in.ac.bits.protocolanalyzer.utils.ApplicationContextUtils;
 
 /**
  *
  * @author crygnus
  */
-
 @Controller
 @RequestMapping("/session")
 public class SessionController {
 
     @Autowired
-    private TimeSeriesAnalyzer timeSeriesAnalyzer;
-
-    @Autowired
     private Session session;
 
+    private ProtocolGraphParser graphParser;
+
     @Autowired
-    private PcapFileReader pcapFileReader;
+    ApplicationContextUtils contextUtils;
 
-    List<PacketWrapper> packets;
+    @Autowired
+    private Protocol protocol;
 
-    @RequestMapping
-    public ModelAndView getSession() {
-        ModelAndView mav = new ModelAndView("sessionPage");
-        return mav;
-    }
-
-    @RequestMapping("/new")
-    public ModelAndView setNewSession() {
-        session.configureSession("new_session");
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("sessionName", session.getSessionName());
-        return mav;
-    }
-
-    @RequestMapping("/default")
-    public ModelAndView setDefaultSession() {
-        session.configureSession("default_session");
-        System.out.println("Pipeline generation time start = "
-                + System.currentTimeMillis());
-        session.setDefault();
-        ModelAndView mav = new ModelAndView("packetData");
-        mav.addObject("sessionName", session.getSessionName());
-        readFile(mav, session);
-        return mav;
-    }
-
-    public void readFile(ModelAndView mav, Session session) {
-        long packetCount = pcapFileReader.readFile();
-        if (packetCount != 0) {
-            mav.addObject("packetCount", String.valueOf(packetCount));
-        } else {
-            mav.addObject("packetCount", "No Packets retrived");
-        }
-    }
-
-    @RequestMapping("/stats-analysis")
-    public ModelAndView analyzePcapStats() {
-        ModelAndView mav = new ModelAndView("packetStats");
-        timeSeriesAnalyzer.updateStats(packets);
-        mav.addObject("meanTimeStamp",
-                timeSeriesAnalyzer.getMeanTimeofArrival());
-        mav.addObject("standardDeviation",
-                timeSeriesAnalyzer.getStandardDeviation());
-        return mav;
-    }
-
-    @RequestMapping("/addCaptureFilter")
-    public void addCaptureFilter(Session session) {
+    @RequestMapping(value = "/analysis", method = RequestMethod.GET)
+    public @ResponseBody String analyze(
+            @RequestParam("graph") String protocolGraphStr) {
+        System.out.println("Graph string parsed = \n" + protocolGraphStr);
+        // Initializing session and protocol
+        init();
+        graphParser = context.getBean(ProtocolGraphParser.class);
+        graphParser.configureSession(session, protocolGraphStr);
+        System.out.println("Successfully completed session configuration!!");
         /*
-         * Yet to decide how to do it
+         * later to be replaced by session.startExperiment() call return value
          */
+        long readCount = 0;
+        /* long readCount = session.startExperiment(); */
+        JSONObject response = new JSONObject();
+        response.put("status", "success");
+        response.put("pktCount", readCount);
+        return response.toString();
     }
 
-    @RequestMapping("/validate")
-    public boolean validateSession(Session session) {
-
-        /*
-         * Validation logic based on determining whether given graph is a
-         * subgraph of the "big-graph" of protocols.
-         */
-
-        return false;
+    /*
+     * later this method can be converted to an API.
+     */
+    private void init() {
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                "classpath:spring/appconfig.xml");
+        contextUtils.setApplicationContext(context);
+        session.init("session_name");
+        System.out.println("Session init complete!!");
+        protocol.init();
+        System.out.println(
+                "Successfully completed init method in session controller!!");
     }
-
 }

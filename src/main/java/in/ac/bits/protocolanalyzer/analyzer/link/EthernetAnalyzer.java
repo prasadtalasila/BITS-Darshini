@@ -17,10 +17,10 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.Protocol;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.EthernetEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.EthernetRepository;
+import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 /**
  *
@@ -40,6 +40,7 @@ public class EthernetAnalyzer implements CustomAnalyzer {
     private byte[] ethernetHeader;
     private int startByte;
     private int endByte;
+    private static String conditionalHeaderField;
 
     public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -139,5 +140,11 @@ public class EthernetAnalyzer implements CustomAnalyzer {
             int endByte) {
         this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType,
                 startByte, endByte));
+    }
+
+    @Override
+    public void setConditionHeader(String headerName) {
+        EthernetHeader.addHeaderField(headerName.toUpperCase());
+
     }
 }

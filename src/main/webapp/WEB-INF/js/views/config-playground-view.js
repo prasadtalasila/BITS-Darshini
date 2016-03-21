@@ -41,7 +41,9 @@ window.ConfigPlaygroundView = Backbone.View.extend({
              dataType:'text',
              data: {graph : userParseGraph},
              success:function (data) {
-                 if(data==="success"){
+            	 var jsonData = JSON.parse(data);
+            	 var status = jsonData.status;
+                 if(status==="success"){
                     app.navigate("#/analysis");
                  }
                  else{

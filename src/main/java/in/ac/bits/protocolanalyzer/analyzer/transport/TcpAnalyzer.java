@@ -16,10 +16,10 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.Protocol;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.TcpEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.TcpRepository;
+import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 
@@ -260,5 +260,10 @@ public class TcpAnalyzer implements CustomAnalyzer {
             int endByte) {
         this.eventBus.post(
                 new PacketTypeDetectionEvent(nextProtocol, startByte, endByte));
+    }
+
+    @Override
+    public void setConditionHeader(String headerName) {
+        // TODO Auto-generated method stub
     }
 }

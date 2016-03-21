@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package in.ac.bits.protocolanalyzer.input;
+package in.ac.bits.protocolanalyzer.analyzer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,10 +17,8 @@ import org.pcap4j.packet.namednumber.DataLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.PcapAnalyzer;
-import in.ac.bits.protocolanalyzer.analyzer.Protocol;
 import in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
+import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import lombok.Getter;
 import lombok.Setter;
 

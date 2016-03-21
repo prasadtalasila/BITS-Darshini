@@ -3,6 +3,7 @@ package in.ac.bits.protocolanalyzer.analyzer;
 import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
+import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 /**
  * Defines a set of methods that any custom analyzer must implement in order to
@@ -70,4 +71,12 @@ public interface CustomAnalyzer {
      * @param packetWrapper
      */
     public void analyze(PacketWrapper packetWrapper);
+
+    /**
+     * Sets the header field as CONDITIONAL_HEADER_FIELD which decides next
+     * protocol as its payload
+     * 
+     * @param headerName
+     */
+    public void setConditionHeader(String headerName);
 }
