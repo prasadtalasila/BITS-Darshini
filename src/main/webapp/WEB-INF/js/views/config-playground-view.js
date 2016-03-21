@@ -45,7 +45,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
                     app.navigate("#/analysis");
                  }
                  else{
-                    alert("Error!!!");
+                    alert("Error!!!");  
                  }
              },
              error:function(){

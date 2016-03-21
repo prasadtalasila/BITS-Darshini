@@ -139,3 +139,9 @@ hr {
 		left: 8px;
 	}
 }
+.navbar-inverse .navbar-brand {
+     color: white; 
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: white;
+}
