@@ -5,14 +5,15 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 		'click #help' :'userHelpPage',
 		'click #logout' : 'userLogout',
 		'click #analyzeBtn' : 'analysis',
-        'click #analyzeBtn' : 'readSingleFile'
+    'click #analyzeBtn' : 'readSingleFile',
+    'click #validateBtn' : 'graphValidation'
 	},
 	initialize: function () {
     		
 	},	
 
 	userHelpPage : function(){
-	window.location.href = "https://github.com/prasadtalasila/packetanalyzer";
+	  window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
 	},
 	userLogout  : function(){
 		Cookies.remove('userName');
@@ -25,7 +26,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 		event.preventDefault();
 		app.navigate("#/analysis",{trigger: true});
 	},
-    readSingleFile : function(evt) {
+  readSingleFile : function(evt) {
     //Retrieve the first (and only!) File from the FileList object
     var f = document.getElementById("fileInput").files[0]; 
 
@@ -33,7 +34,6 @@ window.ConfigPlaygroundView = Backbone.View.extend({
       var r = new FileReader();
       r.onload = function(e) { 
           var userParseGraph = e.target.result;
-          var temp = userParseGraph;
           $.ajax({
             url:'/protocolanalyzer/session/analysis',
              type:'GET',
@@ -58,7 +58,54 @@ window.ConfigPlaygroundView = Backbone.View.extend({
     } else { 
       alert("Failed to load file");
     }
-    },
+  },
+
+  graphValidation : function(){
+    var f = document.getElementById("fileInput").files[0]; 
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+          var flag =0;
+          //test graph is the main graph, user graph checked against this
+          var testGraph = 'graph _start_ { ethernet;} graph _ethernet_ { switch(ethertype) {case 0x800: ipv4;}} graph _ipv4_ {switch(protocol) {case 0x06: tcp;}}graph _tcp_ {}graph _end_ {}';
+          var testParsing = testGraph.split(/[\{\}]/);
+          for (var i = 0; i < testParsing.length; i++) {
+            testParsing[i] = testParsing[i].trim();
+          }
+          //user provided p4 graph
+          var userParseGraph = e.target.result;
+          var userParsing = userParseGraph.split(/[\{\}]/);
+          for (var i = 0; i < userParsing.length; i++) {
+            userParsing[i] = userParsing[i].trim();
+          }
+          if(userParsing.length > testParsing.length ){
+            alert("Invalid P4 graph");
+            flag++;
+          }
+          // initial node check
+          for(var i=0;i< 2;i++){
+            if(userParsing[i]!==testParsing[i]){
+              alert("Invalid P4 graph");
+              flag++;
+            }
+          }
+          //other nodes
+          for(var i=2;i<userParsing.length-4;i++){
+            if(userParsing[i]!==testParsing[i]){
+              alert("Invalid P4 graph");
+              flag++;
+            }  
+          }
+          if(flag===0)
+            alert("Valid configuration");
+      }
+      r.readAsText(f);
+     
+    } else { 
+      alert("Failed to load file");
+    }
+  },
+
 	render: function () {
 		$(this.el).html(this.template());
 		return this;

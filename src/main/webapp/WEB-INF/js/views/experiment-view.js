@@ -4,6 +4,8 @@ window.ExperimentView = Backbone.View.extend({
 		events: {
 			 'click #newExperiment' : 'newExperiment',
 			 'click #loadExperiment' : 'loadExperiment',
+             'click #attachBtn' : 'readSingleFile',
+             'click #help' :'userHelpPage',
              'click #logout' : 'userLogout'
 		},
 
@@ -24,6 +26,22 @@ window.ExperimentView = Backbone.View.extend({
     	},
 		initialize: function () {       
 		},
+        readSingleFile : function(evt) {
+            var f = document.getElementById("fileInput").files[0]; 
+            if (f) {
+                var r = new FileReader();
+                r.onload = function(e) { 
+                var userParseGraph = e.target.result;
+                var temp = userParseGraph;
+            }
+            r.readAsText(f);
+            } else { 
+                alert("Failed to load file");
+            }
+        },
+        userHelpPage : function(){
+            window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
+        },
         userLogout  : function(){
             Cookies.remove('userName');
             Cookies.remove('userAuth');     
@@ -33,7 +51,6 @@ window.ExperimentView = Backbone.View.extend({
         },
 		render: function () { 
 			$(this.el).html(this.template());
-            $('#description').wysiwyg();
             return this;
 		}
 	});

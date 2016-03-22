@@ -140,8 +140,8 @@ hr {
 	}
 }
 .navbar-inverse .navbar-brand {
-     color: white; 
+     color : #00ACE1;
 }
-.navbar-inverse .navbar-nav>li>a {
-    color: white;
+.navbar-inverse .navbar-nav>li>a { 
+    color : #00ACE1;
 }

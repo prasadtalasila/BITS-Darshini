@@ -6,11 +6,10 @@ window.AnalysisView = Backbone.View.extend({
 			 'click #logout': 'userLogout'
 		},
 		initialize: function () {
-
+			
 		},
-
 		userHelpPage : function(){
-			window.location.href = "https://github.com/prasadtalasila/packetanalyzer";
+			window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
 		},
 		userLogout  : function(){
 			Cookies.remove('userName');
@@ -20,27 +19,17 @@ window.AnalysisView = Backbone.View.extend({
         	return false;
 		},
 		render: function () {
-			var test = {
-    		"row1": {
-        		"id": 1,
-        		"sourceMac":"00:0f:f8:ef:e9:40",
-        		"destMac":"c0:38:96:23:73:35",
-        		"sourceIP":"/54.208.202.178",
-        		"destIP":"/10.30.11.3",
-        		"headerLength":5,
-        		"packetLength":392,
-        		},
-        	"row2" :{
-        		"id": 1,
-        		"sourceMac":"c0:38:96:23:73:35",
-        		"destMac":"00:00:0c:07:ac:7c",
-        		"sourceIP":"/10.30.11.3",
-        		"destIP":"/54.208.202.178",
-        		"headerLength":5,
-        		"packetLength":40,
-        		}
-     		};
-			$(this.el).html(this.template());
+			// var test = {
+   //      		"id": 1,
+   //      		"sourceMac":"00:0f:f8:ef:e9:40",
+   //      		"destMac":"c0:38:96:23:73:35",
+   //      		"sourceIP":"/54.208.202.178",
+   //      		"destIP":"/10.30.11.3",
+   //      		"headerLength":5,
+   //      		"packetLength":392
+   //   		};
+	//			$(this.el).html(_.template( this.template, {test:test} ));
+        	$(this.el).html(this.template());
         	return this;
 		}
 	});
