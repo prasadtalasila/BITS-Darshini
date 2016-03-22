@@ -2,22 +2,13 @@
 <persistence version="2.1"
 	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-	<persistence-unit name="eclipselink_persistence_unit"
+	<persistence-unit name="hibernate_persistence_unit"
 		transaction-type="RESOURCE_LOCAL">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>in.ac.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity</class>
-		<class>in.ac.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity</class>
-		<class>in.ac.bits.protocolanalyzer.persistence.entity.TransportAnalyzerEntity</class>
-		<class>in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity</class>
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/protocol" />
-			<property name="javax.persistence.jdbc.password" value="protocolpassword" />
-			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-			<property name="javax.persistence.jdbc.user" value="protocoluser" />
 			<property name="javax.persistence.schema-generation.database.action"
 				value="create" />
-			<property name="eclipselink.weaving" value="false" />
 		</properties>
 	</persistence-unit>
 </persistence>

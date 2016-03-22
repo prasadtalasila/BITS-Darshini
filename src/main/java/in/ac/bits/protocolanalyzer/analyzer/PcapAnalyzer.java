@@ -5,13 +5,21 @@
  */
 package in.ac.bits.protocolanalyzer.analyzer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.pcap4j.core.NotOpenException;
+import org.pcap4j.core.PcapHandle;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.Pcaps;
+import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.namednumber.DataLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.common.eventbus.Subscribe;
-
-import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
+import in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.PacketIdRepository;
+import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 /**
  *
@@ -21,6 +29,8 @@ import in.ac.bits.protocolanalyzer.persistence.repository.PacketIdRepository;
 
 @Component
 public class PcapAnalyzer {
+
+    private static String defaultNextPacketType = Protocol.ETHERNET;
 
     @Autowired
     private PacketIdRepository packetIdRepository;
@@ -43,13 +53,11 @@ public class PcapAnalyzer {
         return this.nextAnalyzerCell;
     }
 
-    public void endAnalysis(long count) {
-        this.packetReadCount = count;
+    public void endAnalysis() {
         this.endAnalysis = true;
     }
 
-    @Subscribe
-    public void incrementPacketProcessingCount(PacketProcessEndEvent event) {
+    public void incrementPacketProcessingCount() {
         this.packetProcessedCount++;
         if (this.endAnalysis && packetProcessedCount == packetReadCount) {
             session.endSession();
@@ -68,4 +76,42 @@ public class PcapAnalyzer {
         cell.takePacket(currentPacket);
     }
 
+    public long readFile() {
+
+        String sysFile = System.getProperty("PROTOCOL_DATA_FILE");
+        try {
+            PcapHandle handle = Pcaps.openOffline(sysFile);
+            Packet packet = handle.getNextPacket();
+            while (packet != null) {
+                PacketIdEntity packetIdEntity = new PacketIdEntity();
+                String packetType = getPacketType(handle);
+                int startByte = 0;
+                int endByte = packet.length() - 1;
+                PacketWrapper packetWrapper = new PacketWrapper(packet,
+                        packetIdEntity, packetType, startByte, endByte);
+                packetWrapper.setPacketTimestamp(handle.getTimestamp());
+
+                analyzePacket(packetWrapper);
+                packet = handle.getNextPacket();
+                packetReadCount++;
+            }
+            endAnalysis();
+            handle.close();
+        } catch (PcapNativeException ex) {
+            Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
+                    null, ex);
+        } catch (NotOpenException ex) {
+            Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
+                    null, ex);
+        }
+        return packetReadCount;
+    }
+
+    private String getPacketType(PcapHandle handle) {
+        String packetType = defaultNextPacketType;
+        if (handle.getDlt().equals(DataLinkType.EN10MB)) {
+            packetType = Protocol.ETHERNET;
+        }
+        return packetType;
+    }
 }

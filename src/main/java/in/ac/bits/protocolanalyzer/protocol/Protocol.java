@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.link.EthernetAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
 import in.ac.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
-import in.ac.bits.protocolanalyzer.utils.ApplicationContextUtils;
 
 /**
  * 
@@ -34,20 +33,19 @@ public class Protocol {
     private static Map<String, Integer> cellTable;
 
     @Autowired
-    ApplicationContextUtils contextUtils;
+    private WebApplicationContext context;
 
     public void init() {
-        ApplicationContext context = contextUtils.getApplicationContext();
         if (context == null) {
             System.out.println("null context received in Protocol init");
         }
         classTable = new HashMap<String, CustomAnalyzer>();
         cellTable = new HashMap<String, Integer>();
-        initDefaultClassTable(context);
+        initDefaultClassTable();
         initDefaultCellTable();
     }
 
-    private void initDefaultClassTable(ApplicationContext context) {
+    private void initDefaultClassTable() {
         System.out.println("Creating beans with context in protocol!!");
         classTable.put(ETHERNET,
                 (EthernetAnalyzer) context.getBean(EthernetAnalyzer.class));

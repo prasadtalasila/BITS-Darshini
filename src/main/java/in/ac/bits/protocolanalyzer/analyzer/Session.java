@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
@@ -21,6 +22,7 @@ import lombok.Getter;
  *
  */
 @Component
+@Scope(value = "prototype")
 @Getter
 public class Session {
 
@@ -48,9 +50,6 @@ public class Session {
     private EventBusFactory factory;
 
     @Autowired
-    private PcapFileReader pcapFileReader;
-
-    @Autowired
     Protocol protocol;
 
     private String sessionName;
@@ -72,7 +71,7 @@ public class Session {
         linkCell.start();
         networkCell.start();
         transportCell.start();
-        return pcapFileReader.readFile();
+        return pcapAnalyzer.readFile();
     }
 
     public void attachCustomAnalyzer(int cellNumber,

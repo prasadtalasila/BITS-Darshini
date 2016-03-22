@@ -15,7 +15,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
-import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +35,9 @@ public class AnalyzerCell extends Thread {
 
     @Autowired
     private EventBusFactory eventBusFactory;
+
+    @Autowired
+    private PcapAnalyzer pcapAnalyzer;
 
     private String cellID;
     private String eventBusName;
@@ -168,9 +170,7 @@ public class AnalyzerCell extends Thread {
             System.out.println("Next cell chosen = " + nextCell.getCellID());
             nextCell.takePacket(this.packetProcessing);
         } else {
-            EventBus controllerEventBus = eventBusFactory
-                    .getEventBus("pipeline_controller_bus");
-            controllerEventBus.post(new PacketProcessEndEvent());
+            pcapAnalyzer.incrementPacketProcessingCount();
         }
 
         this.isProcessing = false;

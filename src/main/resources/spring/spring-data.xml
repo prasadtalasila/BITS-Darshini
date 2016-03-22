@@ -17,28 +17,45 @@
 	<jpa:repositories base-package="in.ac.bits.protocolanalyzer"
 		transaction-manager-ref="transactionManager" />
 
-	<!-- Declare a datasource that has pooling capabilities -->
-	<bean id="jpaDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close" p:driverClass="${app.jdbc.driverClassName}"
-		p:jdbcUrl="${app.jdbc.url}" p:user="${app.jdbc.username}" p:password="${app.jdbc.password}"
-		p:acquireIncrement="5" p:idleConnectionTestPeriod="60" p:maxPoolSize="100"
-		p:maxStatements="50" p:minPoolSize="10" />
+	<bean id="propertyPlaceholder"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>file:${PROTOCOL_PROPERTY_FILE}</value>
+			</list>
+		</property>
+	</bean>
 
 	<!-- Declare a JPA entityManagerFactory -->
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml" />
-		<property name="persistenceUnitName" value="eclipselink_persistence_unit" />
-		<property name="dataSource" ref="jpaDataSource" />
+		<property name="persistenceUnitName" value="hibernate_persistence_unit" />
+		<property name="dataSource" ref="dataSource" />
 		<property name="jpaVendorAdapter" ref="jpaAdapter" />
+		<property name="jpaProperties">
+		  <props>
+		      <prop key="hibernate.hbm2ddl.auto">create</prop>
+		  </props>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${app.jdbc.driverClassName}" />
+		<property name="url" value="${app.jdbc.url}?createDatabaseIfNotExist=true"/>
+		<property name="username" value="${app.jdbc.username}" />
+		<property name="password" value="${app.jdbc.password}" />
 	</bean>
 
 	<!-- Specify our ORM vendor -->
 	<bean id="jpaAdapter"
-		class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
-		<property name="databasePlatform"
-			value="org.eclipse.persistence.platform.database.PostgreSQLPlatform" />
-		<property name="showSql" value="true" />
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="generateDdl" value="true"></property>
+        <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+		<property name="showSql" value="false" />
 	</bean>
 
 	<tx:annotation-driven />

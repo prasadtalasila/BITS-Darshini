@@ -16,8 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.annotations.ReturnInsert;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +41,6 @@ public class PacketIdEntity implements Serializable {
 
     @Column(name = "packet_id", columnDefinition = "serial")
     @Basic
-    @ReturnInsert(returnOnly = true)
     private long packetId;
 
 }

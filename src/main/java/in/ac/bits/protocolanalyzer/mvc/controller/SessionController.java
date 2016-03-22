@@ -7,18 +7,16 @@ package in.ac.bits.protocolanalyzer.mvc.controller;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
 
 import in.ac.bits.protocolanalyzer.analyzer.Session;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.protocol.ProtocolGraphParser;
-import in.ac.bits.protocolanalyzer.utils.ApplicationContextUtils;
 
 /**
  *
@@ -29,12 +27,11 @@ import in.ac.bits.protocolanalyzer.utils.ApplicationContextUtils;
 public class SessionController {
 
     @Autowired
+    private WebApplicationContext context;
+
     private Session session;
 
     private ProtocolGraphParser graphParser;
-
-    @Autowired
-    ApplicationContextUtils contextUtils;
 
     @Autowired
     private Protocol protocol;
@@ -63,9 +60,7 @@ public class SessionController {
      * later this method can be converted to an API.
      */
     private void init() {
-        ApplicationContext context = new ClassPathXmlApplicationContext(
-                "classpath:spring/appconfig.xml");
-        contextUtils.setApplicationContext(context);
+        this.session = context.getBean(Session.class);
         session.init("session_name");
         System.out.println("Session init complete!!");
         protocol.init();
