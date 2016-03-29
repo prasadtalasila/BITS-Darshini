@@ -29,7 +29,7 @@ import lombok.Setter;
 @Scope(value = "prototype")
 @Getter
 @Setter
-public class AnalyzerCell extends Thread {
+public class AnalyzerCell implements Runnable {
 
     public static final String CONTROLLER_BUS = "pipeline_controller_bus";
 

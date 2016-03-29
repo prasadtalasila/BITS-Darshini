@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -68,9 +70,10 @@ public class Session {
     }
 
     public long startExperiment() {
-        linkCell.start();
-        networkCell.start();
-        transportCell.start();
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        executorService.execute(linkCell);
+        executorService.execute(networkCell);
+        executorService.execute(transportCell);
         return pcapAnalyzer.readFile();
     }
 

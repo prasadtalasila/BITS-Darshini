@@ -48,8 +48,8 @@ public class SessionController {
         /*
          * later to be replaced by session.startExperiment() call return value
          */
-        long readCount = 0;
-        /* long readCount = session.startExperiment(); */
+        /*long readCount = 0;*/
+        long readCount = session.startExperiment(); 
         JSONObject response = new JSONObject();
         response.put("status", "success");
         response.put("pktCount", readCount);
