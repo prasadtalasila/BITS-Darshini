@@ -35,15 +35,10 @@ public class PcapAnalyzer {
     @Autowired
     private PacketIdRepository packetIdRepository;
 
-    @Autowired
-    private Session session;
-
-    private long sequenceValue = -1L;
+    private long sequenceValue = 1;
 
     private AnalyzerCell nextAnalyzerCell;
-    private long packetProcessedCount = 0;
     private long packetReadCount = 0;
-    private boolean endAnalysis = false;
 
     public void setNextAnalyzerCell(AnalyzerCell cell) {
         this.nextAnalyzerCell = cell;
@@ -53,25 +48,11 @@ public class PcapAnalyzer {
         return this.nextAnalyzerCell;
     }
 
-    public void endAnalysis() {
-        this.endAnalysis = true;
-    }
-
-    public void incrementPacketProcessingCount() {
-        this.packetProcessedCount++;
-        if (this.endAnalysis && packetProcessedCount == packetReadCount) {
-            session.endSession();
-        }
-    }
-
     public void analyzePacket(PacketWrapper currentPacket) {
-        if (sequenceValue == -1) {
-            sequenceValue = packetIdRepository.findSequenceValue();
-        }
         currentPacket.getPacketIdEntity().setPacketId(sequenceValue);
         sequenceValue++;
 
-        packetIdRepository.save(currentPacket.getPacketIdEntity());
+        /* packetIdRepository.save(currentPacket.getPacketIdEntity()); */
         AnalyzerCell cell = getNextAnalyzerCell();
         cell.takePacket(currentPacket);
     }
@@ -91,12 +72,11 @@ public class PcapAnalyzer {
                         packetIdEntity, packetType, startByte, endByte);
                 packetWrapper.setPacketTimestamp(handle.getTimestamp());
 
+                packetReadCount++;
                 analyzePacket(packetWrapper);
                 packet = handle.getNextPacket();
-                packetReadCount++;
             }
-            endAnalysis();
-            handle.close();
+            System.out.println("Final read count = " + packetReadCount);
         } catch (PcapNativeException ex) {
             Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
                     null, ex);

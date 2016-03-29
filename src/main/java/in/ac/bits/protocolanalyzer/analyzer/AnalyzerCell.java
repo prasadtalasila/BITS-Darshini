@@ -40,6 +40,7 @@ public class AnalyzerCell implements Runnable {
     private PcapAnalyzer pcapAnalyzer;
 
     private String cellID;
+    private Session session;
     private String eventBusName;
     private EventBus eventBus;
     private GenericAnalyzer genericAnalyzer;
@@ -59,11 +60,13 @@ public class AnalyzerCell implements Runnable {
      * @param cellID
      * @param analyzer
      */
-    public void configure(String sessionId, String cellID,
+    public void configure(Session session, String cellID,
             GenericAnalyzer analyzer) {
 
         this.cellID = cellID;
-        this.eventBusName = sessionId + "_" + cellID + "_event_bus";
+        this.session = session;
+        this.eventBusName = session.getSessionName() + "_" + cellID
+                + "_event_bus";
         this.eventBus = eventBusFactory.getEventBus(eventBusName);
         this.genericAnalyzer = analyzer;
         this.customAnalyzers = new LinkedList<CustomAnalyzer>();
@@ -101,11 +104,6 @@ public class AnalyzerCell implements Runnable {
      * @return true if packet is inserted in queue false if otherwise
      */
     public boolean takePacket(PacketWrapper packet) {
-        /*
-         * System.out.println("Packet recieved in " + this.cellID +
-         * " with current queue size = " + this.inputQueue.size());
-         */
-        System.out.println("Received a packet for processing in: " + cellID);
         try {
             return this.inputQueue.offer(packet, 1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -126,12 +124,12 @@ public class AnalyzerCell implements Runnable {
             if (!isProcessing) {
                 if (!inputQueue.isEmpty()) {
                     isProcessing = true;
-                    process(inputQueue.peek());
+                    process(inputQueue.poll());
                 }
             }
         }
-        System.out.println(this.cellID + " execution stop time = "
-                + System.currentTimeMillis());
+            System.out.println(this.cellID + " execution stop time = "
+                    + System.currentTimeMillis());
     }
 
     private void process(PacketWrapper packet) {
@@ -159,23 +157,14 @@ public class AnalyzerCell implements Runnable {
     private void sendPacket() {
 
         String destinationStageKey = this.packetProcessing.getPacketType();
-        System.out.println(
-                "Destination stage key received from custom analyzer in "
-                        + cellID + "= " + destinationStageKey);
         if (destinationStageMap.containsKey(destinationStageKey)) {
-            System.out.println("Destination stage map contains key : "
-                    + destinationStageKey);
             AnalyzerCell nextCell = this.destinationStageMap
                     .get(destinationStageKey);
-            System.out.println("Next cell chosen = " + nextCell.getCellID());
             nextCell.takePacket(this.packetProcessing);
         } else {
-            pcapAnalyzer.incrementPacketProcessingCount();
+            session.incrementPacketProcessedCount();
         }
-
         this.isProcessing = false;
-        /* remove the current packet from the input queue */
-        inputQueue.remove();
     }
 
     /**

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -52,8 +53,12 @@ public class Session {
     private EventBusFactory factory;
 
     @Autowired
-    Protocol protocol;
+    private Protocol protocol;
 
+    private long packetProcessedCount = 0;
+    private long packetReadCount = 0;
+
+    private ExecutorService executorService;
     private String sessionName;
     private Map<Integer, AnalyzerCell> cellMap;
 
@@ -70,11 +75,15 @@ public class Session {
     }
 
     public long startExperiment() {
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        executorService = Executors.newFixedThreadPool(5);
         executorService.execute(linkCell);
         executorService.execute(networkCell);
         executorService.execute(transportCell);
-        return pcapAnalyzer.readFile();
+        this.packetReadCount = pcapAnalyzer.readFile();
+        if (packetReadCount == packetProcessedCount) {
+            endSession();
+        }
+        return packetReadCount;
     }
 
     public void attachCustomAnalyzer(int cellNumber,
@@ -87,18 +96,17 @@ public class Session {
     }
 
     public void setLinkCell() {
-        linkCell.configure(sessionName, "linkCell", linkAnalyzer);
+        linkCell.configure(this, "linkCell", linkAnalyzer);
         cellMap.put(1, linkCell);
     }
 
     private void setNetworkCell() {
-        networkCell.configure(sessionName, "networkCell", networkAnalyzer);
+        networkCell.configure(this, "networkCell", networkAnalyzer);
         cellMap.put(2, networkCell);
     }
 
     private void setTransportCell() {
-        transportCell.configure(sessionName, "transportCell",
-                transportAnalyzer);
+        transportCell.configure(this, "transportCell", transportAnalyzer);
         cellMap.put(3, transportCell);
     }
 
@@ -123,8 +131,18 @@ public class Session {
         }
     }
 
+    public void incrementPacketProcessedCount() {
+        this.packetProcessedCount++;
+        if (packetReadCount == packetProcessedCount) {
+            endSession();
+        }
+    }
+
     public void endSession() {
+        System.out.println("Ending session...");
         factory.getEventBus(CONTROLLER_BUS).post(new EndAnalysisEvent());
+        executorService.shutdown();
+        System.out.println("Session ended!");
     }
 
     public String getSessionName() {
