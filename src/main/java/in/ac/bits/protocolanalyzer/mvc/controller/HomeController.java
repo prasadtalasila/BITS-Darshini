@@ -45,8 +45,11 @@ public class HomeController {
             return "failure";
         } else if (!lie.getLoginHash().equals(loginHash)) {
             return "failure";
-        } else
+        } else {
+            System.out.println("Login id entity = \n" + lie.toString());
+            System.out.println("ID = " + lie.getId());
             return "success";
+        }
 
     }
 

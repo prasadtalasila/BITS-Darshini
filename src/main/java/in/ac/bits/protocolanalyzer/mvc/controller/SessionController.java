@@ -39,7 +39,6 @@ public class SessionController {
     @RequestMapping(value = "/analysis", method = RequestMethod.GET)
     public @ResponseBody String analyze(
             @RequestParam("graph") String protocolGraphStr) {
-        System.out.println("Graph string parsed = \n" + protocolGraphStr);
         // Initializing session and protocol
         init();
         graphParser = context.getBean(ProtocolGraphParser.class);

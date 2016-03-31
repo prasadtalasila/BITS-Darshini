@@ -5,18 +5,17 @@
  */
 package in.ac.bits.protocolanalyzer.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import in.ac.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
-import in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 
 /**
  *
  * @author amit
  */
-public interface LinkAnalyzerRepository extends
-        JpaRepository<LinkAnalyzerEntity, Long> {
+public interface LinkAnalyzerRepository
+        extends ElasticsearchRepository<LinkAnalyzerEntity, String> {
 
-    public LinkAnalyzerEntity findByPacketIdEntity(PacketIdEntity packetIdEntity);
+    public LinkAnalyzerEntity findByPacketId(long packetId);
 
 }

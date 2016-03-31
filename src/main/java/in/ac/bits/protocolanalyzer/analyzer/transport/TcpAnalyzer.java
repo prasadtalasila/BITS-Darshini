@@ -5,7 +5,9 @@
  */
 package in.ac.bits.protocolanalyzer.analyzer.transport;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.pcap4j.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
+import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
+import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.TcpEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.TcpRepository;
@@ -35,6 +39,8 @@ public class TcpAnalyzer implements CustomAnalyzer {
 
     @Autowired
     private TcpRepository tcpRepository;
+    
+    private List<TcpEntity> entities;
 
     private EventBus eventBus;
     private byte[] tcpHeader;
@@ -44,6 +50,7 @@ public class TcpAnalyzer implements CustomAnalyzer {
     public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         eventBus.register(this);
+        this.entities = new ArrayList<TcpEntity>();
     }
 
     /* Field extraction methods - Start */
@@ -235,10 +242,16 @@ public class TcpAnalyzer implements CustomAnalyzer {
             entity.setUrgentPointer(getUrgentPointer(tcpHeader));
             entity.setNextProtocol(nextProtocol);
 
-            entity.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+            entity.setPacketId(packetWrapper.getPacketId());
 
-            tcpRepository.save(entity);
+            entities.add(entity);
         }
+    }
+
+    @Subscribe
+    public void save(PacketProcessEndEvent event) {
+        /*tcpRepository.save(entities);*/
+        System.out.println("TCP entities stored!!");
     }
 
     public String setNextProtocolType() {

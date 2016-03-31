@@ -12,6 +12,8 @@ import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
+import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
+import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.NetworkAnalyzerRepository;
 
@@ -42,10 +44,14 @@ public class NetworkAnalyzer implements GenericAnalyzer {
 
         // analyze and pass to hooks
         NetworkAnalyzerEntity nae = new NetworkAnalyzerEntity();
-        nae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
-        networkAnalyzerRepository.save(nae);
+        nae.setPacketId(packetWrapper.getPacketId());
+        /*networkAnalyzerRepository.save(nae);*/
 
         publishToEventBus(packetWrapper);
 
+    }
+
+    public void end() {
+        networkLayerEventBus.post(new PacketProcessEndEvent());
     }
 }

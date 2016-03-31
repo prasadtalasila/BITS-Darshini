@@ -2,19 +2,14 @@ package in.ac.bits.protocolanalyzer.persistence.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
-import lombok.EqualsAndHashCode;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Corresponding entity class for ethernet analysis. Corresponding table columns
@@ -26,29 +21,20 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
-@Entity
-@Table(name = "ethernet_analysis")
-public class EthernetEntity implements Serializable {
+@Document(indexName = "protocol", type = "ethernet")
+public class EthernetEntity extends MasterEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="eth_entity_seq")
-    @SequenceGenerator(name="eth_entity_seq", sequenceName="ETH_ENTITY_SEQ")
-    private Long id;
+    private String id;
 
-    @OneToOne
-    private PacketIdEntity packetIdEntity;
+    private long packetId;
 
-    @Column(name = "source_addr")
     private String sourceAddr;
 
-    @Column(name = "destination_addr")
     private String dstAddr;
 
-    @Column(name = "ether_type")
     private String etherType;
 
 }

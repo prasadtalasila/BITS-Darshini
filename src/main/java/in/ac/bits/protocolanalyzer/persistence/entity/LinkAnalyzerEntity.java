@@ -8,19 +8,12 @@ package in.ac.bits.protocolanalyzer.persistence.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
-import lombok.EqualsAndHashCode;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
@@ -29,21 +22,14 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
-@Entity
-@Table(name = "link_analyzer")
+@Document(indexName = "protocol", type = "link")
 public class LinkAnalyzerEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="link_entity_seq")
-    @SequenceGenerator(name="link_entity_seq", sequenceName="LINK_ENTITY_SEQ")
-    private Long id;
+    private String id;
 
-    @OneToOne
-    private PacketIdEntity packetIdEntity;
+    private long packetId;
 
-    @Column(name = "time_stamp")
     private Timestamp timestamp;
 
 }

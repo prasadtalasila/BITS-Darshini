@@ -12,6 +12,8 @@ import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
+import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
+import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.LinkAnalyzerRepository;
 
@@ -41,11 +43,15 @@ public class LinkAnalyzer implements GenericAnalyzer {
     public void analyzePacket(PacketWrapper packetWrapper) {
 
         LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
-        lae.setPacketIdEntity(packetWrapper.getPacketIdEntity());
+        lae.setPacketId(packetWrapper.getPacketId());
         lae.setTimestamp(packetWrapper.getPacketTimestamp());
-        linkAnalyzerRepository.save(lae);
+        /*linkAnalyzerRepository.save(lae);*/
 
         publishToEventBus(packetWrapper);
+    }
+    
+    public void end() {
+        linkLayerEventBus.post(new PacketProcessEndEvent());
     }
 
 }

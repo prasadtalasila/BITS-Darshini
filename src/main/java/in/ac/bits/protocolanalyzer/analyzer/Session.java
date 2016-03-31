@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -33,6 +32,9 @@ public class Session {
 
     @Autowired
     private PcapAnalyzer pcapAnalyzer;
+
+    @Autowired
+    private TimedStorage timedStorage;
 
     @Autowired
     private AnalyzerCell linkCell;
@@ -88,11 +90,8 @@ public class Session {
 
     public void attachCustomAnalyzer(int cellNumber,
             CustomAnalyzer customAnalyzer) {
-        System.out.println("Attaching custom analyzer in session!!");
         AnalyzerCell cell = cellMap.get(cellNumber);
-        System.out.println("Cell got from local map = " + cell.getCellID());
         cell.addCustomAnalyzer(customAnalyzer);
-        System.out.println("Added custom analyzer in cell");
     }
 
     public void setLinkCell() {
@@ -114,17 +113,10 @@ public class Session {
         for (Entry<String, Set<String>> node : protocolGraph.entrySet()) {
             AnalyzerCell cell = cellMap
                     .get(protocol.getCellNumber(node.getKey()));
-            System.out.println(
-                    "Analyzer cell to be configured = " + cell.getCellID());
             Set<String> toNodes = node.getValue();
             for (String protocolNode : toNodes) {
-                System.out.println(
-                        "Protocol name received for attaching to cell ="
-                                + protocolNode);
                 AnalyzerCell destinationCell = cellMap
                         .get(protocol.getCellNumber(protocolNode));
-                System.out.println("Destination cell to be saved = "
-                        + destinationCell.getCellID());
                 cell.configureDestinationStageMap(protocolNode,
                         destinationCell);
             }

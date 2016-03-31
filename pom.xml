@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.bits</groupId>
+	<groupId>in.ac.bits</groupId>
 	<artifactId>protocolanalyzer</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -13,14 +13,19 @@
 	<properties>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.core.version>4.0.3.RELEASE</spring.core.version>
-		<spring.data.jpa.version>1.5.1.RELEASE</spring.data.jpa.version>
+		<spring.core.version>4.1.5.RELEASE</spring.core.version>
 		<spring.data.rest.webmvc.version>2.0.1.RELEASE</spring.data.rest.webmvc.version>
 		<log4j.version>1.2.17</log4j.version>
 		<commons.io.version>2.4</commons.io.version>
+		<org.codehaus.jackson.version>1.9.13</org.codehaus.jackson.version>
 	</properties>
 
 	<dependencies>
+	    <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.1.5.RELEASE</version>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -50,40 +55,17 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.core.version}</version>
 		</dependency>
-		<!-- Spring Data JPA -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>${spring.data.jpa.version}</version>
-		</dependency>
 		<!-- Spring Data Web MVC -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-rest-webmvc</artifactId>
 			<version>${spring.data.rest.webmvc.version}</version>
 		</dependency>
-		<!-- Hibernate JPA vendor -->
-		<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.1.0.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.1.0.Final</version>
-        </dependency>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
 			<version>7.0</version>
 			<scope>provided</scope>
-		</dependency>
-		<!-- PostgreSQL Driver -->
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.1-901.jdbc4</version>
 		</dependency>
 		<!-- Pcap4j Library -->
 		<dependency>
@@ -125,6 +107,18 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20160212</version>
+        </dependency>
+        <!-- Elasticsearch -->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        <!-- Spring Data Elasticsearch -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+            <version>1.3.2.RELEASE</version>
         </dependency>
 	</dependencies>
 

@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 
 import org.pcap4j.packet.Packet;
 
-import in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,16 +24,16 @@ public class PacketWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Packet packet;
-    private PacketIdEntity packetIdEntity;
+    private long packetId;
     private Timestamp packetTimestamp;
     private String packetType;
     private int startByte;
     private int endByte;
 
-    public PacketWrapper(Packet packet, PacketIdEntity packetIdEntity,
-            String packetType, int startByte, int endByte) {
+    public PacketWrapper(Packet packet, long packetId, String packetType,
+            int startByte, int endByte) {
         this.packet = packet;
-        this.packetIdEntity = packetIdEntity;
+        this.packetId = packetId;
         this.packetType = packetType;
         this.startByte = startByte;
         this.endByte = endByte;

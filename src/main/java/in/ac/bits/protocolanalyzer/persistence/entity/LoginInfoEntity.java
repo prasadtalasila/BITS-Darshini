@@ -1,19 +1,20 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
+
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "login_info")
+@Document(indexName = "protocol", type = "credentials")
 public class LoginInfoEntity {
 
     @Id
+    private String id;
+
     private String email;
 
     private String password;

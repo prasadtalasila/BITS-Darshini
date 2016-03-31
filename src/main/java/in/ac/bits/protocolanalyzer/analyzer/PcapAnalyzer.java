@@ -17,8 +17,6 @@ import org.pcap4j.packet.namednumber.DataLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import in.ac.bits.protocolanalyzer.persistence.entity.PacketIdEntity;
-import in.ac.bits.protocolanalyzer.persistence.repository.PacketIdRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 /**
@@ -31,9 +29,6 @@ import in.ac.bits.protocolanalyzer.protocol.Protocol;
 public class PcapAnalyzer {
 
     private static String defaultNextPacketType = Protocol.ETHERNET;
-
-    @Autowired
-    private PacketIdRepository packetIdRepository;
 
     private long sequenceValue = 1;
 
@@ -49,10 +44,9 @@ public class PcapAnalyzer {
     }
 
     public void analyzePacket(PacketWrapper currentPacket) {
-        currentPacket.getPacketIdEntity().setPacketId(sequenceValue);
+        currentPacket.setPacketId(sequenceValue);
         sequenceValue++;
 
-        /* packetIdRepository.save(currentPacket.getPacketIdEntity()); */
         AnalyzerCell cell = getNextAnalyzerCell();
         cell.takePacket(currentPacket);
     }
@@ -64,15 +58,15 @@ public class PcapAnalyzer {
             PcapHandle handle = Pcaps.openOffline(sysFile);
             Packet packet = handle.getNextPacket();
             while (packet != null) {
-                PacketIdEntity packetIdEntity = new PacketIdEntity();
+                packetReadCount++;
+                long packetId = packetReadCount;
                 String packetType = getPacketType(handle);
                 int startByte = 0;
                 int endByte = packet.length() - 1;
                 PacketWrapper packetWrapper = new PacketWrapper(packet,
-                        packetIdEntity, packetType, startByte, endByte);
+                        packetId, packetType, startByte, endByte);
                 packetWrapper.setPacketTimestamp(handle.getTimestamp());
 
-                packetReadCount++;
                 analyzePacket(packetWrapper);
                 packet = handle.getNextPacket();
             }

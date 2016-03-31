@@ -90,8 +90,6 @@ public class AnalyzerCell implements Runnable {
     public void addCustomAnalyzer(CustomAnalyzer analyzer) {
         if (!this.customAnalyzers.contains(analyzer)) {
             this.customAnalyzers.add(analyzer);
-            System.out.println(
-                    "Custom analyzer is being registerd to: " + eventBusName);
             analyzer.configure(eventBus);
         }
     }
@@ -107,7 +105,6 @@ public class AnalyzerCell implements Runnable {
         try {
             return this.inputQueue.offer(packet, 1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            System.out.println("Interrupted while waiting!!");
             e.printStackTrace();
             return false;
         }
@@ -115,6 +112,8 @@ public class AnalyzerCell implements Runnable {
 
     @Subscribe
     public void end(EndAnalysisEvent event) {
+        System.out.println("End analysis is called by session in: " + cellID);
+        genericAnalyzer.end();
         this.isRunning = false;
     }
 

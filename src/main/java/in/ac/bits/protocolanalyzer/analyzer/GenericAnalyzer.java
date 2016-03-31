@@ -24,4 +24,6 @@ public interface GenericAnalyzer {
      */
     public void setEventBus(EventBus eventBus);
 
+    public void end();
+
 }
