@@ -7,10 +7,8 @@ package in.ac.bits.protocolanalyzer.analyzer.transport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.pcap4j.packet.Packet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
@@ -18,11 +16,9 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.TcpEntity;
-import in.ac.bits.protocolanalyzer.persistence.repository.TcpRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
@@ -37,11 +33,6 @@ public class TcpAnalyzer implements CustomAnalyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.TCP;
 
-    @Autowired
-    private TcpRepository tcpRepository;
-    
-    private List<TcpEntity> entities;
-
     private EventBus eventBus;
     private byte[] tcpHeader;
     private int startByte;
@@ -50,7 +41,6 @@ public class TcpAnalyzer implements CustomAnalyzer {
     public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         eventBus.register(this);
-        this.entities = new ArrayList<TcpEntity>();
     }
 
     /* Field extraction methods - Start */
@@ -244,13 +234,11 @@ public class TcpAnalyzer implements CustomAnalyzer {
 
             entity.setPacketId(packetWrapper.getPacketId());
 
-            entities.add(entity);
         }
     }
 
     @Subscribe
     public void save(PacketProcessEndEvent event) {
-        /*tcpRepository.save(entities);*/
         System.out.println("TCP entities stored!!");
     }
 

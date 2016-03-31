@@ -5,17 +5,14 @@
  */
 package in.ac.bits.protocolanalyzer.analyzer.link;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
-import in.ac.bits.protocolanalyzer.persistence.repository.LinkAnalyzerRepository;
 
 /**
  *
@@ -25,9 +22,6 @@ import in.ac.bits.protocolanalyzer.persistence.repository.LinkAnalyzerRepository
 
 @Component
 public class LinkAnalyzer implements GenericAnalyzer {
-
-    @Autowired
-    private LinkAnalyzerRepository linkAnalyzerRepository;
 
     private EventBus linkLayerEventBus;
 
@@ -45,11 +39,10 @@ public class LinkAnalyzer implements GenericAnalyzer {
         LinkAnalyzerEntity lae = new LinkAnalyzerEntity();
         lae.setPacketId(packetWrapper.getPacketId());
         lae.setTimestamp(packetWrapper.getPacketTimestamp());
-        /*linkAnalyzerRepository.save(lae);*/
 
         publishToEventBus(packetWrapper);
     }
-    
+
     public void end() {
         linkLayerEventBus.post(new PacketProcessEndEvent());
     }

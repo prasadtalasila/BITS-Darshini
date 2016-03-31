@@ -5,12 +5,9 @@
  */
 package in.ac.bits.protocolanalyzer.analyzer.network;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.pcap4j.packet.Packet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
@@ -18,11 +15,9 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.IPv4Entity;
-import in.ac.bits.protocolanalyzer.persistence.repository.IPv4Repository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
@@ -36,12 +31,7 @@ public class IPv4Analyzer implements CustomAnalyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.IPV4;
 
-    @Autowired
-    private IPv4Repository ipv4Repository;
-
     private EventBus eventBus;
-    
-    private List<IPv4Entity> entities;
 
     private byte[] ipv4Header;
     private int headerLength;
@@ -51,7 +41,6 @@ public class IPv4Analyzer implements CustomAnalyzer {
     public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.register(this);
-        this.entities = new ArrayList<IPv4Entity>();
     }
 
     /* Field Extractor methods start */
@@ -200,13 +189,11 @@ public class IPv4Analyzer implements CustomAnalyzer {
             entity.setSourceAddr(this.getSouceAddress(ipv4Header));
             entity.setDestinationAddr(this.getDestinationAddress(ipv4Header));
 
-            entities.add(entity);
         }
     }
 
     @Subscribe
     public void save(PacketProcessEndEvent event) {
-        /*ipv4Repository.save(entities);*/
         System.out.println("IP entities stored");
     }
 
