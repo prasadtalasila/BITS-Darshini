@@ -7,13 +7,10 @@ package in.ac.bits.protocolanalyzer.analyzer.link;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
 
 import org.apache.commons.codec.binary.Hex;
 import org.pcap4j.packet.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +19,9 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.EthernetEntity;
+import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 /**
@@ -38,11 +35,9 @@ public class EthernetAnalyzer implements CustomAnalyzer {
     private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.ETHERNET;
 
     @Autowired
-    private ElasticsearchTemplate template;
+    private AnalysisRepository repository;
 
     private EventBus eventBus;
-
-    private List<IndexQuery> queries;
 
     private byte[] ethernetHeader;
     private int startByte;
@@ -51,7 +46,6 @@ public class EthernetAnalyzer implements CustomAnalyzer {
     public void configure(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.register(this);
-        this.queries = new ArrayList<IndexQuery>();
     }
 
     /* Field extraction methods - Start */
@@ -125,19 +119,10 @@ public class EthernetAnalyzer implements CustomAnalyzer {
 
             IndexQuery query = new IndexQuery();
             query.setObject(entity);
-            queries.add(query);
+            repository.save(query);
 
         }
 
-    }
-
-    @Subscribe
-    public void save(PacketProcessEndEvent event) {
-        if (template == null) {
-            System.out.println("Template is null!!!");
-        }
-        template.bulkIndex(queries);
-        System.out.println("Ethernetentities saved!!");
     }
 
     public String setNextProtocolType() {

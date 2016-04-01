@@ -11,7 +11,6 @@ import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.NetworkAnalyzerEntity;
 
 /**
@@ -44,7 +43,4 @@ public class NetworkAnalyzer implements GenericAnalyzer {
 
     }
 
-    public void end() {
-        networkLayerEventBus.post(new PacketProcessEndEvent());
-    }
 }

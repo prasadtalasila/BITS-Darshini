@@ -11,7 +11,6 @@ import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.GenericAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.LinkAnalyzerEntity;
 
 /**
@@ -41,10 +40,6 @@ public class LinkAnalyzer implements GenericAnalyzer {
         lae.setTimestamp(packetWrapper.getPacketTimestamp());
 
         publishToEventBus(packetWrapper);
-    }
-
-    public void end() {
-        linkLayerEventBus.post(new PacketProcessEndEvent());
     }
 
 }

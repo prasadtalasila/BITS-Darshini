@@ -1,12 +1,6 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
-import java.io.Serializable;
-
-import javax.persistence.Id;
-
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,13 +15,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Document(indexName = "protocol", type = "ethernet")
-public class EthernetEntity extends MasterEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    private String id;
+@Document(indexName = "protocol", type = "ethernet", shards=1, replicas=0)
+public class EthernetEntity {
 
     private long packetId;
 

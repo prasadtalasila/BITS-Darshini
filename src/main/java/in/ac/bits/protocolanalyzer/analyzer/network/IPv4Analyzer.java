@@ -8,6 +8,8 @@ package in.ac.bits.protocolanalyzer.analyzer.network;
 import java.util.Arrays;
 
 import org.pcap4j.packet.Packet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
@@ -15,9 +17,9 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
-import in.ac.bits.protocolanalyzer.analyzer.event.PacketProcessEndEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.IPv4Entity;
+import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
@@ -30,6 +32,9 @@ import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 public class IPv4Analyzer implements CustomAnalyzer {
 
     public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.IPV4;
+
+    @Autowired
+    private AnalysisRepository repository;
 
     private EventBus eventBus;
 
@@ -189,12 +194,11 @@ public class IPv4Analyzer implements CustomAnalyzer {
             entity.setSourceAddr(this.getSouceAddress(ipv4Header));
             entity.setDestinationAddr(this.getDestinationAddress(ipv4Header));
 
-        }
-    }
+            IndexQuery query = new IndexQuery();
+            query.setObject(entity);
+            repository.save(query);
 
-    @Subscribe
-    public void save(PacketProcessEndEvent event) {
-        System.out.println("IP entities stored");
+        }
     }
 
     public String setNextProtocolType() {

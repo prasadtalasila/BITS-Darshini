@@ -15,6 +15,7 @@ import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import in.ac.bits.protocolanalyzer.analyzer.link.LinkAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.network.NetworkAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.transport.TransportAnalyzer;
+import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import lombok.Getter;
 
@@ -57,6 +58,9 @@ public class Session {
     @Autowired
     private Protocol protocol;
 
+    @Autowired
+    private AnalysisRepository repository;
+
     private long packetProcessedCount = 0;
     private long packetReadCount = 0;
 
@@ -70,6 +74,7 @@ public class Session {
         setLinkCell();
         setNetworkCell();
         setTransportCell();
+        repository.configure();
         /* Create pcap analyzer and connect linkCell with it */
         this.pcapAnalyzer.setNextAnalyzerCell(linkCell);
         /* Register pcap analyzer to controller event bus */
@@ -81,7 +86,10 @@ public class Session {
         executorService.execute(linkCell);
         executorService.execute(networkCell);
         executorService.execute(transportCell);
+        repository.start();
         this.packetReadCount = pcapAnalyzer.readFile();
+        System.out.println("Read count at session = " + packetReadCount
+                + " Process count now = " + packetProcessedCount);
         if (packetReadCount == packetProcessedCount) {
             endSession();
         }
@@ -134,6 +142,7 @@ public class Session {
         System.out.println("Ending session...");
         factory.getEventBus(CONTROLLER_BUS).post(new EndAnalysisEvent());
         executorService.shutdown();
+        repository.terminate();
         System.out.println("Session ended!");
     }
 
