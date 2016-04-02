@@ -35,10 +35,8 @@ public class Session {
     private PcapAnalyzer pcapAnalyzer;
 
     @Autowired
-    private TimedStorage timedStorage;
-
-    @Autowired
     private AnalyzerCell linkCell;
+
     @Autowired
     private LinkAnalyzer linkAnalyzer;
 
@@ -142,8 +140,9 @@ public class Session {
         System.out.println("Ending session...");
         factory.getEventBus(CONTROLLER_BUS).post(new EndAnalysisEvent());
         executorService.shutdown();
-        repository.terminate();
+        /* repository.terminate(); */
         System.out.println("Session ended!");
+        repository.isFinished();
     }
 
     public String getSessionName() {
