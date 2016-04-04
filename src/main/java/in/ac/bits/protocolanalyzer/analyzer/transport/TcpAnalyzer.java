@@ -50,14 +50,14 @@ public class TcpAnalyzer implements CustomAnalyzer {
     /* Field extraction methods - Start */
     public int getSourcePort(byte[] tcpHeader) {
         byte[] soucePortBytes = Arrays.copyOf(tcpHeader, 2);
-        return ByteOperator.parseBytes(soucePortBytes);
+        return ByteOperator.parseBytesint(soucePortBytes);
     }
 
     public int getDestinationPort(byte[] tcpHeader) {
         byte[] dstPortBytes = Arrays.copyOfRange(tcpHeader,
                 TcpHeader.DESTINATION_PORT_START_BYTE,
                 TcpHeader.DESTINATION_PORT_END_BYTE + 1);
-        return ByteOperator.parseBytes(dstPortBytes);
+        return ByteOperator.parseBytesint(dstPortBytes);
     }
 
     public long getSequenceNumber(byte[] tcpHeader) {
@@ -161,13 +161,13 @@ public class TcpAnalyzer implements CustomAnalyzer {
     public int getWindowSize(byte[] tcpHeader) {
         byte[] windowSizeBytes = Arrays.copyOfRange(tcpHeader,
                 TcpHeader.WINDOW_START_BYTE, TcpHeader.WINDOW_END_BYTE);
-        return ByteOperator.parseBytes(windowSizeBytes);
+        return ByteOperator.parseBytesint(windowSizeBytes);
     }
 
     public int getChecksum(byte[] tcpHeader) {
         byte[] checksumBytes = Arrays.copyOfRange(tcpHeader,
                 TcpHeader.CHECKSUM_START_BYTE, TcpHeader.CHECKSUM_END_BYTE);
-        return ByteOperator.parseBytes(checksumBytes);
+        return ByteOperator.parseBytesint(checksumBytes);
     }
 
     public int getUrgentPointer(byte[] tcpHeader) {
@@ -175,7 +175,7 @@ public class TcpAnalyzer implements CustomAnalyzer {
             byte[] urgPointerBytes = Arrays.copyOfRange(tcpHeader,
                     TcpHeader.URGENT_PTR_START_BYTE,
                     TcpHeader.URGENT_PTR_END_BYTE + 1);
-            return ByteOperator.parseBytes(urgPointerBytes);
+            return ByteOperator.parseBytesint(urgPointerBytes);
         } else {
             return -1;
         }

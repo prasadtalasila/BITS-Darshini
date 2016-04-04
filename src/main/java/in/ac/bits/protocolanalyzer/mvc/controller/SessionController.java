@@ -16,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import in.ac.bits.protocolanalyzer.analyzer.Session;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
+import in.ac.bits.protocolanalyzer.protocol.ProtocolChecker;
 import in.ac.bits.protocolanalyzer.protocol.ProtocolGraphParser;
 
 /**
@@ -35,6 +36,9 @@ public class SessionController {
 
     @Autowired
     private Protocol protocol;
+
+    @Autowired
+    private ProtocolChecker checker;
 
     @RequestMapping(value = "/analysis", method = RequestMethod.GET)
     public @ResponseBody String analyze(
@@ -63,6 +67,7 @@ public class SessionController {
         session.init("session_name");
         System.out.println("Session init complete!!");
         protocol.init();
+        checker.checkNAdd();
         System.out.println(
                 "Successfully completed init method in session controller!!");
     }

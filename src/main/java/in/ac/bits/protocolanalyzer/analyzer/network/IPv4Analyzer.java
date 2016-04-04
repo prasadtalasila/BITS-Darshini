@@ -58,14 +58,14 @@ public class IPv4Analyzer implements CustomAnalyzer {
         byte[] totalLength = Arrays.copyOfRange(ipHeader,
                 IPv4Header.TOTAL_LENGTH_START_BYTE,
                 IPv4Header.TOTAL_LENGTH_END_BYTE + 1);
-        return ByteOperator.parseBytes(totalLength);
+        return ByteOperator.parseBytesint(totalLength);
     }
 
     public int getIdentification(byte[] ipHeader) {
         byte[] identification = Arrays.copyOfRange(ipHeader,
                 IPv4Header.IDENTIFICATION_START_BYTE,
                 IPv4Header.IDENTIFICATION_END_BYTE + 1);
-        return ByteOperator.parseBytes(identification);
+        return ByteOperator.parseBytesint(identification);
     }
 
     public int getDontFragmentBit(byte[] ipHeader) {
@@ -84,7 +84,7 @@ public class IPv4Analyzer implements CustomAnalyzer {
         byte[] bytesWithFragmentOffset = new byte[2];
         bytesWithFragmentOffset[0] = ipHeader[6];
         bytesWithFragmentOffset[1] = ipHeader[7];
-        int fragmentOffset = ByteOperator.parseBytes(bytesWithFragmentOffset);
+        int fragmentOffset = ByteOperator.parseBytesint(bytesWithFragmentOffset);
         /* To neglect 3 flag bits */
         return fragmentOffset & 0x1FFF;
     }
@@ -92,13 +92,13 @@ public class IPv4Analyzer implements CustomAnalyzer {
     public int getTTL(byte[] ipHeader) {
         byte[] ttlByte = new byte[1];
         ttlByte[0] = ipHeader[IPv4Header.TTL_BYTE];
-        return ByteOperator.parseBytes(ttlByte);
+        return ByteOperator.parseBytesint(ttlByte);
     }
 
     public int getProtocol(byte[] ipHeader) {
         byte[] protocolByte = new byte[1];
         protocolByte[0] = ipHeader[IPv4Header.PROTOCOL_BYTE];
-        int protocolInt = ByteOperator.parseBytes(protocolByte);
+        int protocolInt = ByteOperator.parseBytesint(protocolByte);
         return protocolInt;
     }
 
@@ -106,7 +106,7 @@ public class IPv4Analyzer implements CustomAnalyzer {
         byte[] headerChecksumBytes = Arrays.copyOfRange(ipHeader,
                 IPv4Header.HEADER_CHECKSUM_START_BYTE,
                 IPv4Header.HEADER_CHECKSUM_END_BYTE + 1);
-        return ByteOperator.parseBytes(headerChecksumBytes);
+        return ByteOperator.parseBytesint(headerChecksumBytes);
     }
 
     public String getSouceAddress(byte[] ipHeader) {

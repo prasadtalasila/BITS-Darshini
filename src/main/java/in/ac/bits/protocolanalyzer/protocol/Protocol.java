@@ -29,6 +29,7 @@ public class Protocol {
     public static final String HTTPS = "HTTPS";
     public static final String END_PROTOCOL = "End or Unknown Protocol";
 
+    private static Map<String, String> protocolTable;
     private static Map<String, CustomAnalyzer> classTable;
     private static Map<String, Integer> cellTable;
 
@@ -39,10 +40,22 @@ public class Protocol {
         if (context == null) {
             System.out.println("null context received in Protocol init");
         }
+        protocolTable = new HashMap<String, String>();
         classTable = new HashMap<String, CustomAnalyzer>();
         cellTable = new HashMap<String, Integer>();
+    }
+
+    public void defaultCustoms() {
         initDefaultClassTable();
         initDefaultCellTable();
+    }
+
+    public String get(String protocol) {
+        String proto = protocolTable.get(protocol);
+        if (proto == null) {
+            proto = "NULL";
+        }
+        return proto;
     }
 
     private void initDefaultClassTable() {

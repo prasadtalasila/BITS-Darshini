@@ -81,9 +81,12 @@ public class Session {
 
     public long startExperiment() {
         executorService = Executors.newFixedThreadPool(5);
+	System.out.println("Starting linkcell at: " + System.currentTimeMillis());
         executorService.execute(linkCell);
-        executorService.execute(networkCell);
-        executorService.execute(transportCell);
+	System.out.println("Starting networkcell at: " + System.currentTimeMillis());
+	executorService.execute(networkCell);
+        System.out.println("Starting transportcell at: " + System.currentTimeMillis());
+	executorService.execute(transportCell);
         repository.start();
         this.packetReadCount = pcapAnalyzer.readFile();
         System.out.println("Read count at session = " + packetReadCount
