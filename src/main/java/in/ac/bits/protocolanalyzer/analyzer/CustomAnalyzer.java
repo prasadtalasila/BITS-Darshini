@@ -71,12 +71,4 @@ public interface CustomAnalyzer {
      * @param packetWrapper
      */
     public void analyze(PacketWrapper packetWrapper);
-
-    /**
-     * Sets the header field as CONDITIONAL_HEADER_FIELD which decides next
-     * protocol as its payload
-     * 
-     * @param headerName
-     */
-    public void setConditionHeader(String headerName);
 }
