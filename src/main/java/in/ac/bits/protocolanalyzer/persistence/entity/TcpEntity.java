@@ -1,55 +1,37 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
-import org.springframework.data.elasticsearch.annotations.Document;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-/**
- * Corresponding entity class for tcp analysis. Corresponding table columns are
- * all the tcp header fields.
- * 
- * @author crygnus
- *
- */
 @Getter
 @Setter
-@Document(indexName = "protocol", type = "tcp", shards=1, replicas=0)
+@Document(
+    indexName = "protocol",
+    type = "Tcp",
+    shards = 1,
+    replicas = 0
+)
 public class TcpEntity {
+  private long packetId;
 
-    private long packetId;
+  private int window;
 
-    private int sourcePort;
+  private long seqNo;
 
-    private int destinationPort;
+  private byte res;
 
-    private long sequenceNumber;
+  private int srcPort;
 
-    private long ackNumber;
+  private int urgentPtr;
 
-    private int dataOffset;
+  private int checksum;
 
-    private boolean cwrFlagSet;
+  private long ackNo;
 
-    private boolean eceFlagSet;
+  private int dstPort;
 
-    private boolean urgFlagSet;
+  private short flags;
 
-    private boolean ackFlagSet;
-
-    private boolean pshFlagSet;
-
-    private boolean rstFlagSet;
-
-    private boolean synFlagSet;
-
-    private boolean finFlagSet;
-
-    private int windowSize;
-
-    private int checksum;
-
-    private int urgentPointer;
-
-    private String nextProtocol;
+  private byte dataOffset;
 }

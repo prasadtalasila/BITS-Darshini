@@ -1,20 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package in.ac.bits.protocolanalyzer.analyzer.transport;
-
-import java.util.Arrays;
-
-import org.pcap4j.packet.Packet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
@@ -23,249 +10,144 @@ import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
+import java.lang.String;
+import java.util.Arrays;
+import org.pcap4j.packet.Packet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.stereotype.Component;
 
-/**
- *
- * @author amit
- * @author crygnus
- */
 @Component
+@Scope("prototype")
 public class TcpAnalyzer implements CustomAnalyzer {
+  private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.TCP;
 
-    public static final String PACKET_TYPE_OF_RELEVANCE = Protocol.TCP;
+  private byte[] tcpHeader;
 
-    @Autowired
-    private AnalysisRepository repository;
+  @Autowired
+  private AnalysisRepository repository;
 
-    private EventBus eventBus;
-    private byte[] tcpHeader;
-    private int startByte;
-    private int endByte;
+  private int startByte;
 
-    public void configure(EventBus eventBus) {
-        this.eventBus = eventBus;
-        eventBus.register(this);
+  private int endByte;
+
+  private EventBus eventBus;
+
+  public void configure(EventBus eventBus) {
+    this.eventBus = eventBus;
+    this.eventBus.register(this);
+  }
+
+  private void setTcpHeader(PacketWrapper packetWrapper) {
+    Packet packet = packetWrapper.getPacket();
+    int startByte = packetWrapper.getStartByte();
+    byte[] rawPacket = packet.getRawData();
+    this.tcpHeader = Arrays.copyOfRange(rawPacket, startByte, startByte + TcpHeader.TOTAL_HEADER_LENGTH);
+  }
+
+  public void setStartByte(PacketWrapper packetWrapper) {
+    this.startByte = packetWrapper.getStartByte() + TcpHeader.TOTAL_HEADER_LENGTH;
+  }
+
+  public void setEndByte(PacketWrapper packetWrapper) {
+    this.endByte = packetWrapper.getEndByte();
+  }
+
+  public void publishTypeDetectionEvent(String nextPacketType, int startByte, int endByte) {
+    this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType, startByte, endByte));
+  }
+
+  public int getSrcPort(byte[] tcpHeader) {
+    byte[] srcport = BitOperator.parse(tcpHeader, TcpHeader.SRCPORT_START_BIT, TcpHeader.SRCPORT_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(srcport);
+    return returnVar;
+  }
+
+  public int getDstPort(byte[] tcpHeader) {
+    byte[] dstport = BitOperator.parse(tcpHeader, TcpHeader.DSTPORT_START_BIT, TcpHeader.DSTPORT_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(dstport);
+    return returnVar;
+  }
+
+  public long getSeqNo(byte[] tcpHeader) {
+    byte[] seqno = BitOperator.parse(tcpHeader, TcpHeader.SEQNO_START_BIT, TcpHeader.SEQNO_END_BIT);
+    long returnVar = ByteOperator.parseByteslong(seqno);
+    return returnVar;
+  }
+
+  public long getAckNo(byte[] tcpHeader) {
+    byte[] ackno = BitOperator.parse(tcpHeader, TcpHeader.ACKNO_START_BIT, TcpHeader.ACKNO_END_BIT);
+    long returnVar = ByteOperator.parseByteslong(ackno);
+    return returnVar;
+  }
+
+  public byte getDataOffset(byte[] tcpHeader) {
+    byte[] dataoffset = BitOperator.parse(tcpHeader, TcpHeader.DATAOFFSET_START_BIT, TcpHeader.DATAOFFSET_END_BIT);
+    byte returnVar = ByteOperator.parseBytesbyte(dataoffset);
+    return returnVar;
+  }
+
+  public byte getRes(byte[] tcpHeader) {
+    byte[] res = BitOperator.parse(tcpHeader, TcpHeader.RES_START_BIT, TcpHeader.RES_END_BIT);
+    byte returnVar = ByteOperator.parseBytesbyte(res);
+    return returnVar;
+  }
+
+  public short getFlags(byte[] tcpHeader) {
+    byte[] flags = BitOperator.parse(tcpHeader, TcpHeader.FLAGS_START_BIT, TcpHeader.FLAGS_END_BIT);
+    short returnVar = ByteOperator.parseBytesshort(flags);
+    return returnVar;
+  }
+
+  public int getWindow(byte[] tcpHeader) {
+    byte[] window = BitOperator.parse(tcpHeader, TcpHeader.WINDOW_START_BIT, TcpHeader.WINDOW_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(window);
+    return returnVar;
+  }
+
+  public int getChecksum(byte[] tcpHeader) {
+    byte[] checksum = BitOperator.parse(tcpHeader, TcpHeader.CHECKSUM_START_BIT, TcpHeader.CHECKSUM_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(checksum);
+    return returnVar;
+  }
+
+  public int getUrgentPtr(byte[] tcpHeader) {
+    byte[] urgentptr = BitOperator.parse(tcpHeader, TcpHeader.URGENTPTR_START_BIT, TcpHeader.URGENTPTR_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(urgentptr);
+    return returnVar;
+  }
+
+  @Subscribe
+  public void analyze(PacketWrapper packetWrapper) {
+    if (PACKET_TYPE_OF_RELEVANCE.equalsIgnoreCase(packetWrapper.getPacketType())) {
+      setTcpHeader(packetWrapper);
+      String nextPacketType = setNextProtocolType();
+      setStartByte(packetWrapper);
+      setEndByte(packetWrapper);
+      publishTypeDetectionEvent(nextPacketType, startByte, endByte);
+      TcpEntity entity = new TcpEntity();
+      entity.setPacketId(packetWrapper.getPacketId());
+      entity.setWindow(getWindow(tcpHeader));
+      entity.setSeqNo(getSeqNo(tcpHeader));
+      entity.setRes(getRes(tcpHeader));
+      entity.setSrcPort(getSrcPort(tcpHeader));
+      entity.setUrgentPtr(getUrgentPtr(tcpHeader));
+      entity.setChecksum(getChecksum(tcpHeader));
+      entity.setAckNo(getAckNo(tcpHeader));
+      entity.setDstPort(getDstPort(tcpHeader));
+      entity.setFlags(getFlags(tcpHeader));
+      entity.setDataOffset(getDataOffset(tcpHeader));
+      IndexQuery query = new IndexQuery();
+      query.setObject(entity);
+      repository.save(query);
     }
+  }
 
-    /* Field extraction methods - Start */
-    public int getSourcePort(byte[] tcpHeader) {
-        byte[] soucePortBytes = Arrays.copyOf(tcpHeader, 2);
-        return ByteOperator.parseBytesint(soucePortBytes);
+  public String setNextProtocolType() {
+    String nextHeaderType = "NO_CONDITIONAL_HEADER_FIELD";
+    switch(nextHeaderType) {
+      default: return Protocol.END_PROTOCOL;
     }
-
-    public int getDestinationPort(byte[] tcpHeader) {
-        byte[] dstPortBytes = Arrays.copyOfRange(tcpHeader,
-                TcpHeader.DESTINATION_PORT_START_BYTE,
-                TcpHeader.DESTINATION_PORT_END_BYTE + 1);
-        return ByteOperator.parseBytesint(dstPortBytes);
-    }
-
-    public long getSequenceNumber(byte[] tcpHeader) {
-        byte[] sequenceNoBytes = Arrays.copyOfRange(tcpHeader,
-                TcpHeader.SEQUENCE_NUMBER_START_BYTE,
-                TcpHeader.SEQUENCE_NUMBER_END_BYTE + 1);
-        return ByteOperator.parseBytesLong(sequenceNoBytes);
-    }
-
-    public long getAckNumber(byte[] tcpHeader) {
-        byte[] ackBytes = Arrays.copyOfRange(tcpHeader,
-                TcpHeader.ACK_START_BYTE, TcpHeader.ACK_END_BYTE + 1);
-        return ByteOperator.parseBytesLong(ackBytes);
-    }
-
-    public int getDataOffset(byte[] tcpHeader) {
-        byte byteWithDataOffset = tcpHeader[TcpHeader.DATA_OFFSET_BYTE_INDEX];
-        return BitOperator.getNibble(byteWithDataOffset, 0);
-    }
-
-    public boolean isCWRFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.CWR_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isECEFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.ECE_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isURGFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.URG_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isACKFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.ACK_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isPSHFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.PSH_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isRSTFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.RST_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isSYNFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.SYN_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isFINFlagSet(byte[] tcpHeader) {
-        byte flagByte = tcpHeader[TcpHeader.FLAGS_BYTE_INDEX];
-        int flag = BitOperator.getBit(flagByte, TcpHeader.FIN_FLAG_BIT_INDEX);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public int getWindowSize(byte[] tcpHeader) {
-        byte[] windowSizeBytes = Arrays.copyOfRange(tcpHeader,
-                TcpHeader.WINDOW_START_BYTE, TcpHeader.WINDOW_END_BYTE);
-        return ByteOperator.parseBytesint(windowSizeBytes);
-    }
-
-    public int getChecksum(byte[] tcpHeader) {
-        byte[] checksumBytes = Arrays.copyOfRange(tcpHeader,
-                TcpHeader.CHECKSUM_START_BYTE, TcpHeader.CHECKSUM_END_BYTE);
-        return ByteOperator.parseBytesint(checksumBytes);
-    }
-
-    public int getUrgentPointer(byte[] tcpHeader) {
-        if (isURGFlagSet(tcpHeader)) {
-            byte[] urgPointerBytes = Arrays.copyOfRange(tcpHeader,
-                    TcpHeader.URGENT_PTR_START_BYTE,
-                    TcpHeader.URGENT_PTR_END_BYTE + 1);
-            return ByteOperator.parseBytesint(urgPointerBytes);
-        } else {
-            return -1;
-        }
-    }
-    /* Field extraction methods - End */
-
-    private void setTcpHeader(PacketWrapper packetWrapper) {
-        Packet packet = packetWrapper.getPacket();
-        byte[] rawPacket = packet.getRawData();
-        int startByte = packetWrapper.getStartByte();
-        this.tcpHeader = Arrays.copyOfRange(rawPacket, startByte,
-                startByte + TcpHeader.DEFAULT_HEADER_LENGTH_IN_BYTES + 1);
-    }
-
-    public void setStartByte(PacketWrapper packetWrapper) {
-        int startByte = packetWrapper.getStartByte();
-        this.startByte = startByte + TcpHeader.DEFAULT_HEADER_LENGTH_IN_BYTES;
-    }
-
-    public void setEndByte(PacketWrapper packetWrapper) {
-        this.endByte = packetWrapper.getEndByte();
-    }
-
-    @Subscribe
-    public void analyze(PacketWrapper packetWrapper) {
-        if (PACKET_TYPE_OF_RELEVANCE
-                .equalsIgnoreCase(packetWrapper.getPacketType())) {
-            /* Do type detection first and publish the event */
-            /* Set the tcp header */
-            this.setTcpHeader(packetWrapper);
-            /* Set start and end bytes */
-            this.setStartByte(packetWrapper);
-            this.setEndByte(packetWrapper);
-            String nextProtocol = setNextProtocolType();
-            publishTypeDetectionEvent(nextProtocol, this.startByte,
-                    this.endByte);
-
-            /*
-             * Save to database
-             */
-            TcpEntity entity = new TcpEntity();
-
-            entity.setSourcePort(getSourcePort(tcpHeader));
-            entity.setDestinationPort(getDestinationPort(tcpHeader));
-            entity.setSequenceNumber(getSequenceNumber(tcpHeader));
-            entity.setAckNumber(getAckNumber(tcpHeader));
-            entity.setDataOffset(getDataOffset(tcpHeader));
-            entity.setCwrFlagSet(isCWRFlagSet(tcpHeader));
-            entity.setEceFlagSet(isECEFlagSet(tcpHeader));
-            entity.setUrgFlagSet(isURGFlagSet(tcpHeader));
-            entity.setAckFlagSet(isACKFlagSet(tcpHeader));
-            entity.setPshFlagSet(isPSHFlagSet(tcpHeader));
-            entity.setRstFlagSet(isRSTFlagSet(tcpHeader));
-            entity.setSynFlagSet(isSYNFlagSet(tcpHeader));
-            entity.setFinFlagSet(isFINFlagSet(tcpHeader));
-            entity.setWindowSize(getWindowSize(tcpHeader));
-            entity.setChecksum(getChecksum(tcpHeader));
-            entity.setUrgentPointer(getUrgentPointer(tcpHeader));
-            entity.setNextProtocol(nextProtocol);
-            entity.setPacketId(packetWrapper.getPacketId());
-
-            IndexQuery query = new IndexQuery();
-            query.setObject(entity);
-            repository.save(query);
-        }
-    }
-
-    public String setNextProtocolType() {
-
-        int dstPortNo = getDestinationPort(tcpHeader);
-        switch (dstPortNo) {
-        case 80:
-            return Protocol.HTTP;
-
-        case 443:
-            return Protocol.HTTPS;
-
-        default:
-            return Protocol.END_PROTOCOL;
-        }
-    }
-
-    public void publishTypeDetectionEvent(String nextProtocol, int startByte,
-            int endByte) {
-        this.eventBus.post(
-                new PacketTypeDetectionEvent(nextProtocol, startByte, endByte));
-    }
-
-    @Override
-    public void setConditionHeader(String headerName) {
-        // TODO Auto-generated method stub
-    }
+  }
 }

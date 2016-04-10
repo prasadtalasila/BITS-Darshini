@@ -1,45 +1,42 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
-import org.springframework.data.elasticsearch.annotations.Document;
-
+import java.lang.String;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-/**
- * Corresponding entity class for ipv4 analysis. Corresponding table columns
- * include all the ipv4 header fields.
- * 
- * @author crygnus
- *
- */
 @Getter
 @Setter
-@Document(indexName = "protocol", type = "ipv4", shards=1, replicas=0)
+@Document(
+    indexName = "protocol",
+    type = "IPv4",
+    shards = 1,
+    replicas = 0
+)
 public class IPv4Entity {
+  private long packetId;
 
-    private long packetId;
+  private int totalLen;
 
-    private int version;
+  private long dstAddr;
 
-    private int ihl;
+  private short diffserv;
 
-    private int totalLength;
+  private byte version;
 
-    private int identification;
+  private int hdrChecksum;
 
-    private boolean dontFragment;
+  private int identification;
 
-    private boolean moreFragment;
+  private long srcAddr;
 
-    private int fragmentOffset;
+  private byte flags;
 
-    private int ttl;
+  private short fragOffset;
 
-    private String nextProtocol;
+  private byte ihl;
 
-    private int checksum;
+  private String protocol;
 
-    private String sourceAddr;
-
-    private String destinationAddr;
+  private short ttl;
 }
