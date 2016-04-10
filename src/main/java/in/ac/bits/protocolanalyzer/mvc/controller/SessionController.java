@@ -5,6 +5,8 @@
  */
 package in.ac.bits.protocolanalyzer.mvc.controller;
 
+import java.util.Random;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,7 +66,8 @@ public class SessionController {
      */
     private void init() {
         this.session = context.getBean(Session.class);
-        session.init("session_name");
+        Random rand = new Random();
+        session.init("session_name_" + rand.nextInt());
         System.out.println("Session init complete!!");
         protocol.init();
         checker.checkNAdd();
