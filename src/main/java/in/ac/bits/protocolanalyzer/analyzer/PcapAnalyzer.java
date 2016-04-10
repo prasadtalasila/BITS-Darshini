@@ -15,6 +15,7 @@ import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.namednumber.DataLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
@@ -26,6 +27,7 @@ import in.ac.bits.protocolanalyzer.protocol.Protocol;
  */
 
 @Component
+@Scope("prototype")
 public class PcapAnalyzer {
 
     private static String defaultNextPacketType = Protocol.ETHERNET;
