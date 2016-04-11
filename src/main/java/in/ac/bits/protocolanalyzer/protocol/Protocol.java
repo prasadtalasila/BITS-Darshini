@@ -20,15 +20,6 @@ import in.ac.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
 @Component
 public class Protocol {
 
-    public static final String ETHERNET = "ETHERNET";
-    public static final String IPV4 = "IPV4";
-    public static final String IPV6 = "IPV6";
-    public static final String TCP = "TCP";
-    public static final String UDP = "UDP";
-    public static final String HTTP = "HTTP";
-    public static final String HTTPS = "HTTPS";
-    public static final String END_PROTOCOL = "End or Unknown Protocol";
-
     private static Map<String, String> protocolTable;
     private static Map<String, CustomAnalyzer> classTable;
     private static Map<String, Integer> cellTable;
@@ -46,11 +37,12 @@ public class Protocol {
     }
 
     public void defaultCustoms() {
+        initDefaultProtocolTable();
         initDefaultClassTable();
         initDefaultCellTable();
     }
 
-    public String get(String protocol) {
+    public static String get(String protocol) {
         String proto = protocolTable.get(protocol);
         if (proto == null) {
             proto = "NULL";
@@ -58,20 +50,28 @@ public class Protocol {
         return proto;
     }
 
+    private void initDefaultProtocolTable() {
+        protocolTable.put("ETHERNET", "ETHERNET");
+        protocolTable.put("IPV4", "IPV4");
+        protocolTable.put("TCP", "TCP");
+        protocolTable.put("END_PROTOCOL", "End or Unknown Protocol");
+    }
+
     private void initDefaultClassTable() {
         System.out.println("Creating beans with context in protocol!!");
-        classTable.put(ETHERNET,
+        classTable.put(get("ETHERNET"),
                 (EthernetAnalyzer) context.getBean(EthernetAnalyzer.class));
-        classTable.put(IPV4,
+        classTable.put(get("IPV4"),
                 (IPv4Analyzer) context.getBean(IPv4Analyzer.class));
-        classTable.put(TCP, (TcpAnalyzer) context.getBean(TcpAnalyzer.class));
+        classTable.put(get("TCP"),
+                (TcpAnalyzer) context.getBean(TcpAnalyzer.class));
         System.out.println("All custom beans created in Protocol!!");
     }
 
     private void initDefaultCellTable() {
-        cellTable.put(ETHERNET, 1);
-        cellTable.put(IPV4, 2);
-        cellTable.put(TCP, 3);
+        cellTable.put(get("ETHERNET"), 1);
+        cellTable.put(get("IPV4"), 2);
+        cellTable.put(get("TCP"), 3);
     }
 
     public CustomAnalyzer getCustomAnalyzer(String protocolName) {

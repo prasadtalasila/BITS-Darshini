@@ -8,6 +8,7 @@ import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.IPv4Entity;
 import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
+import in.ac.bits.protocolanalyzer.utils.Beautify;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 import java.lang.String;
@@ -22,8 +23,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("prototype")
 public class IPv4Analyzer implements CustomAnalyzer {
-  private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.IPV4;
-
   private byte[] ipv4Header;
 
   @Autowired
@@ -112,27 +111,24 @@ public class IPv4Analyzer implements CustomAnalyzer {
     return Hex.encodeHexString(protocol);
   }
 
-  public int getHdrChecksum(byte[] ipv4Header) {
+  public String getHdrChecksum(byte[] ipv4Header) {
     byte[] hdrchecksum = BitOperator.parse(ipv4Header, IPv4Header.HDRCHECKSUM_START_BIT, IPv4Header.HDRCHECKSUM_END_BIT);
-    int returnVar = ByteOperator.parseBytesint(hdrchecksum);
-    return returnVar;
+    return Beautify.beautify(hdrchecksum, "hex");
   }
 
-  public long getSrcAddr(byte[] ipv4Header) {
+  public String getSrcAddr(byte[] ipv4Header) {
     byte[] srcaddr = BitOperator.parse(ipv4Header, IPv4Header.SRCADDR_START_BIT, IPv4Header.SRCADDR_END_BIT);
-    long returnVar = ByteOperator.parseByteslong(srcaddr);
-    return returnVar;
+    return Beautify.beautify(srcaddr, "ip4");
   }
 
-  public long getDstAddr(byte[] ipv4Header) {
+  public String getDstAddr(byte[] ipv4Header) {
     byte[] dstaddr = BitOperator.parse(ipv4Header, IPv4Header.DSTADDR_START_BIT, IPv4Header.DSTADDR_END_BIT);
-    long returnVar = ByteOperator.parseByteslong(dstaddr);
-    return returnVar;
+    return Beautify.beautify(dstaddr, "ip4");
   }
 
   @Subscribe
   public void analyze(PacketWrapper packetWrapper) {
-    if (PACKET_TYPE_OF_RELEVANCE.equalsIgnoreCase(packetWrapper.getPacketType())) {
+    if (Protocol.get("IPV4").equalsIgnoreCase(packetWrapper.getPacketType())) {
       setIPv4Header(packetWrapper);
       String nextPacketType = setNextProtocolType();
       setStartByte(packetWrapper);
@@ -161,8 +157,8 @@ public class IPv4Analyzer implements CustomAnalyzer {
   public String setNextProtocolType() {
     String nextHeaderType = getProtocol(this.ipv4Header);
     switch(nextHeaderType) {
-      case "06": return Protocol.TCP;
-      default: return Protocol.END_PROTOCOL;
+      case "06": return Protocol.get("TCP");
+      default: return Protocol.get("END_PROTOCOL");
     }
   }
 }

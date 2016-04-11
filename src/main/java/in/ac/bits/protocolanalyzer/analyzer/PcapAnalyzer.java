@@ -14,7 +14,6 @@ import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.namednumber.DataLinkType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -29,8 +28,6 @@ import in.ac.bits.protocolanalyzer.protocol.Protocol;
 @Component
 @Scope("prototype")
 public class PcapAnalyzer {
-
-    private static String defaultNextPacketType = Protocol.ETHERNET;
 
     private long sequenceValue = 1;
 
@@ -84,9 +81,9 @@ public class PcapAnalyzer {
     }
 
     private String getPacketType(PcapHandle handle) {
-        String packetType = defaultNextPacketType;
+        String packetType = Protocol.get("ETHERNET");
         if (handle.getDlt().equals(DataLinkType.EN10MB)) {
-            packetType = Protocol.ETHERNET;
+            packetType = Protocol.get("ETHERNET");
         }
         return packetType;
     }

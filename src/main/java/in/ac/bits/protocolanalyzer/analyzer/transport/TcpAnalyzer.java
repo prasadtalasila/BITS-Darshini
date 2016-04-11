@@ -8,6 +8,7 @@ import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.TcpEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
+import in.ac.bits.protocolanalyzer.utils.Beautify;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 import java.lang.String;
@@ -21,8 +22,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("prototype")
 public class TcpAnalyzer implements CustomAnalyzer {
-  private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.TCP;
-
   private byte[] tcpHeader;
 
   @Autowired
@@ -94,10 +93,9 @@ public class TcpAnalyzer implements CustomAnalyzer {
     return returnVar;
   }
 
-  public short getFlags(byte[] tcpHeader) {
+  public String getFlags(byte[] tcpHeader) {
     byte[] flags = BitOperator.parse(tcpHeader, TcpHeader.FLAGS_START_BIT, TcpHeader.FLAGS_END_BIT);
-    short returnVar = ByteOperator.parseBytesshort(flags);
-    return returnVar;
+    return Beautify.beautify(flags, "hex");
   }
 
   public int getWindow(byte[] tcpHeader) {
@@ -106,10 +104,9 @@ public class TcpAnalyzer implements CustomAnalyzer {
     return returnVar;
   }
 
-  public int getChecksum(byte[] tcpHeader) {
+  public String getChecksum(byte[] tcpHeader) {
     byte[] checksum = BitOperator.parse(tcpHeader, TcpHeader.CHECKSUM_START_BIT, TcpHeader.CHECKSUM_END_BIT);
-    int returnVar = ByteOperator.parseBytesint(checksum);
-    return returnVar;
+    return Beautify.beautify(checksum, "hex");
   }
 
   public int getUrgentPtr(byte[] tcpHeader) {
@@ -120,7 +117,7 @@ public class TcpAnalyzer implements CustomAnalyzer {
 
   @Subscribe
   public void analyze(PacketWrapper packetWrapper) {
-    if (PACKET_TYPE_OF_RELEVANCE.equalsIgnoreCase(packetWrapper.getPacketType())) {
+    if (Protocol.get("TCP").equalsIgnoreCase(packetWrapper.getPacketType())) {
       setTcpHeader(packetWrapper);
       String nextPacketType = setNextProtocolType();
       setStartByte(packetWrapper);
@@ -147,7 +144,7 @@ public class TcpAnalyzer implements CustomAnalyzer {
   public String setNextProtocolType() {
     String nextHeaderType = "NO_CONDITIONAL_HEADER_FIELD";
     switch(nextHeaderType) {
-      default: return Protocol.END_PROTOCOL;
+      default: return Protocol.get("END_PROTOCOL");
     }
   }
 }

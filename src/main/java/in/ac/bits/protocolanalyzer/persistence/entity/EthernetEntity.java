@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Setter
 @Document(
     indexName = "protocol",
-    type = "Ethernet",
+    type = "ethernet",
     shards = 1,
     replicas = 0
 )
@@ -18,7 +18,7 @@ public class EthernetEntity {
 
   private String ethertype;
 
-  private long dst_addr;
+  private String dst_addr;
 
-  private long src_addr;
+  private String src_addr;
 }

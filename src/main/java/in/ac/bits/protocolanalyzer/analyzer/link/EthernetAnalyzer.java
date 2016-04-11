@@ -8,8 +8,8 @@ import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
 import in.ac.bits.protocolanalyzer.persistence.entity.EthernetEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
+import in.ac.bits.protocolanalyzer.utils.Beautify;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
-import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 import java.lang.String;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Hex;
@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("prototype")
 public class EthernetAnalyzer implements CustomAnalyzer {
-  private static final String PACKET_TYPE_OF_RELEVANCE = Protocol.ETHERNET;
-
   private byte[] ethernetHeader;
 
   @Autowired
@@ -59,16 +57,14 @@ public class EthernetAnalyzer implements CustomAnalyzer {
     this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType, startByte, endByte));
   }
 
-  public long getDst_addr(byte[] ethernetHeader) {
+  public String getDst_addr(byte[] ethernetHeader) {
     byte[] dst_addr = BitOperator.parse(ethernetHeader, EthernetHeader.DST_ADDR_START_BIT, EthernetHeader.DST_ADDR_END_BIT);
-    long returnVar = ByteOperator.parseByteslong(dst_addr);
-    return returnVar;
+    return Beautify.beautify(dst_addr, "hex2");
   }
 
-  public long getSrc_addr(byte[] ethernetHeader) {
+  public String getSrc_addr(byte[] ethernetHeader) {
     byte[] src_addr = BitOperator.parse(ethernetHeader, EthernetHeader.SRC_ADDR_START_BIT, EthernetHeader.SRC_ADDR_END_BIT);
-    long returnVar = ByteOperator.parseByteslong(src_addr);
-    return returnVar;
+    return Beautify.beautify(src_addr, "hex2");
   }
 
   public String getEthertype(byte[] ethernetHeader) {
@@ -78,7 +74,7 @@ public class EthernetAnalyzer implements CustomAnalyzer {
 
   @Subscribe
   public void analyze(PacketWrapper packetWrapper) {
-    if (PACKET_TYPE_OF_RELEVANCE.equalsIgnoreCase(packetWrapper.getPacketType())) {
+    if (Protocol.get("ETHERNET").equalsIgnoreCase(packetWrapper.getPacketType())) {
       setEthernetHeader(packetWrapper);
       String nextPacketType = setNextProtocolType();
       setStartByte(packetWrapper);
@@ -98,8 +94,8 @@ public class EthernetAnalyzer implements CustomAnalyzer {
   public String setNextProtocolType() {
     String nextHeaderType = getEthertype(this.ethernetHeader);
     switch(nextHeaderType) {
-      case "0800": return Protocol.IPV4;
-      default: return Protocol.END_PROTOCOL;
+      case "0800": return Protocol.get("IPV4");
+      default: return Protocol.get("END_PROTOCOL");
     }
   }
 }
