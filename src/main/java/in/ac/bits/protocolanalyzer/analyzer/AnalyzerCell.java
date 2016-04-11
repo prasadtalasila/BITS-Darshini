@@ -16,6 +16,7 @@ import com.google.common.eventbus.Subscribe;
 
 import in.ac.bits.protocolanalyzer.analyzer.event.EndAnalysisEvent;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
+import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -87,10 +88,10 @@ public class AnalyzerCell implements Runnable {
      * 
      * @param analyzer
      */
-    public void addCustomAnalyzer(CustomAnalyzer analyzer) {
+    public void addCustomAnalyzer(CustomAnalyzer analyzer, AnalysisRepository repo, String sessionName) {
         if (!this.customAnalyzers.contains(analyzer)) {
             this.customAnalyzers.add(analyzer);
-            analyzer.configure(eventBus);
+            analyzer.configure(eventBus, repo, sessionName);
         }
     }
 

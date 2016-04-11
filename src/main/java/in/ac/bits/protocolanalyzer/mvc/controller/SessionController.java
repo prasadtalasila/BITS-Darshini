@@ -67,7 +67,7 @@ public class SessionController {
     private void init() {
         this.session = context.getBean(Session.class);
         Random rand = new Random();
-        session.init("session_name_" + rand.nextInt());
+        session.init("session_" + rand.nextInt());
         System.out.println("Session init complete!!");
         protocol.init();
         checker.checkNAdd();

@@ -68,6 +68,7 @@ public class Session {
 
     public void init(String sessionName) {
         this.sessionName = sessionName;
+        System.out.println("The session name = " + sessionName);
         this.cellMap = new HashMap<Integer, AnalyzerCell>();
         setLinkCell();
         setNetworkCell();
@@ -100,7 +101,7 @@ public class Session {
     public void attachCustomAnalyzer(int cellNumber,
             CustomAnalyzer customAnalyzer) {
         AnalyzerCell cell = cellMap.get(cellNumber);
-        cell.addCustomAnalyzer(customAnalyzer);
+        cell.addCustomAnalyzer(customAnalyzer, repository, sessionName);
     }
 
     public void setLinkCell() {

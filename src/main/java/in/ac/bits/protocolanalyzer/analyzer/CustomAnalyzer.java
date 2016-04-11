@@ -3,6 +3,7 @@ package in.ac.bits.protocolanalyzer.analyzer;
 import com.google.common.eventbus.EventBus;
 
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
+import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 /**
@@ -26,7 +27,8 @@ public interface CustomAnalyzer {
      * @param {@link
      *            EventBus}
      */
-    public void configure(EventBus eventBus);
+    public void configure(EventBus eventBus, AnalysisRepository repository,
+            String sessionName);
 
     /**
      * Sets the start byte in the relevant byte range for the next analyzer
