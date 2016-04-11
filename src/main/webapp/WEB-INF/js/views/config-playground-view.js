@@ -4,8 +4,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	events: {
 		'click #help' :'userHelpPage',
 		'click #logout' : 'userLogout',
-		'click #analyzeBtn' : 'analysis',
-    'click #analyzeBtn' : 'readSingleFile',
+    'click #analyzeBtn' : 'analysis',
     'click #validateBtn' : 'graphValidation'
 	},
 	initialize: function () {
@@ -24,6 +23,18 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	},
 	analysis : function(event){
 		event.preventDefault();
+    $.ajax({
+            url:'http://localhost:9200/protocol/ethernet/_search',
+             type:'GET',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             success:function (data) {
+                 
+             },
+             error:function(){
+                
+             }
+             });
 		app.navigate("#/analysis",{trigger: true});
 	},
   readSingleFile : function(evt) {
@@ -31,6 +42,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
     var f = document.getElementById("fileInput").files[0]; 
 
     if (f) {
+      
       var r = new FileReader();
       r.onload = function(e) { 
           var userParseGraph = e.target.result;
@@ -41,6 +53,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
              dataType:'text',
              data: {graph : userParseGraph},
              success:function (data) {
+              
             	 var jsonData = JSON.parse(data);
             	 var status = jsonData.status;
                  if(status==="success"){

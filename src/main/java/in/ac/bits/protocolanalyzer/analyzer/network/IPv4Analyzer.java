@@ -15,9 +15,9 @@ import java.lang.String;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Hex;
 import org.pcap4j.packet.Packet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +25,8 @@ import org.springframework.stereotype.Component;
 public class IPv4Analyzer implements CustomAnalyzer {
   private byte[] ipv4Header;
 
-  @Autowired
+  private String indexName;
+
   private AnalysisRepository repository;
 
   private int startByte;
@@ -34,9 +35,11 @@ public class IPv4Analyzer implements CustomAnalyzer {
 
   private EventBus eventBus;
 
-  public void configure(EventBus eventBus) {
+  public void configure(EventBus eventBus, AnalysisRepository repository, String sessionName) {
     this.eventBus = eventBus;
     this.eventBus.register(this);
+    this.repository = repository;
+    this.indexName = "protocol_" + sessionName;
   }
 
   private void setIPv4Header(PacketWrapper packetWrapper) {
@@ -148,8 +151,8 @@ public class IPv4Analyzer implements CustomAnalyzer {
       entity.setIhl(getIhl(ipv4Header));
       entity.setProtocol(getProtocol(ipv4Header));
       entity.setTtl(getTtl(ipv4Header));
-      IndexQuery query = new IndexQuery();
-      query.setObject(entity);
+      IndexQueryBuilder builder = new IndexQueryBuilder();
+      IndexQuery query = builder.withIndexName(this.indexName).withType("ipv4").withObject(entity).build();
       repository.save(query);
     }
   }

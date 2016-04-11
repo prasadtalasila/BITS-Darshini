@@ -14,9 +14,9 @@ import java.lang.String;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Hex;
 import org.pcap4j.packet.Packet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +24,8 @@ import org.springframework.stereotype.Component;
 public class EthernetAnalyzer implements CustomAnalyzer {
   private byte[] ethernetHeader;
 
-  @Autowired
+  private String indexName;
+
   private AnalysisRepository repository;
 
   private int startByte;
@@ -33,9 +34,11 @@ public class EthernetAnalyzer implements CustomAnalyzer {
 
   private EventBus eventBus;
 
-  public void configure(EventBus eventBus) {
+  public void configure(EventBus eventBus, AnalysisRepository repository, String sessionName) {
     this.eventBus = eventBus;
     this.eventBus.register(this);
+    this.repository = repository;
+    this.indexName = "protocol_" + sessionName;
   }
 
   private void setEthernetHeader(PacketWrapper packetWrapper) {
@@ -85,8 +88,8 @@ public class EthernetAnalyzer implements CustomAnalyzer {
       entity.setEthertype(getEthertype(ethernetHeader));
       entity.setDst_addr(getDst_addr(ethernetHeader));
       entity.setSrc_addr(getSrc_addr(ethernetHeader));
-      IndexQuery query = new IndexQuery();
-      query.setObject(entity);
+      IndexQueryBuilder builder = new IndexQueryBuilder();
+      IndexQuery query = builder.withIndexName(this.indexName).withType("ethernet").withObject(entity).build();
       repository.save(query);
     }
   }

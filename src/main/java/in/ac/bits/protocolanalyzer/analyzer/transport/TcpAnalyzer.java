@@ -14,9 +14,9 @@ import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 import java.lang.String;
 import java.util.Arrays;
 import org.pcap4j.packet.Packet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +24,8 @@ import org.springframework.stereotype.Component;
 public class TcpAnalyzer implements CustomAnalyzer {
   private byte[] tcpHeader;
 
-  @Autowired
+  private String indexName;
+
   private AnalysisRepository repository;
 
   private int startByte;
@@ -33,9 +34,11 @@ public class TcpAnalyzer implements CustomAnalyzer {
 
   private EventBus eventBus;
 
-  public void configure(EventBus eventBus) {
+  public void configure(EventBus eventBus, AnalysisRepository repository, String sessionName) {
     this.eventBus = eventBus;
     this.eventBus.register(this);
+    this.repository = repository;
+    this.indexName = "protocol_" + sessionName;
   }
 
   private void setTcpHeader(PacketWrapper packetWrapper) {
@@ -135,8 +138,8 @@ public class TcpAnalyzer implements CustomAnalyzer {
       entity.setDstPort(getDstPort(tcpHeader));
       entity.setFlags(getFlags(tcpHeader));
       entity.setDataOffset(getDataOffset(tcpHeader));
-      IndexQuery query = new IndexQuery();
-      query.setObject(entity);
+      IndexQueryBuilder builder = new IndexQueryBuilder();
+      IndexQuery query = builder.withIndexName(this.indexName).withType("tcp").withObject(entity).build();
       repository.save(query);
     }
   }

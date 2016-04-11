@@ -18,7 +18,26 @@ window.ExperimentView = Backbone.View.extend({
         		testid : $('#testid').val(),
         		pcapfiles : $('#pcapfiles').val()
         	};
-        	app.navigate("#/config");
+            $.ajax({
+            url:'/protocolanalyzer/signin',
+             type:'POST',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: JSON.stringify(formValues),
+             success:function (data) {
+                 var jsonData = JSON.parse(data);
+                 var status = jsonData.status;
+                 if(status === "success") {
+                    app.navigate("#/config");
+                 }
+                 else if(status ==="failure"){
+                    alert("Error logging in, please check your details");
+                 }
+             },
+             error:function(){
+                console.log("Error logging in");
+             }
+             });
 
     	},
     	loadExperiment : function() {
@@ -48,6 +67,13 @@ window.ExperimentView = Backbone.View.extend({
             app.navigate("#",{trigger: true});
             alert("You have been logged out. Please login to continue");
             return false;
+        },
+        dispose: function() {
+            this.remove();
+            this.undelegateEvents() ;
+            // unbind events that are
+            // set on this view
+            this.off();
         },
 		render: function () { 
 			$(this.el).html(this.template());
