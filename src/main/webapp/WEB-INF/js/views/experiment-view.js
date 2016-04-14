@@ -19,7 +19,7 @@ window.ExperimentView = Backbone.View.extend({
         		pcapfiles : $('#pcapfiles').val()
         	};
             $.ajax({
-            url:'/protocolanalyzer/signin',
+            url:'/protocolanalyzer/sessioninfo',
              type:'POST',
              contentType: 'application/json; charset=utf-8',
              dataType:'text',
@@ -31,11 +31,11 @@ window.ExperimentView = Backbone.View.extend({
                     app.navigate("#/config");
                  }
                  else if(status ==="failure"){
-                    alert("Error logging in, please check your details");
+                    alert(jsonData.remark);
                  }
              },
              error:function(){
-                console.log("Error logging in");
+                console.log("Error connecting to the server!");
              }
              });
 

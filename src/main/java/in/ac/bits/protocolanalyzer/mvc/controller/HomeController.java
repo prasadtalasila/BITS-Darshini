@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import in.ac.bits.protocolanalyzer.persistence.entity.ExperimentDetails;
 import in.ac.bits.protocolanalyzer.persistence.entity.LoginInfoEntity;
+import in.ac.bits.protocolanalyzer.persistence.repository.DetailsRepository;
 import in.ac.bits.protocolanalyzer.persistence.repository.LoginInfoRepository;
 import in.ac.bits.protocolanalyzer.utils.Security;
 
@@ -33,13 +35,18 @@ public class HomeController {
     @Autowired
     LoginInfoRepository loginInfoRepo;
 
+    @Autowired
+    DetailsRepository detailsRepo;
+
     @RequestMapping
     public String home() {
         return "view/index.html";
     }
 
     @RequestMapping(value = "auth", method = RequestMethod.GET)
-    public @ResponseBody String authenticate(@RequestParam("loginHash") String loginHash, @RequestParam("user") String email) {
+    public @ResponseBody String authenticate(
+            @RequestParam("loginHash") String loginHash,
+            @RequestParam("user") String email) {
         LoginInfoEntity lie = loginInfoRepo.findByEmail(email);
         if (lie == null) {
             return "failure";
@@ -51,6 +58,24 @@ public class HomeController {
             return "success";
         }
 
+    }
+
+    @RequestMapping(value = "sessioninfo", method = RequestMethod.POST)
+    public @ResponseBody String saveSessionInfo(
+            @RequestBody ExperimentDetails details,
+            HttpServletRequest request) {
+        JSONObject response = new JSONObject();
+        if (detailsRepo
+                .findByExperimentName(details.getExperimentName()) == null) {
+            response.put("status", "success");
+            response.put("remark", "none");
+            detailsRepo.save(details);
+        } else {
+            response.put("status", "failure");
+            response.put("remark",
+                    "Experiment name already exists. Should be unique!");
+        }
+        return response.toString();
     }
 
     @RequestMapping(value = "signin", method = RequestMethod.POST)
