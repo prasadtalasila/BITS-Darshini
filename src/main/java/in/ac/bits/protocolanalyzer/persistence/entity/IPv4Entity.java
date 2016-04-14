@@ -1,12 +1,16 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
 import java.lang.String;
+
+import org.springframework.data.annotation.Id;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class IPv4Entity {
+    @Id
   private long packetId;
 
   private int totalLen;

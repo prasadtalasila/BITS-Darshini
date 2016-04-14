@@ -27,7 +27,7 @@ public class AnalysisRepository {
     private boolean isFinished = false;
 
     private ArrayList<IndexQuery> currentBucket;
-    private int bucketCapacity = 50000;
+    private int bucketCapacity = 20000;
 
     public void configure() {
         this.queries = new ConcurrentLinkedQueue<IndexQuery>();
