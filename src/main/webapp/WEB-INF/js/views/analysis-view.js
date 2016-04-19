@@ -3,10 +3,59 @@ window.AnalysisView = Backbone.View.extend({
 
 		events: {
 			 'click #help' :'userHelpPage',
-			 'click #logout': 'userLogout'
+			 'click #logout': 'userLogout',
+			 'click #populateTable': 'populateTable'
 		},
 		initialize: function () {
-			
+
+		},
+		populate: function(){ 
+			//var numberOfColumns = document.getElementById("packetInfo").rows[0].cells.length;
+			/*var table = document.getElementById("packetInfo").getElementsByTagName('tbody')[0];
+			var row = table.insertRow(table.rows.length);
+			//run check here to see if length of data exceeds no. of columns in table
+			for(i=0;i<10;i++){
+			var cell = row.insertCell(i);
+			cell.innerHTML = "Test Data"+i;
+			}
+			$('.show_hide').showHide({			 
+				speed: 1400,  // speed you want the toggle to happen	
+				easing: '',  // the animation effect you want. Remove this line if you dont want an effect and if you haven't included jQuery UI
+				changeText: 1, // if you dont want the button text to change, set this to 0
+				showText: 'View',// the button text to show when a div is closed
+				hideText: 'Hide' // the button text to show when a div is open
+			});
+			populateTable();*/
+		},
+		populateTable :function(){
+  			rows = globalData["hits"]["hits"];
+  			var td, tr;
+  			$("#packetInfo tbody tr").remove(); //clean table
+  			var tdata = $("#packetInfo tbody")
+  			for(var row in rows){
+    			var rowSource = rows[row]["_source"]
+    			tr = $("<tr>");
+    			//packetId
+    			td = $("<td>").text(rowSource["packetId"]);
+    			tr.append(td);
+    			//Source MAC
+    			td = $("<td>").text(rowSource["sourceAddr"]);
+    			tr.append(td);
+    			//Dest MAC
+    			td = $("<td>").text(rowSource["dstAddr"]);
+    			tr.append(td);
+				tdata.append(tr);
+  			}
+  			//update handlers
+  			$("#packetInfo tbody tr").click( function(){
+    			var ind = $(this).index();
+    			botInfo = globalData["hits"]["hits"][ind];
+    			stringToWrite =  "";
+    			for(var key in botInfo){
+      				stringToWrite+= key + ": " + JSON.stringify(botInfo[key]) + "\n";
+    			}
+    			$("#dataContainer").text(stringToWrite);
+  			});
 		},
 		userHelpPage : function(){
 			window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
@@ -19,16 +68,6 @@ window.AnalysisView = Backbone.View.extend({
         	return false;
 		},
 		render: function () {
-			// var test = {
-   //      		"id": 1,
-   //      		"sourceMac":"00:0f:f8:ef:e9:40",
-   //      		"destMac":"c0:38:96:23:73:35",
-   //      		"sourceIP":"/54.208.202.178",
-   //      		"destIP":"/10.30.11.3",
-   //      		"headerLength":5,
-   //      		"packetLength":392
-   //   		};
-	//			$(this.el).html(_.template( this.template, {test:test} ));
         	$(this.el).html(this.template());
         	return this;
 		}

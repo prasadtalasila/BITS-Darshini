@@ -17,8 +17,9 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	userLogout  : function(){
 		Cookies.remove('userName');
 		Cookies.remove('userAuth');		
+    
 		app.navigate("#",{trigger: true});
-		alert("You have been logged out. Please login to continue");
+		alert("You have been logged out. Please login to co ntinue");
         return false;
 	},
 	analysis : function(event){

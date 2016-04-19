@@ -103,3 +103,15 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+#slidingDiv, #slidingDiv_2, #slidingDiv_3, #slidingDiv_4{
+  height:37px;
+  /*padding:20px;*/
+  margin-top:10px;
+  width : 1045px;
+  display:none;
+    border:1px solid #333;
+}
+.halfScroll {
+  min-height: 50%;
+  overflow: scroll;
+}
