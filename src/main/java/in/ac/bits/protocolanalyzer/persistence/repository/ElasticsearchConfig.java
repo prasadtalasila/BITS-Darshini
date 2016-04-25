@@ -25,11 +25,24 @@ public class ElasticsearchConfig {
         String clusterName = environment
                 .getProperty("elasticsearch.cluster.name");
         String nodeName = environment.getProperty("elasticsearch.node.name");
+        String corsEnabled = environment
+                .getProperty("elasticsearch.http.cors.enabled");
+        String allowOrigin = environment
+                .getProperty("elasticsearch.http.cors.allow-origin");
+        String allowMethods = environment
+                .getProperty("elasticsearch.http.cors.allow-methods");
+        String allowHeaders = environment
+                .getProperty("elasticsearch.http.cors.allow-headers");
         ImmutableSettings.Builder settingsBuilder = ImmutableSettings
                 .settingsBuilder().put("cluster.name", clusterName)
                 .put("node.name", nodeName).put("node.data", true)
                 .put("index.number_of_shards", 1)
-                .put("index.number_of_replicas", 0);
+                .put("index.number_of_replicas", 0)
+                .put("http.cors.enabled",
+                        Boolean.valueOf(corsEnabled).booleanValue())
+                .put("http.cors.allow-origin", allowOrigin)
+                .put("http.cors.allow-methods", allowMethods)
+                .put("http.cors.allow-headers", allowHeaders);
         NodeBuilder builder = NodeBuilder.nodeBuilder().local(true)
                 .settings(settingsBuilder.build());
         return new ElasticsearchTemplate(builder.node().client());

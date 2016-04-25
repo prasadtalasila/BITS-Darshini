@@ -25,10 +25,12 @@ window.Router = Backbone.Router.extend({
     initialize: function () {
     },
     loginViewDisplay: function () {
-        this.loginView = new LoginView();
-        this.loginView.render();
+        _this = this;
+        view = new LoginView();
+        _this.render(view);
     },
     experimentViewDisplay: function () {    
+        _this = this;
         $.ajax({
             url:'/protocolanalyzer/auth',
              type:'GET',
@@ -37,8 +39,8 @@ window.Router = Backbone.Router.extend({
              data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
              success:function (data) {
                  if(data==="success"){
-                    this.experimentView = new ExperimentView();
-                    this.experimentView.render();
+                    view = new ExperimentView();
+                    _this.render(view);
                  }
                  else{
                     Cookies.remove('userName');
@@ -56,6 +58,7 @@ window.Router = Backbone.Router.extend({
              });
     },
     configPlaygroundViewDisplay: function () {
+        _this = this;
         $.ajax({
             url:'/protocolanalyzer/auth',
              type:'GET',
@@ -64,8 +67,8 @@ window.Router = Backbone.Router.extend({
              data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
              success:function (data) {
                  if(data==="success"){
-                    this.configView = new ConfigPlaygroundView();
-                    this.configView.render();
+                    view = new ConfigPlaygroundView();
+                    _this.render(view);
                  }
                  else{
                     Cookies.remove('userName');
@@ -84,6 +87,7 @@ window.Router = Backbone.Router.extend({
              });
     },
     analysisViewDisplay: function(){
+        _this = this;
         $.ajax({
             url:'/protocolanalyzer/auth',
              type:'GET',
@@ -92,8 +96,8 @@ window.Router = Backbone.Router.extend({
              data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
              success:function (data) {
                  if(data==="success"){
-                    this.analysisView = new AnalysisView();
-                    this.analysisView.render();
+                    view = new AnalysisView();
+                    _this.render(view);
                  }
                  else{
                     Cookies.remove('userName');
@@ -109,6 +113,17 @@ window.Router = Backbone.Router.extend({
                 alert("You have been logged out. Please login to continue");
              }
              });    
+    },
+    render : function(view){
+        //Close the current view
+        if (this.currentView) {
+            this.currentView.remove();
+        }
+        //render the new view
+        view.render();
+        //Set the current view
+        this.currentView = view;
+        return this;
     }
 });
 

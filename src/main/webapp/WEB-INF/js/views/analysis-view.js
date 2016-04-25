@@ -28,9 +28,17 @@ window.AnalysisView = Backbone.View.extend({
 			populateTable();*/
 		},
 		populateTable :function(){
-  			rows = globalData["hits"]["hits"];
+			$.ajax({
+			url : 'http://localhost:9200/protocol_session_-1958668037/ethernet/_search',
+			type : 'GET',
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'text',
+			success : function(data) {
+				alert("Success connecting to elasticsearch..")
+				globalData = JSON.parse(data);
+				rows = globalData["hits"]["hits"];
   			var td, tr;
-  			$("#packetInfo tbody tr").remove(); //clean table
+  			$("#packetInfo tbody tr").remove(); // clean table
   			var tdata = $("#packetInfo tbody")
   			for(var row in rows){
     			var rowSource = rows[row]["_source"]
@@ -39,10 +47,10 @@ window.AnalysisView = Backbone.View.extend({
     			td = $("<td>").text(rowSource["packetId"]);
     			tr.append(td);
     			//Source MAC
-    			td = $("<td>").text(rowSource["sourceAddr"]);
+    			td = $("<td>").text(rowSource["src_addr"]);
     			tr.append(td);
     			//Dest MAC
-    			td = $("<td>").text(rowSource["dstAddr"]);
+    			td = $("<td>").text(rowSource["dst_addr"]);
     			tr.append(td);
 				tdata.append(tr);
   			}
@@ -56,6 +64,11 @@ window.AnalysisView = Backbone.View.extend({
     			}
     			$("#dataContainer").text(stringToWrite);
   			});
+			},
+			error : function() {
+				alert("Error connecting to elasticsearch!!")
+			}
+		});
 		},
 		userHelpPage : function(){
 			window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
