@@ -10,9 +10,7 @@ import lombok.Setter;
 @Setter
 @Document(
     indexName = "protocol",
-    type = "ethernet",
-    shards = 1,
-    replicas = 0
+    type = "ethernet"
 )
 public class EthernetEntity {
     @Id
