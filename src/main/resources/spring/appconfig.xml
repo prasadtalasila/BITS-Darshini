@@ -17,6 +17,5 @@
 		can be @Autowired later on -->
 	<context:component-scan base-package="in.ac.bits.protocolanalyzer" />
 	<import resource="classpath:spring/mvc-config.xml" />
-	<import resource="classpath:spring/elasticsearch.xml"/>
 
 </beans>
