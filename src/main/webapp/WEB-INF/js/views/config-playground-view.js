@@ -5,7 +5,6 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 		'click #help' :'userHelpPage',
 		'click #logout' : 'userLogout',
     'click #analyzeBtn' : 'analysis',
-    'click #analyzeBtn' : 'readSingleFile',
     'click #validateBtn' : 'graphValidation'
 	},
 	initialize: function () {
@@ -16,6 +15,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	  window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
 	},
 	userLogout  : function(){
+    sessionStorage.clear();
 		Cookies.remove('userName');
 		Cookies.remove('userAuth');		
     
@@ -25,7 +25,22 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	},
 	analysis : function(event){
 		event.preventDefault();
-		app.navigate("#/analysis",{trigger: true});
+    var pcapPath = sessionStorage.getItem('pcapPath');
+    $.ajax({
+      url:'/protocolanalyzer/session/analysis',
+      type:'GET',
+      contentType: 'application/json; charset=utf-8',
+      dataType:'text',
+      data: { pcapPath:pcapPath },
+      success:function (data) {
+          var jsonData = JSON.parse(data);
+          var sessionNumber = jsonData.sessionNumber;
+          app.navigate("#/analysis",{trigger: true});
+        },
+        error:function(){
+          alert("Error running experiment. Please try again later.");
+        }
+      });
 	},
   readSingleFile : function(evt) {
     //Retrieve the first (and only!) File from the FileList object

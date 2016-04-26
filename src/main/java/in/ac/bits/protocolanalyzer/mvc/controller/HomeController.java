@@ -33,10 +33,10 @@ import in.ac.bits.protocolanalyzer.utils.Security;
 public class HomeController {
 
     @Autowired
-    LoginInfoRepository loginInfoRepo;
+    private LoginInfoRepository loginInfoRepo;
 
     @Autowired
-    DetailsRepository detailsRepo;
+    private DetailsRepository detailsRepo;
 
     @RequestMapping
     public String home() {

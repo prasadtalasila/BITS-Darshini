@@ -1,6 +1,7 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
+
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import lombok.Getter;

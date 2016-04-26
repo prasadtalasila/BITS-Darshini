@@ -11,7 +11,7 @@ window.AnalysisView = Backbone.View.extend({
 		},
 		populateTable :function(){
 			$.ajax({
-			url : 'http://localhost:9200/protocol_session_-895988176/ethernet/_search',
+			url : 'http://localhost:9200/protocol_session_1011452306/ethernet/_search',
 			type : 'GET',
 			contentType : 'application/json; charset=utf-8',
 			dataType : 'text',
@@ -77,6 +77,7 @@ window.AnalysisView = Backbone.View.extend({
 			window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
 		},
 		userLogout  : function(){
+      sessionStorage.clear();
 			Cookies.remove('userName');
 			Cookies.remove('userAuth');		
 			app.navigate("#",{trigger: true});
