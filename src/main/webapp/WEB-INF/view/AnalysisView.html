@@ -7,13 +7,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Profile</a>
+          <a class="navbar-brand" style="cursor:default">Profile</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a id="settings">Settings</a></li>
-            <li><a id="help">Help</a></li>
-            <li><a id="logout">Logout</a></li>
+            <li><a id="settings" style="cursor:default">Settings</a></li>
+            <li><a id="help" style="cursor:help">Help</a></li>
+            <li><a id="logout" style="cursor:default">Logout</a></li>
           </ul>
           <form>
           </form></div>
@@ -23,7 +23,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
+          <ul class="nav nav-sidebar" style="cursor:default">
             <li class="active"><a id="views">VIEWS<span class="sr-only">(current)</span></a></li>
             <li><a id="tabularView">Tabular</a></li>
             <li><a id="pieView">Pie</a></li>
@@ -31,7 +31,7 @@
           </ul>
         </div>
         <div id="splitView" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <div id="upperHalf" class="scroll">
+          <div id="upperHalf" class="scroll" style="cursor:default">
             <h3 class="page-header">Stored Packets Analysis</h3>
             <h4 class="sub-header">Primary Attributes</h4>
             <div class="table-responsive">
@@ -52,46 +52,9 @@
       </div>
     </div>
 <footer class="footer navbar-fixed-bottom">
-  <div id="lowerHalf" class="scroll" style="border:1px solid gray">
+  <div id="lowerHalf" class="scroll" style="border:1px solid gray; cursor:s-resize">
     Packet Information
     <pre id="dataContainer">
     </pre>
   </div>
 </footer>
-<script>
-
-//REMOVE THIS DEFINITION WHEN USING THE GET DATA
-globalData = {
-  "took" : 3,
-  "timed_out" : false,
-  "_shards" : {
-    "total" : 5,
-    "successful" : 5,
-    "failed" : 0
-  },
-  "hits" : {
-    "total" : 428,
-    "max_score" : 1.0,
-    "hits" : [ {
-      "_index" : "protocol",
-      "_type" : "ethernet",
-      "_id" : "AVP1UU5uiBrCXxO0mlzp",
-      "_score" : 1.0,
-      "_source":{"packetId":1,"sourceAddr":"00:0f:f8:ef:e9:40","dstAddr":"c0:38:96:23:73:35","etherType":"IPV4"}
-    }, {
-      "_index" : "protocol",
-      "_type" : "ethernet",
-      "_id" : "AVP1UU5uiBrCXxO0mlzu",
-      "_score" : 1.0,
-      "_source":{"packetId":6,"sourceAddr":"e2:1e:f2:ef:e9:12","dstAddr":"10:a8:e6:22:53:fe","etherType":"IPV4"}
-    },
-    {
-      "_index" : "protocol",
-      "_type" : "ethernet",
-      "_id" : "AVP1UU5uiBrCXxO0mlzz",
-      "_score" : 1.0,
-      "_source":{"packetId":11,"sourceAddr":"d1:18:96:23:73:35","dstAddr":"00:00:0c:07:ac:7c","etherType":"IPV4"}
-    }]
-  }
-};
-</script>

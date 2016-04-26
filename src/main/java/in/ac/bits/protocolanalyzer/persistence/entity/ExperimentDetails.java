@@ -20,8 +20,6 @@ public class ExperimentDetails {
 
     private String experimenter;
 
-    private String testid;
-
-    private String pcapfiles;
+    private String pcapPath;
 
 }

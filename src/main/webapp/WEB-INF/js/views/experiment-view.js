@@ -15,8 +15,7 @@ window.ExperimentView = Backbone.View.extend({
         		experimentName : $('#experimentName').val(),
         		description : $('#description').val(),
         		experimenter : $('#experimenter').val(),
-        		testid : $('#testid').val(),
-        		pcapfiles : $('#pcapfiles').val()
+        		pcapfiles : $('#pcapPath').val()
         	};
             $.ajax({
             url:'/protocolanalyzer/sessioninfo',

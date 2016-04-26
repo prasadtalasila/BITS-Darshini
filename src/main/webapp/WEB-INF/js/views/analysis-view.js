@@ -9,24 +9,6 @@ window.AnalysisView = Backbone.View.extend({
 		initialize: function () {
 			this.delegateEvents();
 		},
-		populate: function(){ 
-			//var numberOfColumns = document.getElementById("packetInfo").rows[0].cells.length;
-			/*var table = document.getElementById("packetInfo").getElementsByTagName('tbody')[0];
-			var row = table.insertRow(table.rows.length);
-			//run check here to see if length of data exceeds no. of columns in table
-			for(i=0;i<10;i++){
-			var cell = row.insertCell(i);
-			cell.innerHTML = "Test Data"+i;
-			}
-			$('.show_hide').showHide({			 
-				speed: 1400,  // speed you want the toggle to happen	
-				easing: '',  // the animation effect you want. Remove this line if you dont want an effect and if you haven't included jQuery UI
-				changeText: 1, // if you dont want the button text to change, set this to 0
-				showText: 'View',// the button text to show when a div is closed
-				hideText: 'Hide' // the button text to show when a div is open
-			});
-			populateTable();*/
-		},
 		populateTable :function(){
 			$.ajax({
 			url : 'http://localhost:9200/protocol_session_-895988176/ethernet/_search',
@@ -34,7 +16,7 @@ window.AnalysisView = Backbone.View.extend({
 			contentType : 'application/json; charset=utf-8',
 			dataType : 'text',
 			success : function(data) {
-				alert("Success connecting to elasticsearch..")
+				alert("Success connecting to elasticsearch..");
 				globalData = JSON.parse(data);
 				rows = globalData["hits"]["hits"];
   			var td, tr;
@@ -54,6 +36,15 @@ window.AnalysisView = Backbone.View.extend({
     			tr.append(td);
 				tdata.append(tr);
   			}
+  			var defaultColor = $("#packetInfo tbody tr").css('background-color');
+  			//css highlights upon mouse enter
+  			$("#packetInfo tbody tr").mouseenter( function(){
+  				$(this).css("background-color" ,'rgb(100,149,237)');
+  			});
+  			//css highlights upon mouse leave
+  			$("#packetInfo tbody tr").mouseleave( function(){
+  				$(this).css("background-color" ,defaultColor);
+  			});
   			//update handlers
   			$("#packetInfo tbody tr").click( function(){
     			var ind = $(this).index();
@@ -62,7 +53,19 @@ window.AnalysisView = Backbone.View.extend({
     			for(var key in botInfo){
       				stringToWrite+= key + ": " + JSON.stringify(botInfo[key]) + "\n";
     			}
+    			$("#dataContainer").show();
     			$("#dataContainer").text(stringToWrite);
+  			});
+  			//mouseover should change the cursor back to s-resize
+  			$("#lowerHalf").mouseover( function() {
+  				if($("#dataContainer").is(":visible")) {
+  					$("#lowerHalf").css('cursor', 's-resize');
+  				}
+  			});
+  			//close data container
+  			$("#lowerHalf").click( function() {
+  				$("#dataContainer").hide();
+  				$("#lowerHalf").css('cursor', 'default');
   			});
 			},
 			error : function() {
