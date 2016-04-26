@@ -7,7 +7,7 @@ window.AnalysisView = Backbone.View.extend({
 			 'click #populateTable': 'populateTable'
 		},
 		initialize: function () {
-
+			this.delegateEvents();
 		},
 		populate: function(){ 
 			//var numberOfColumns = document.getElementById("packetInfo").rows[0].cells.length;
@@ -29,7 +29,7 @@ window.AnalysisView = Backbone.View.extend({
 		},
 		populateTable :function(){
 			$.ajax({
-			url : 'http://localhost:9200/protocol_session_-1958668037/ethernet/_search',
+			url : 'http://localhost:9200/protocol_session_-895988176/ethernet/_search',
 			type : 'GET',
 			contentType : 'application/json; charset=utf-8',
 			dataType : 'text',

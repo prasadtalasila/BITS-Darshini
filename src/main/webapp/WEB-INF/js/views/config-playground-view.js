@@ -9,6 +9,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
     'click #validateBtn' : 'graphValidation'
 	},
 	initialize: function () {
+		this.delegateEvents();
 	},	
 
 	userHelpPage : function(){
@@ -24,19 +25,6 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	},
 	analysis : function(event){
 		event.preventDefault();
-		// REMOVE LATER - MIHIR
-/*    $.ajax({
-            url:'http://localhost:9200/protocol/ethernet/_search',
-             type:'GET',
-             contentType: 'application/json; charset=utf-8',
-             dataType:'text',
-             success:function (data) {
-                 alert("Success connecting to elasticsearch..")
-             },
-             error:function(){
-                alert("Error connecting to elasticsearch!!")
-             }
-             });*/
 		app.navigate("#/analysis",{trigger: true});
 	},
   readSingleFile : function(evt) {

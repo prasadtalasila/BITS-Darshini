@@ -117,12 +117,12 @@ window.Router = Backbone.Router.extend({
     render : function(view){
         //Close the current view
         if (this.currentView) {
-            this.currentView.remove();
+            this.currentView.undelegateEvents();
         }
-        //render the new view
-        view.render();
         //Set the current view
         this.currentView = view;
+        //render the new view
+        this.currentView.render();
         return this;
     }
 });

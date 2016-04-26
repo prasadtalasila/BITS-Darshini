@@ -7,7 +7,9 @@ window.LoginView = Backbone.View.extend({
             'click #signupRedirectButton' : 'signupRedirect',
             'click #signupButton' : 'signup'
         },
-
+        initialize : function() {
+        	this.delegateEvents();
+        },
         login : function(event) {
             event.preventDefault();
             var formValues = {

@@ -43,7 +43,8 @@ window.ExperimentView = Backbone.View.extend({
     	loadExperiment : function() {
         	
     	},
-		initialize: function () {       
+		initialize: function () {
+			this.delegateEvents();
 		},
         readSingleFile : function(evt) {
             var f = document.getElementById("fileInput").files[0]; 
@@ -63,17 +64,10 @@ window.ExperimentView = Backbone.View.extend({
         },
         userLogout  : function(){
             Cookies.remove('userName');
-            Cookies.remove('userAuth');     
-            app.navigate("#",{trigger: true});
+            Cookies.remove('userAuth');
             alert("You have been logged out. Please login to continue");
+            app.navigate("#",{trigger: true});
             return false;
-        },
-        dispose: function() {
-            this.remove();
-            this.undelegateEvents() ;
-            // unbind events that are
-            // set on this view
-            this.off();
         },
 		render: function () { 
 			$(this.el).html(this.template());
