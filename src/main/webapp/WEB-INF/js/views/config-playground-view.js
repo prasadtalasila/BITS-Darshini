@@ -9,8 +9,12 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 	},
 	initialize: function () {
 		this.delegateEvents();
+    this.userParseGraph = null;
+    this._layers = [];
 	},	
-
+  disableAnalyzeButton:function(){
+    document.getElementById('analyzeBtn').disabled = true; 
+  },
 	userHelpPage : function(){
 	  window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
 	},
@@ -20,21 +24,24 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 		Cookies.remove('userAuth');		
     
 		app.navigate("#",{trigger: true});
-		alert("You have been logged out. Please login to co ntinue");
+		alert("You have been logged out. Please login to continue");
         return false;
 	},
 	analysis : function(event){
 		event.preventDefault();
+    _this = this;
     var pcapPath = sessionStorage.getItem('pcapPath');
     $.ajax({
       url:'/protocolanalyzer/session/analysis',
       type:'GET',
       contentType: 'application/json; charset=utf-8',
       dataType:'text',
-      data: { pcapPath:pcapPath },
+      data: {pcapPath : pcapPath,graph : _this.userParseGraph},
       success:function (data) {
           var jsonData = JSON.parse(data);
-          var sessionNumber = jsonData.sessionNumber;
+          var sessionName = jsonData.sessionName;
+          sessionStorage.setItem('sessionName',sessionName);
+          sessionStorage.setItem('layers',_this._layers);
           app.navigate("#/analysis",{trigger: true});
         },
         error:function(){
@@ -42,92 +49,140 @@ window.ConfigPlaygroundView = Backbone.View.extend({
         }
       });
 	},
-  readSingleFile : function(evt) {
-    //Retrieve the first (and only!) File from the FileList object
-    var f = document.getElementById("fileInput").files[0]; 
-
-    if (f) {
-      
-      var r = new FileReader();
-      r.onload = function(e) { 
-          var userParseGraph = e.target.result;
-          $.ajax({
-            url:'/protocolanalyzer/session/analysis',
-             type:'GET',
-             contentType: 'application/json; charset=utf-8',
-             dataType:'text',
-             data: {graph : userParseGraph},
-             success:function (data) {
-              
-            	 var jsonData = JSON.parse(data);
-            	 var status = jsonData.status;
-                 if(status==="success"){
-                    app.navigate("#/analysis");
-                 }
-                 else{
-                    alert("Error!!!");  
-                 }
-             },
-             error:function(){
-                alert("Something went wrong. Please try again later.");
-             }
-             });
-      }
-      r.readAsText(f);
-     
-    } else { 
-      alert("Failed to load file");
-    }
-  },
 
   graphValidation : function(){
     var f = document.getElementById("fileInput").files[0]; 
+    _this = this;
     if (f) {
       var r = new FileReader();
       r.onload = function(e) { 
           var flag =0;
           //test graph is the main graph, user graph checked against this
-          var testGraph = 'graph _start_ { ethernet;} graph _ethernet_ { switch(ethertype) {case 0x800: ipv4;}} graph _ipv4_ {switch(protocol) {case 0x06: tcp;}}graph _tcp_ {}graph _end_ {}';
+          //ECMA 6 : replace with backticks , is cleaner
+          var testGraph = 'graph start {'+
+            'ethernet;'+
+          '}'+
+          'graph ethernet {'+
+            'switch(ethertype) {'+
+              'case 0800: ipv4;'+
+            '}'+
+          '}'+
+          'graph ipv4 {'+
+            'switch(protocol) {'+
+              'case 06:  tcp;'+
+            '}'+
+          '}'+
+          'graph tcp {'+
+          '}'+
+          'graph end {'+
+          '}';
+          var flag = 0;
           var testParsing = testGraph.split(/[\{\}]/);
           for (var i = 0; i < testParsing.length; i++) {
             testParsing[i] = testParsing[i].trim();
           }
           //user provided p4 graph
-          var userParseGraph = e.target.result;
-          var userParsing = userParseGraph.split(/[\{\}]/);
+          var graphIndices =[]; //for keeping index of the graph elements
+          var graphValues= []; //for keeping value of graph elements
+          var indexOfGraphElements=0;
+          var mainCounter =0; //for seeing if graph has appropriate number of layer matches
+
+          _this.userParseGraph = e.target.result;
+          var userParsing = _this.userParseGraph.split(/[\{\};]/);
           for (var i = 0; i < userParsing.length; i++) {
             userParsing[i] = userParsing[i].trim();
-          }
-          if(userParsing.length > testParsing.length ){
-            alert("Invalid P4 graph");
-            flag++;
-          }
-          // initial node check
-          for(var i=0;i< 2;i++){
-            if(userParsing[i]!==testParsing[i]){
-              alert("Invalid P4 graph");
-              flag++;
-            }
-          }
-          //other nodes
-          for(var i=2;i<userParsing.length-4;i++){
-            if(userParsing[i]!==testParsing[i]){
-              alert("Invalid P4 graph");
-              flag++;
+            if(userParsing[i].search('graph')===0){
+              graphIndices[indexOfGraphElements] = i;
+              graphValues[indexOfGraphElements] = userParsing[i];
+              indexOfGraphElements++;
+            }  
+            if(userParsing[i].search('switch')===0){    
+              mainCounter++;
             }  
           }
-          if(flag===0)
-            alert("Valid configuration");
+          for (var k =0;k<indexOfGraphElements;k++){
+            _this._layers[k] =  graphValues[k].split(' ')[1];
+            if(k===0 && _this._layers[k] !=='start') {
+              //start condition check
+              flag++;
+            }
+            if(k===(indexOfGraphElements-1) && _this._layers[k]!=='end' ) { 
+              //end condition check
+              flag++; 
+            }
+          }  
+          //trim results
+          for (var i = 0; i < _this._layers.length; i++) {
+            _this._layers[i] = _this._layers[i].trim();
+          }
+          //start node check
+          if(userParsing[1] !== _this._layers[1]){
+            flag++;
+          }
+          //create map of next _this._layers : key is current layer and values are all the possibilities for next layer
+          var nextLayers={};
+          var countCases =0;
+          var countCases2=0;
+          for(var i =0;i< userParsing.length;i++){
+            if(userParsing[i].search('graph')===0){
+              nextLayers[_this._layers[countCases-1]] = nextLayerList;
+              var nextLayerList=[];
+              countCases++;
+              countCases2=0;
+            }
+            if(userParsing[i].search('case')===0){ 
+              var temp = userParsing[i].split(' ')[2].trim();
+              nextLayerList.push(temp);
+              countCases2++;
+            }
+          }
+          // _this._layers contains the list of _this._layers possible for this experiment.
+          //nextLayers is a 2D array containing the next possible _this._layers for each layer.
+          //checking valid next _this._layers
+          var matchOneLayerToNext =0;
+          for(var i=0;i < _this._layers.length-1;i++){ 
+          //length-1 because the last layer will not have cases within it, even if it does, those are ignored
+            for(key in nextLayers){
+              if(key===_this._layers[i]){
+                var temp = i+1;
+                if(_this.isInArray(nextLayers[key],_this._layers[temp])){
+                  matchOneLayerToNext++;
+                }  
+              }
+            }  
+          }
+          if(matchOneLayerToNext!==mainCounter){
+            flag++;
+          }
+          if(flag===0){
+            alert("P4 Graph is valid");
+            document.getElementById('analyzeBtn').disabled = false; 
+          }
+          else{
+            alert("P4 Graph is not valid, please enter a valid configuration");
+          }
       }
       r.readAsText(f);
-     
     } else { 
       alert("Failed to load file");
     }
   },
-
+  isInArray: function(array, search)
+  {
+    return array.indexOf(search) >= 0;
+  },
+  indices : function(source,find){
+    var result = [];
+    for (i = 0; i < source.length; ++i) {
+      if (source.substring(i, i + find.length) == find) {
+        result.push(i);
+      }
+    }
+    return result;
+  },
 	render: function () {
 		$(this.el).html(this.template());
+    $(document).ready(this.disableAnalyzeButton);
 		return this;
 	}
 });
