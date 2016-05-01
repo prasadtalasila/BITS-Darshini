@@ -113,7 +113,6 @@ public class AnalyzerCell implements Runnable {
 
     @Subscribe
     public void end(EndAnalysisEvent event) {
-        System.out.println("End analysis is called by session in: " + cellID);
         this.isRunning = false;
     }
 

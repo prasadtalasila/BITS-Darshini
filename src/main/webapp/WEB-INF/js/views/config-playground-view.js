@@ -40,7 +40,9 @@ window.ConfigPlaygroundView = Backbone.View.extend({
       success:function (data) {
           var jsonData = JSON.parse(data);
           var sessionName = jsonData.sessionName;
+          var packetCount = jsonData.packetCount;
           sessionStorage.setItem('sessionName',sessionName);
+          sessionStorage.setItem('packetCount', packetCount);
           sessionStorage.setItem('layers',_this._layers);
           app.navigate("#/analysis",{trigger: true});
         },

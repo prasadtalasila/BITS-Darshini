@@ -8,6 +8,8 @@ package in.ac.bits.protocolanalyzer.analyzer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import lombok.Setter;
+
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNativeException;
@@ -29,62 +31,64 @@ import in.ac.bits.protocolanalyzer.protocol.Protocol;
 @Scope("prototype")
 public class PcapAnalyzer {
 
-    private long sequenceValue = 1;
+	private long sequenceValue = 1;
 
-    private AnalyzerCell nextAnalyzerCell;
-    private long packetReadCount = 0;
+	private AnalyzerCell nextAnalyzerCell;
 
-    public void setNextAnalyzerCell(AnalyzerCell cell) {
-        this.nextAnalyzerCell = cell;
-    }
+	@Setter
+	private String pcapPath;
 
-    public AnalyzerCell getNextAnalyzerCell() {
-        return this.nextAnalyzerCell;
-    }
+	private long packetReadCount = 0;
 
-    public void analyzePacket(PacketWrapper currentPacket) {
-        currentPacket.setPacketId(sequenceValue);
-        sequenceValue++;
+	public void setNextAnalyzerCell(AnalyzerCell cell) {
+		this.nextAnalyzerCell = cell;
+	}
 
-        AnalyzerCell cell = getNextAnalyzerCell();
-        cell.takePacket(currentPacket);
-    }
+	public AnalyzerCell getNextAnalyzerCell() {
+		return this.nextAnalyzerCell;
+	}
 
-    public long readFile() {
+	public void analyzePacket(PacketWrapper currentPacket) {
+		currentPacket.setPacketId(sequenceValue);
+		sequenceValue++;
 
-        String sysFile = System.getProperty("PROTOCOL_DATA_FILE");
-        try {
-            PcapHandle handle = Pcaps.openOffline(sysFile);
-            Packet packet = handle.getNextPacket();
-            while (packet != null) {
-                packetReadCount++;
-                long packetId = packetReadCount;
-                String packetType = getPacketType(handle);
-                int startByte = 0;
-                int endByte = packet.length() - 1;
-                PacketWrapper packetWrapper = new PacketWrapper(packet,
-                        packetId, packetType, startByte, endByte);
-                packetWrapper.setPacketTimestamp(handle.getTimestamp());
+		AnalyzerCell cell = getNextAnalyzerCell();
+		cell.takePacket(currentPacket);
+	}
 
-                analyzePacket(packetWrapper);
-                packet = handle.getNextPacket();
-            }
-            System.out.println("Final read count = " + packetReadCount);
-        } catch (PcapNativeException ex) {
-            Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
-                    null, ex);
-        } catch (NotOpenException ex) {
-            Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
-                    null, ex);
-        }
-        return packetReadCount;
-    }
+	public long readFile() {
 
-    private String getPacketType(PcapHandle handle) {
-        String packetType = Protocol.get("ETHERNET");
-        if (handle.getDlt().equals(DataLinkType.EN10MB)) {
-            packetType = Protocol.get("ETHERNET");
-        }
-        return packetType;
-    }
+		String sysFile = this.pcapPath;
+		try {
+			PcapHandle handle = Pcaps.openOffline(sysFile);
+			System.out.println("PcapPath fed to sysfile::" + sysFile);
+			Packet packet = handle.getNextPacket();
+			while (packet != null) {
+				packetReadCount++;
+				long packetId = packetReadCount;
+				String packetType = getPacketType(handle);
+				int startByte = 0;
+				int endByte = packet.length() - 1;
+				PacketWrapper packetWrapper = new PacketWrapper(packet, packetId, packetType, startByte, endByte);
+				packetWrapper.setPacketTimestamp(handle.getTimestamp());
+
+				analyzePacket(packetWrapper);
+				packet = handle.getNextPacket();
+			}
+			System.out.println("Final read count = " + packetReadCount);
+		} catch (PcapNativeException ex) {
+			Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (NotOpenException ex) {
+			Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return packetReadCount;
+	}
+
+	private String getPacketType(PcapHandle handle) {
+		String packetType = Protocol.get("ETHERNET");
+		if (handle.getDlt().equals(DataLinkType.EN10MB)) {
+			packetType = Protocol.get("ETHERNET");
+		}
+		return packetType;
+	}
 }

@@ -44,9 +44,10 @@ public class SessionController {
 
     @RequestMapping(value = "/analysis", method = RequestMethod.GET)
     public @ResponseBody String analyze(
-            @RequestParam("graph") String protocolGraphStr) {
+            @RequestParam("graph") String protocolGraphStr,
+            @RequestParam("pcapPath") String pcapPath) {
         // Initializing session and protocol
-        init();
+        init(pcapPath);
         graphParser = context.getBean(ProtocolGraphParser.class);
         graphParser.configureSession(session, protocolGraphStr);
         System.out.println("Successfully completed session configuration!!");
@@ -57,17 +58,18 @@ public class SessionController {
         long readCount = session.startExperiment(); 
         JSONObject response = new JSONObject();
         response.put("status", "success");
-        response.put("pktCount", readCount);
+        response.put("sessionName", session.getSessionName());
+        response.put("packetCount", readCount);
         return response.toString();
     }
 
     /*
      * later this method can be converted to an API.
      */
-    private void init() {
+    private void init(String pcapPath) {
         this.session = context.getBean(Session.class);
         Random rand = new Random();
-        session.init("session_" + rand.nextInt());
+        session.init("session_" + rand.nextInt(), pcapPath);
         System.out.println("Session init complete!!");
         protocol.init();
         checker.checkNAdd();
