@@ -10,6 +10,7 @@ window.AnalysisView = Backbone.View.extend({
 			this.delegateEvents();
 		},
 		populateTable :function(){
+      jQuery('#lowerHalf').html('');
       var sessionName = sessionStorage.getItem('sessionName');
       var layers = sessionStorage.getItem('layers').split(',');
 
@@ -34,7 +35,7 @@ window.AnalysisView = Backbone.View.extend({
       }
       
 			$.ajax({
-			url : 'http://localhost:9200/protocol_session_-1001725913/ethernet/_search?&size=214',
+			url : 'http://localhost:9200/protocol_'+sessionName+'/ethernet/_search?&size=214',
 			type : 'GET',
 			contentType : 'application/json; charset=utf-8',
 			dataType : 'text',
@@ -99,7 +100,7 @@ window.AnalysisView = Backbone.View.extend({
     (function(counter)
     {
     $.ajax({
-      url : 'http://localhost:9200/protocol_session_-1001725913/'+layers[counter]+'/_search?&size=214',
+      url : 'http://localhost:9200/protocol_'+sessionName+'/'+layers[counter]+'/_search?&size=214',
       type : 'GET',
       contentType : 'application/json; charset=utf-8',
       dataType : 'text',
@@ -148,6 +149,48 @@ window.AnalysisView = Backbone.View.extend({
 		},
 		render: function () {
         	$(this.el).html(this.template());
-        	return this;
+
+          (function() {
+            $(function() {
+              var collapseMyMenu, expandMyMenu, hideMenuTexts, showMenuTexts,expandMainMenu,collapseMainMenu;
+              expandMyMenu = function() {
+                return $("nav.sidebar").removeClass("sidebar-menu-collapsed").addClass("sidebar-menu-expanded");
+              };
+              expandMainMenu = function() {
+                return $(".main").removeClass("normal-width").addClass("max-width");
+              };
+              collapseMyMenu = function() {
+                return $("nav.sidebar").removeClass("sidebar-menu-expanded").addClass("sidebar-menu-collapsed");
+              };
+              collapseMainMenu = function() {
+                return $(".main").removeClass("max-width").addClass("normal-width");
+              };
+              showMenuTexts = function() {
+                return $("nav.sidebar ul a span.expanded-element").show();
+              };
+              hideMenuTexts = function() {
+                return $("nav.sidebar ul a span.expanded-element").hide();
+              };
+              return $("#justify-icon").click(function(e) {
+              if ($(this).parent("nav.sidebar").hasClass("sidebar-menu-collapsed")) {
+                expandMyMenu();
+                showMenuTexts();
+                collapseMainMenu();
+                $(this).css({
+                color: "#00ACE1"
+              });
+              } else if ($(this).parent("nav.sidebar").hasClass("sidebar-menu-expanded")) {
+                collapseMyMenu();
+                expandMainMenu();
+                hideMenuTexts();
+                $(this).css({
+                color: "#FFF"
+              });
+            }
+            return false;
+          });
+        });
+      }).call(this);
+    	return this;
 		}
-	});
+});
