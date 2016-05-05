@@ -184,6 +184,20 @@ window.ConfigPlaygroundView = Backbone.View.extend({
   },
 	render: function () {
 		$(this.el).html(this.template());
+    //slider initialization  
+    $(function() {
+      $("#slider").slider({
+        range: "max",
+        min: 20,
+        max: 1000,
+        step:10,
+        value: 50,
+        slide: function( event, ui ) {
+          $("#prefetch-amount").val(ui.value);
+        }
+      });
+      $("#prefetch-amount").val($("#slider").slider("value"));
+    });
     $(document).ready(this.disableAnalyzeButton);
 		return this;
 	}
