@@ -5,13 +5,17 @@ window.ConfigPlaygroundView = Backbone.View.extend({
 		'click #help' :'userHelpPage',
 		'click #logout' : 'userLogout',
     'click #analyzeBtn' : 'analysis',
-    'click #validateBtn' : 'graphValidation'
+    'click #validateBtn' : 'graphValidation',
+    'slidechange #slider': 'setPrefetchValue'
 	},
 	initialize: function () {
 		this.delegateEvents();
     this.userParseGraph = null;
     this._layers = [];
 	},	
+  setPrefetchValue : function(){
+    sessionStorage.setItem('sliderValue',$('#slider').slider("option", "value"));  
+  },
   disableAnalyzeButton:function(){
     document.getElementById('analyzeBtn').disabled = true; 
   },
@@ -190,7 +194,6 @@ window.ConfigPlaygroundView = Backbone.View.extend({
         range: "max",
         min: 20,
         max: 1000,
-        step:10,
         value: 50,
         slide: function( event, ui ) {
           $("#prefetch-amount").val(ui.value);

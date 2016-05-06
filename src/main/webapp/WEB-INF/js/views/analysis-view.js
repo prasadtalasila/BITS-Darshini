@@ -4,26 +4,32 @@ window.AnalysisView = Backbone.View.extend({
 		events: {
 			 'click #help' :'userHelpPage',
 			 'click #logout': 'userLogout',
-			 'click #populateTable': 'populateTable',
-       'click #packetInfo tbody tr': 'rowClick'
+			 'click #populateTable': 'footerDisplay',
+       'click #packetInfo tbody tr': 'rowClick',
+       'slidechange #slider': 'setPrefetchValue'
 		},
 		initialize: function () {
 			this.delegateEvents();
       this.globalData = [];
 		},
+    setPrefetchValue : function(){
+      sessionStorage.setItem('sliderValue',$('#slider').slider("option", "value"));  
+    },
     rowClick : function(event){
       //get index from table
       var currentRow = event.currentTarget.children[0].innerHTML;
-      var layers = sessionStorage.getItem('layers').split(',');
+      //count number of layers, subtract 2 to discount start and endof p4 graph
+      var layersCount = sessionStorage.getItem('layers').split(',').length -2;
+      var packetCount = sessionStorage.getItem('packetCount');
       //loop through layers and write to footer
-      for(var countForLayers=1;countForLayers< layers.length-1;countForLayers++){
-        botInfo = this.globalData[currentRow]["docs"][countForLayers-1]["_source"];
+      for(var countForLayers=0;countForLayers<layersCount;countForLayers++){
+        botInfo = this.globalData["docs"][(currentRow-1)+(countForLayers*packetCount)]["_source"];
         var packetDetails="";
         for(var key in botInfo){
-          stringToWrite+= key + ": " + JSON.stringify(botInfo[key]) + "\n";
+          packetDetails += '<span class ="footerPacketDetails">\t'+key + " : " + JSON.stringify(botInfo[key]).replace(/\"/g, "") +' </span>';
         }
-        //$("#dataContainer1").show();
-        $("#dataContainer"+countForLayers).text(stringToWrite);
+        var countForLayers2 = countForLayers+1;
+        document.getElementById("dataContainer"+countForLayers2).innerHTML = packetDetails;
       }
 
       //multi get data based on which row user is on
@@ -32,12 +38,15 @@ window.AnalysisView = Backbone.View.extend({
       var rowDiff = lastRow - currentRow;
       var sliderValue = sessionStorage.getItem('sliderValue'); 
       if(rowDiff< sliderValue){
-        this.multiGet(lastRow+1,lastRow +(sliderValue - rowDiff),3);
+        this.multiGet(lastRow+1,lastRow +(sliderValue - rowDiff),layersCount);
       }
     },
-		populateTable :function(){
+		footerDisplay :function(){
       _this = this;
       $('#lowerHalf').html('');
+      var sessionName = sessionStorage.getItem('sessionName');
+      var layers = sessionStorage.getItem('layers').split(',');
+
       var layerCount =0; //for knowing number of layers
       var layers = sessionStorage.getItem('layers').split(',');    
       //loop for appending required number of summary tags in the footer for full display of each layer
@@ -52,13 +61,12 @@ window.AnalysisView = Backbone.View.extend({
           '<article>'+
             '<details>'+
               '<summary >'+layers[i].charAt(0).toUpperCase() + layers[i].slice(1)+'</summary>'+
-              '<details>'+
                 '<summary id = dataContainer'+ i+' ></summary>'+
-              '</details>'+
             '</details>'+
           '</article>'+
           '</section>';
       }
+
       //function creates multi-get request and receiving and displaying data initially
       this.multiGet(1,sessionStorage.getItem('sliderValue'),layerCount);
 		},
@@ -74,49 +82,54 @@ window.AnalysisView = Backbone.View.extend({
         	return false;
 		},
     multiGet : function(startId,endId,layerCount){
-      var sessionName = sessionStorage.getItem('sessionName');
-      var layers = sessionStorage.getItem('layers').split(',');
-      for(var id = startId;id<=endId;id++){
-        
-        //creating the multi get request from ids and layers
+      if(endId > sessionStorage.getItem('packetCount')){
+        endId = sessionStorage.getItem('packetCount');
+      }
+      if(startId<endId){
+        var sessionName = sessionStorage.getItem('sessionName');
+        var layers = sessionStorage.getItem('layers').split(',');
         var multiGetRequest ='{ "docs" : [' ;
         for(var countForLayers = 1;countForLayers<=layerCount;countForLayers++){
-          multiGetRequest = multiGetRequest.concat('{ "_type" : "'+layers[countForLayers]+'", "_id" : "'+id+'" },');
+          //creating the multi get request from ids and layers
+          for(var id = startId;id<=endId;id++){
+            multiGetRequest = multiGetRequest.concat('{ "_type" : "'+layers[countForLayers]+'", "_id" : "'+id+'" },');
+          }
         }
         multiGetRequest = multiGetRequest.substring(0,multiGetRequest.length-1);
         multiGetRequest = multiGetRequest.concat('] }');
-
-        (function(id)
-        {
+          //AJAX call for getting data
           $.ajax({
             url : 'http://localhost:9200/protocol_'+sessionName+'/_mget',
             type : 'POST',
             data : multiGetRequest,
-            async: false,
             contentType : 'application/json; charset=utf-8',
             success : function(data) {
-              _this.globalData[id] = data;
-              row = data["docs"][0];
-              var td, tr;
-              var tdata = $("#packetInfo tbody")
-              var rowSource = row["_source"];
-              tr = $("<tr>");
-              //packetId
-              td = $("<td>").text(rowSource["packetId"]);
-              tr.append(td);
-              //Source MAC
-              td = $("<td>").text(rowSource["src_addr"]);
-              tr.append(td);
-              //Dest MAC
-              td = $("<td>").text(rowSource["dst_addr"]);
-              tr.append(td);
-              tdata.append(tr);
+              _this.globalData = data;
+              _this.populateTable(startId,endId);
             },
             error : function() {
               alert("Error connecting to elasticsearch!!")
             }
           });
-        })(id);
+        }
+    },
+    populateTable:function(startId,endId){
+      for(var id=startId-1; id<endId;id++){
+          var row = this.globalData["docs"][id];
+          var td, tr;
+          var tdata = $("#packetInfo tbody")
+          var rowSource = row["_source"];
+          tr = $("<tr>");
+          //packetId
+          td = $("<td>").text(rowSource["packetId"]);
+          tr.append(td);
+          //Source MAC
+          td = $("<td>").text(rowSource["src_addr"]);
+          tr.append(td);
+          //Dest MAC
+          td = $("<td>").text(rowSource["dst_addr"]);
+          tr.append(td);
+          tdata.append(tr);
       }
     },
 		render: function () {
@@ -124,16 +137,17 @@ window.AnalysisView = Backbone.View.extend({
 
           //slider initialization  
           $(function() {
-            $( "#slider-range-max" ).slider({
+            $("#slider").slider({
               range: "max",
               min: 20,
               max: 1000,
+              step:10,
               value: 50,
               slide: function( event, ui ) {
-                $( "#prefetch-amount" ).val( ui.value );
+                $("#prefetch-amount").val(ui.value);
               }
             });
-            $( "#prefetch-amount" ).val( $( "#slider-range-max" ).slider( "value" ) );
+            $("#prefetch-amount").val($("#slider").slider("value"));
           });
 
           //collapsible sidebar intialization

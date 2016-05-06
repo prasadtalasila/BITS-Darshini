@@ -18,7 +18,14 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a id="settings" style="cursor:default">Settings</a></li>
+            <li class="dropdown">
+              <a  style = "padding-top:15px;cursor:default;">Settings</a>
+              <ul>
+                <li><a id = "prefetch">Prefetch</a></li>
+                <li><input type="text" id="prefetch-amount" readonly ></li>
+                <li><div id="slider"></div></li>
+              </ul>
+            </li>
             <li><a id="help" style="cursor:help">Help</a></li>
             <li><a id="logout" style="cursor:default">Logout</a></li>
           </ul>

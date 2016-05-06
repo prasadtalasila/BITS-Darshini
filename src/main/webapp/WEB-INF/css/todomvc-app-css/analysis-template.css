@@ -113,6 +113,14 @@ table td, table th {
     padding: 0.3em;
 }
 
+table#packetInfo{
+  border-top:2px #000 solid;
+  border-left: 2px #000 solid;
+  border-right: 2px #000 solid;
+  border-bottom: 2px #000 solid;
+}
+}
+
 /*footer slider*/
 summary::-webkit-details-marker {
   display: none
@@ -121,13 +129,13 @@ summary:after {
   background: transparent; 
   border-radius: 0px; 
   content: "+"; 
-  color: #428bca; 
+  color: #00ACE1; 
   float: left; 
   font-size: 1em; 
   margin: -5px 10px 0 0; 
   padding: 0; 
   text-align: center; 
-  width: 16px;
+  width: 14px;
 }
 details[open] summary:after {
   content: "-";
@@ -136,8 +144,8 @@ summary:focus {
   outline-style: none;
 }
 article > details > summary {
-  font-size: 16px;
-  margin-top: 12px;
+  font-size: 14px;
+  margin-top: 8px;
 }
 details > p {
   margin-left: 24px;
@@ -303,3 +311,26 @@ nav.sidebar {
   height: 30px;
   text-align:center;
  }
+
+.footerPacketDetails{
+border-style: solid;
+border-radius: 1px;
+border-color: #6495ED;
+border-width:1px;
+}
+.footerPacketDetails:hover{
+  color:#fff;
+  background: #6495ED;
+}
+
+/*
+*mouse hover on table row
+*/
+#packetInfo tbody tr:hover{
+ background: #6495ED;
+}
+
+#lowerHalf{
+  border:1px solid gray; 
+  cursor: default;
+}

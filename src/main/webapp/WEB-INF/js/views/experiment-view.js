@@ -6,7 +6,8 @@ window.ExperimentView = Backbone.View.extend({
 			 'click #loadExperiment' : 'loadExperiment',
              'click #attachBtn' : 'readSingleFile',
              'click #help' :'userHelpPage',
-             'click #logout' : 'userLogout'
+             'click #logout' : 'userLogout',
+             'slidechange #slider': 'setPrefetchValue'
 		},
 
 		newExperiment : function(event) {
@@ -43,6 +44,9 @@ window.ExperimentView = Backbone.View.extend({
              });
 
     	},
+        setPrefetchValue : function(){
+            sessionStorage.setItem('sliderValue',$('#slider').slider("option", "value"));  
+        },
     	loadExperiment : function() {
         	
     	},
@@ -82,7 +86,6 @@ window.ExperimentView = Backbone.View.extend({
                     range: "max",
                     min: 20,
                     max: 1000,
-                    step:10,
                     value: 50,
                     slide: function( event, ui ) {
                         $("#prefetch-amount").val(ui.value);

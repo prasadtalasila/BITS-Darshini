@@ -11,13 +11,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-
             <li class="dropdown">
               <a  style = "padding-top:15px;cursor:default;">Settings</a>
               <ul>
                 <li><a id = "prefetch">Prefetch</a></li>
                 <li><input type="text" id="prefetch-amount" readonly ></li>
-                <li><div id="slider-range-max"></div></li>
+                <li><div id="slider"></div></li>
               </ul>
             </li>
             <li><a id="help" style="cursor:help">Help</a></li>
@@ -30,45 +29,46 @@
       </div>
     </nav>
 
-    <div class="container-fluid">
-      <div class="row">
-    <nav class='sidebar sidebar-menu-collapsed '>
-      <a id='justify-icon'>
-        <span class='glyphicon glyphicon-align-justify'></span>
-      </a>
-      <ul>
-        <li>
-        <!--<li class='active'> keep this if you want highlighted-->
-          <a class='expandable'  title='Dashboard'>
-            <span class='glyphicon glyphicon-list-alt collapsed-element'></span>
-            <span class='expanded-element'>Tabular View</span>
+  <div class="container-fluid">
+    <div class="row">
+        <nav class='sidebar sidebar-menu-collapsed '>
+          <a id='justify-icon'>
+            <span class='glyphicon glyphicon-align-justify'></span>
           </a>
-        </li>
-      </ul>
-    </nav>
+          <ul>
+            <li>
+            <!--<li class='active'> keep this if you want highlighted-->
+              <a class='expandable'  title='Dashboard'>
+                <span class='glyphicon glyphicon-list-alt collapsed-element'></span>
+                <span class='expanded-element'>Tabular View</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
 
-        <div id="splitView" class="main max-width">
-          <div id="upperHalf" class="scroll" style="cursor:default">
-          <h4 class="sub-header">Stored Packets - Primary Attributes</h4>
-            <div class="table-responsive">
-              <table id="packetInfo" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Packet ID</th>
-                    <th>Source MAC</th>
-                    <th>Destination MAC</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-            </div>
+    <div id="splitView" class="main max-width">
+      <div id="upperHalf" class="scroll" style="cursor:default">
+        <h4 class="sub-header">Stored Packets - Primary Attributes</h4>
+          <div class="table-responsive">
+            <table id="packetInfo" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Packet ID</th>
+                  <th>Source MAC</th>
+                  <th>Destination MAC</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-<footer class="footer navbar-fixed-bottom" style="background-color: white;">
-  <div id="lowerHalf" class="scroll" style="border:1px solid gray; cursor:s-resize">
+  </div>
+
+<footer class="footer navbar-fixed-bottom" style="background-color: #eee;">
+  <div id="lowerHalf" class="scroll">
     Packet Information
   </div>
 </footer>
