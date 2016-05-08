@@ -96,6 +96,7 @@ public class EthernetAnalyzer implements CustomAnalyzer {
   public String setNextProtocolType() {
     String nextHeaderType = getEthertype(this.ethernetHeader);
     switch(nextHeaderType) {
+      case "86dd": return Protocol.get("IPV6");
       case "0800": return Protocol.get("IPV4");
       default: return Protocol.get("END_PROTOCOL");
     }
