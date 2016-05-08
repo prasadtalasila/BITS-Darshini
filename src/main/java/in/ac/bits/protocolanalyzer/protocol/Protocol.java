@@ -89,6 +89,7 @@ public class Protocol {
         protocolName = protocolName.toUpperCase();
         classTable.put(protocolName, analyzer);
         cellTable.put(protocolName.toUpperCase(), cellStage);
+        protocolTable.put(protocolName, protocolName);
     }
 
 }

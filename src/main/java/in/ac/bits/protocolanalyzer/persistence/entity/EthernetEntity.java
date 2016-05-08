@@ -1,10 +1,10 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-
+import java.lang.String;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import lombok.Setter;
     type = "ethernet"
 )
 public class EthernetEntity {
-    @Id
+  @Id
   private long packetId;
 
   private String ethertype;

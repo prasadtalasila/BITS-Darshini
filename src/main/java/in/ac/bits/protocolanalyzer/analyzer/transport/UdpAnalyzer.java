@@ -1,15 +1,16 @@
-package in.ac.bits.protocolanalyzer.analyzer.link;
+package in.ac.bits.protocolanalyzer.analyzer.transport;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
-import in.ac.bits.protocolanalyzer.persistence.entity.EthernetEntity;
+import in.ac.bits.protocolanalyzer.persistence.entity.UdpEntity;
 import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.Beautify;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
+import in.ac.bits.protocolanalyzer.utils.ByteOperator;
 import java.lang.String;
 import java.util.Arrays;
 import org.pcap4j.packet.Packet;
@@ -20,8 +21,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class EthernetAnalyzer implements CustomAnalyzer {
-  private byte[] ethernetHeader;
+public class UdpAnalyzer implements CustomAnalyzer {
+  private byte[] udpHeader;
 
   private String indexName;
 
@@ -40,15 +41,15 @@ public class EthernetAnalyzer implements CustomAnalyzer {
     this.indexName = "protocol_" + sessionName;
   }
 
-  private void setEthernetHeader(PacketWrapper packetWrapper) {
+  private void setUdpHeader(PacketWrapper packetWrapper) {
     Packet packet = packetWrapper.getPacket();
     int startByte = packetWrapper.getStartByte();
     byte[] rawPacket = packet.getRawData();
-    this.ethernetHeader = Arrays.copyOfRange(rawPacket, startByte, startByte + EthernetHeader.TOTAL_HEADER_LENGTH);
+    this.udpHeader = Arrays.copyOfRange(rawPacket, startByte, startByte + UdpHeader.TOTAL_HEADER_LENGTH);
   }
 
   public void setStartByte(PacketWrapper packetWrapper) {
-    this.startByte = packetWrapper.getStartByte() + EthernetHeader.TOTAL_HEADER_LENGTH;
+    this.startByte = packetWrapper.getStartByte() + UdpHeader.TOTAL_HEADER_LENGTH;
   }
 
   public void setEndByte(PacketWrapper packetWrapper) {
@@ -59,44 +60,52 @@ public class EthernetAnalyzer implements CustomAnalyzer {
     this.eventBus.post(new PacketTypeDetectionEvent(nextPacketType, startByte, endByte));
   }
 
-  public String getDst_addr(byte[] ethernetHeader) {
-    byte[] dst_addr = BitOperator.parse(ethernetHeader, EthernetHeader.DST_ADDR_START_BIT, EthernetHeader.DST_ADDR_END_BIT);
-    return Beautify.beautify(dst_addr, "hex2");
+  public int getSrcPort(byte[] udpHeader) {
+    byte[] srcport = BitOperator.parse(udpHeader, UdpHeader.SRCPORT_START_BIT, UdpHeader.SRCPORT_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(srcport);
+    return returnVar;
   }
 
-  public String getSrc_addr(byte[] ethernetHeader) {
-    byte[] src_addr = BitOperator.parse(ethernetHeader, EthernetHeader.SRC_ADDR_START_BIT, EthernetHeader.SRC_ADDR_END_BIT);
-    return Beautify.beautify(src_addr, "hex2");
+  public int getDstPort(byte[] udpHeader) {
+    byte[] dstport = BitOperator.parse(udpHeader, UdpHeader.DSTPORT_START_BIT, UdpHeader.DSTPORT_END_BIT);
+    int returnVar = ByteOperator.parseBytesint(dstport);
+    return returnVar;
   }
 
-  public String getEthertype(byte[] ethernetHeader) {
-    byte[] ethertype = BitOperator.parse(ethernetHeader, EthernetHeader.ETHERTYPE_START_BIT, EthernetHeader.ETHERTYPE_END_BIT);
-    return Beautify.beautify(ethertype, "hex");
+  public int getLength_(byte[] udpHeader) {
+    byte[] length_ = BitOperator.parse(udpHeader, UdpHeader.LENGTH__START_BIT, UdpHeader.LENGTH__END_BIT);
+    int returnVar = ByteOperator.parseBytesint(length_);
+    return returnVar;
+  }
+
+  public String getChecksum(byte[] udpHeader) {
+    byte[] checksum = BitOperator.parse(udpHeader, UdpHeader.CHECKSUM_START_BIT, UdpHeader.CHECKSUM_END_BIT);
+    return Beautify.beautify(checksum, "hex");
   }
 
   @Subscribe
   public void analyze(PacketWrapper packetWrapper) {
-    if (Protocol.get("ETHERNET").equalsIgnoreCase(packetWrapper.getPacketType())) {
-      setEthernetHeader(packetWrapper);
+    if (Protocol.get("UDP").equalsIgnoreCase(packetWrapper.getPacketType())) {
+      setUdpHeader(packetWrapper);
       String nextPacketType = setNextProtocolType();
       setStartByte(packetWrapper);
       setEndByte(packetWrapper);
       publishTypeDetectionEvent(nextPacketType, startByte, endByte);
-      EthernetEntity entity = new EthernetEntity();
+      UdpEntity entity = new UdpEntity();
       entity.setPacketId(packetWrapper.getPacketId());
-      entity.setEthertype(getEthertype(ethernetHeader));
-      entity.setDst_addr(getDst_addr(ethernetHeader));
-      entity.setSrc_addr(getSrc_addr(ethernetHeader));
+      entity.setSrcPort(getSrcPort(udpHeader));
+      entity.setChecksum(getChecksum(udpHeader));
+      entity.setLength_(getLength_(udpHeader));
+      entity.setDstPort(getDstPort(udpHeader));
       IndexQueryBuilder builder = new IndexQueryBuilder();
-      IndexQuery query = builder.withIndexName(this.indexName).withType("ethernet").withId(String.valueOf(packetWrapper.getPacketId())).withObject(entity).build();
+      IndexQuery query = builder.withIndexName(this.indexName).withType("udp").withId(String.valueOf(packetWrapper.getPacketId())).withObject(entity).build();
       repository.save(query);
     }
   }
 
   public String setNextProtocolType() {
-    String nextHeaderType = getEthertype(this.ethernetHeader);
+    String nextHeaderType = "NO_CONDITIONAL_HEADER_FIELD";
     switch(nextHeaderType) {
-      case "0800": return Protocol.get("IPV4");
       default: return Protocol.get("END_PROTOCOL");
     }
   }

@@ -1,24 +1,22 @@
 package in.ac.bits.protocolanalyzer.persistence.entity;
 
 import java.lang.String;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 @Getter
 @Setter
 @Document(
-        indexName = "protocol",
-        type = "ipv4"
-    )
+    indexName = "protocol",
+    type = "ipv4"
+)
 public class IPv4Entity {
-    @Id
+  @Id
   private long packetId;
 
-  private int totalLen;
+  private String totalLen;
 
   private String dstAddr;
 

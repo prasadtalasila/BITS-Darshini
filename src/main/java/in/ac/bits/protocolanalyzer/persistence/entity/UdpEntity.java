@@ -10,29 +10,17 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Setter
 @Document(
     indexName = "protocol",
-    type = "tcp"
+    type = "udp"
 )
-public class TcpEntity {
+public class UdpEntity {
   @Id
   private long packetId;
 
-  private int window;
-
-  private long seqNo;
-
-  private byte res;
-
   private int srcPort;
-
-  private int urgentPtr;
 
   private String checksum;
 
-  private long ackNo;
+  private int length_;
 
   private int dstPort;
-
-  private short flags;
-
-  private byte dataOffset;
 }

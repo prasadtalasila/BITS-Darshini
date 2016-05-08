@@ -1,30 +1,38 @@
 package in.ac.bits.protocolanalyzer.protocol;
 
+import in.ac.bits.protocolanalyzer.analyzer.link.EthernetAnalyzer;
+import in.ac.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
+import in.ac.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
+import in.ac.bits.protocolanalyzer.analyzer.transport.UdpAnalyzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * This is one of the auto-generated classes (amongst custom analyzers, entities
- * and headers). By default, the defaultStatus variable is set to true so that
- * {@link Protocol} class will add default custom analyzers provided (ethernet,
- * ipv4 and tcp) to its list. If auto generation is used then this class will be
- * rewritten, setting defaultStatus variable to false, autowiring newly
- * generated custom analyzer and adding it to the protocol list (from the if
- * block in checkNAdd method by invoking Protocol.addCustomAnalyzer method)
- * 
- * @author crygnus
- *
- */
 @Component
 public class ProtocolChecker {
-    private static boolean defaultStatus = true;
+  private static boolean defaultStatus = false;
 
-    @Autowired
-    private Protocol protocol;
+  @Autowired
+  private Protocol protocol;
 
-    public void checkNAdd() {
-        protocol.defaultCustoms();
-        if (!defaultStatus) {
-        }
+  @Autowired
+  private IPv4Analyzer ipv4analyzer;
+
+  @Autowired
+  private EthernetAnalyzer ethernetanalyzer;
+
+  @Autowired
+  private TcpAnalyzer tcpanalyzer;
+
+  @Autowired
+  private UdpAnalyzer udpanalyzer;
+
+  public void checkNAdd() {
+    protocol.defaultCustoms();
+    if (!defaultStatus) {
+      protocol.addCustomAnalyzer(ipv4analyzer, "IPv4", 2);
+      protocol.addCustomAnalyzer(ethernetanalyzer, "Ethernet", 1);
+      protocol.addCustomAnalyzer(tcpanalyzer, "Tcp", 3);
+      protocol.addCustomAnalyzer(udpanalyzer, "Udp", 3);
     }
+  }
 }
