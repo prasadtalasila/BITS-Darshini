@@ -102,7 +102,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
               graphValues[indexOfGraphElements] = userParsing[i];
               indexOfGraphElements++;
             }  
-            if(userParsing[i].search('switch')===0){    
+            if(userParsing[i].split(' ')[0].trim().search('case')===0){    
               mainCounter++;
             }  
           }
@@ -137,7 +137,7 @@ window.ConfigPlaygroundView = Backbone.View.extend({
               countCases2=0;
             }
             if(userParsing[i].search('case')===0){ 
-              var temp = userParsing[i].split(' ')[2].trim();
+              var temp = userParsing[i].split(':')[1].trim();
               nextLayerList.push(temp);
               countCases2++;
             }
@@ -146,17 +146,21 @@ window.ConfigPlaygroundView = Backbone.View.extend({
           //nextLayers is a 2D array containing the next possible _this._layers for each layer.
           //checking valid next _this._layers
           var matchOneLayerToNext =0;
-          for(var i=0;i < _this._layers.length-1;i++){ 
           //length-1 because the last layer will not have cases within it, even if it does, those are ignored
             for(key in nextLayers){
-              if(key===_this._layers[i]){
-                var temp = i+1;
-                if(_this.isInArray(nextLayers[key],_this._layers[temp])){
-                  matchOneLayerToNext++;
-                }  
+              if(nextLayers.hasOwnProperty(key)){
+                var values = nextLayers[key];
+                if(values!== undefined){
+                  for(var prop=0;prop<values.length;prop++){
+                    for(var i=0;i < _this._layers.length-1;i++){   
+                      if(_this._layers[i]===values[prop]){
+                        matchOneLayerToNext++;
+                      }
+                    }
+                  }
+                }
               }
-            }  
-          }
+            }
           if(matchOneLayerToNext!==mainCounter){
             flag++;
           }
@@ -194,7 +198,8 @@ window.ConfigPlaygroundView = Backbone.View.extend({
         range: "max",
         min: 20,
         max: 1000,
-        value: 50,
+        step:10,
+        value: sessionStorage.getItem('sliderValue'),
         slide: function( event, ui ) {
           $("#prefetch-amount").val(ui.value);
         }

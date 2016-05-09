@@ -86,7 +86,8 @@ window.ExperimentView = Backbone.View.extend({
                     range: "max",
                     min: 20,
                     max: 1000,
-                    value: 50,
+                    step:10,
+                    value: sessionStorage.getItem('sliderValue'),
                     slide: function( event, ui ) {
                         $("#prefetch-amount").val(ui.value);
                     }
