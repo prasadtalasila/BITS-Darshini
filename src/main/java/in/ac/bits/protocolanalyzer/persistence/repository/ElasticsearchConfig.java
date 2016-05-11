@@ -33,9 +33,14 @@ public class ElasticsearchConfig {
                 .getProperty("elasticsearch.http.cors.allow-methods");
         String allowHeaders = environment
                 .getProperty("elasticsearch.http.cors.allow-headers");
+	String dataPath = environment
+		.getProperty("elasticsearch.path.data");
+	String logPath = environment
+		.getProperty("elasticsearch.path.logs");
         ImmutableSettings.Builder settingsBuilder = ImmutableSettings
                 .settingsBuilder().put("cluster.name", clusterName)
                 .put("node.name", nodeName).put("node.data", true)
+		.put("path.data", dataPath).put("path.logs", logPath)
                 .put("index.number_of_shards", 1)
                 .put("index.number_of_replicas", 0)
                 .put("http.cors.enabled",
