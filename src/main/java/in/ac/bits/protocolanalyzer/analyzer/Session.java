@@ -18,6 +18,7 @@ import in.ac.bits.protocolanalyzer.analyzer.transport.TransportAnalyzer;
 import in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepository;
 import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
 /**
  * 
@@ -27,6 +28,7 @@ import lombok.Getter;
 @Component
 @Scope(value = "prototype")
 @Getter
+@Log4j
 public class Session {
 
 	public static final String CONTROLLER_BUS = "pipeline_controller_bus";
@@ -68,7 +70,7 @@ public class Session {
 
 	public void init(String sessionName, String pcapPath) {
 		this.sessionName = sessionName;
-		System.out.println("The session name = " + sessionName);
+		log.info("The session name = " + sessionName);
 		this.cellMap = new HashMap<Integer, AnalyzerCell>();
 		setLinkCell();
 		setNetworkCell();
@@ -83,23 +85,24 @@ public class Session {
 
 	public long startExperiment() {
 		executorService = Executors.newFixedThreadPool(5);
-		System.out.println("Starting linkcell at: " + System.currentTimeMillis());
+		log.info("Starting linkcell at: " + System.currentTimeMillis());
 		executorService.execute(linkCell);
-		System.out.println("Starting networkcell at: " + System.currentTimeMillis());
+		log.info("Starting networkcell at: " + System.currentTimeMillis());
 		executorService.execute(networkCell);
-		System.out.println("Starting transportcell at: " + System.currentTimeMillis());
+		log.info("Starting transportcell at: " + System.currentTimeMillis());
 		executorService.execute(transportCell);
 		repository.start();
 		this.packetReadCount = pcapAnalyzer.readFile();
-		System.out.println("Read count at session = " + packetReadCount + " Process count now = "
-				+ packetProcessedCount);
+		log.info("Read count at session = " + packetReadCount
+				+ " Process count now = " + packetProcessedCount);
 		if (packetReadCount == packetProcessedCount) {
 			endSession();
 		}
 		return packetReadCount;
 	}
 
-	public void attachCustomAnalyzer(int cellNumber, CustomAnalyzer customAnalyzer) {
+	public void attachCustomAnalyzer(int cellNumber,
+			CustomAnalyzer customAnalyzer) {
 		AnalyzerCell cell = cellMap.get(cellNumber);
 		cell.addCustomAnalyzer(customAnalyzer, repository, sessionName);
 	}
@@ -121,10 +124,12 @@ public class Session {
 
 	public void connectCells(Map<String, Set<String>> protocolGraph) {
 		for (Entry<String, Set<String>> node : protocolGraph.entrySet()) {
-			AnalyzerCell cell = cellMap.get(protocol.getCellNumber(node.getKey()));
+			AnalyzerCell cell = cellMap.get(protocol.getCellNumber(node
+					.getKey()));
 			Set<String> toNodes = node.getValue();
 			for (String protocolNode : toNodes) {
-				AnalyzerCell destinationCell = cellMap.get(protocol.getCellNumber(protocolNode));
+				AnalyzerCell destinationCell = cellMap.get(protocol
+						.getCellNumber(protocolNode));
 				cell.configureDestinationStageMap(protocolNode, destinationCell);
 			}
 		}
@@ -138,11 +143,11 @@ public class Session {
 	}
 
 	public void endSession() {
-		System.out.println("Ending session...");
+		log.info("Ending session...");
 		factory.getEventBus(CONTROLLER_BUS).post(new EndAnalysisEvent());
 		executorService.shutdown();
 		/* repository.terminate(); */
-		System.out.println("Session ended!");
+		log.info("Session ended!");
 		repository.isFinished();
 	}
 

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
@@ -29,6 +30,7 @@ import in.ac.bits.protocolanalyzer.protocol.Protocol;
 
 @Component
 @Scope("prototype")
+@Log4j
 public class PcapAnalyzer {
 
 	private long sequenceValue = 1;
@@ -61,7 +63,7 @@ public class PcapAnalyzer {
 		String sysFile = this.pcapPath;
 		try {
 			PcapHandle handle = Pcaps.openOffline(sysFile);
-			System.out.println("PcapPath fed to sysfile::" + sysFile);
+			log.info("PcapPath fed to sysfile::" + sysFile);
 			Packet packet = handle.getNextPacket();
 			while (packet != null) {
 				packetReadCount++;
@@ -69,17 +71,20 @@ public class PcapAnalyzer {
 				String packetType = getPacketType(handle);
 				int startByte = 0;
 				int endByte = packet.length() - 1;
-				PacketWrapper packetWrapper = new PacketWrapper(packet, packetId, packetType, startByte, endByte);
+				PacketWrapper packetWrapper = new PacketWrapper(packet,
+						packetId, packetType, startByte, endByte);
 				packetWrapper.setPacketTimestamp(handle.getTimestamp());
 
 				analyzePacket(packetWrapper);
 				packet = handle.getNextPacket();
 			}
-			System.out.println("Final read count = " + packetReadCount);
+			log.info("Final read count = " + packetReadCount);
 		} catch (PcapNativeException ex) {
-			Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
+					null, ex);
 		} catch (NotOpenException ex) {
-			Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(PcapAnalyzer.class.getName()).log(Level.SEVERE,
+					null, ex);
 		}
 		return packetReadCount;
 	}

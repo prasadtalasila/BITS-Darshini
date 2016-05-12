@@ -7,6 +7,8 @@ package in.ac.bits.protocolanalyzer.mvc.controller;
 
 import java.util.Random;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,53 +29,53 @@ import in.ac.bits.protocolanalyzer.protocol.ProtocolGraphParser;
  */
 @Controller
 @RequestMapping("/session")
+@Log4j
 public class SessionController {
 
-    @Autowired
-    private WebApplicationContext context;
+	@Autowired
+	private WebApplicationContext context;
 
-    private Session session;
+	private Session session;
 
-    private ProtocolGraphParser graphParser;
+	private ProtocolGraphParser graphParser;
 
-    @Autowired
-    private Protocol protocol;
+	@Autowired
+	private Protocol protocol;
 
-    @Autowired
-    private ProtocolChecker checker;
+	@Autowired
+	private ProtocolChecker checker;
 
-    @RequestMapping(value = "/analysis", method = RequestMethod.GET)
-    public @ResponseBody String analyze(
-            @RequestParam("graph") String protocolGraphStr,
-            @RequestParam("pcapPath") String pcapPath) {
-        // Initializing session and protocol
-        init(pcapPath);
-        graphParser = context.getBean(ProtocolGraphParser.class);
-        graphParser.configureSession(session, protocolGraphStr);
-        System.out.println("Successfully completed session configuration!!");
-        /*
-         * later to be replaced by session.startExperiment() call return value
-         */
-        /*long readCount = 0;*/
-        long readCount = session.startExperiment(); 
-        JSONObject response = new JSONObject();
-        response.put("status", "success");
-        response.put("sessionName", session.getSessionName());
-        response.put("packetCount", readCount);
-        return response.toString();
-    }
+	@RequestMapping(value = "/analysis", method = RequestMethod.GET)
+	public @ResponseBody String analyze(
+			@RequestParam("graph") String protocolGraphStr,
+			@RequestParam("pcapPath") String pcapPath) {
+		// Initializing session and protocol
+		init(pcapPath);
+		graphParser = context.getBean(ProtocolGraphParser.class);
+		graphParser.configureSession(session, protocolGraphStr);
+		log.info("Successfully completed session configuration!!");
+		/*
+		 * later to be replaced by session.startExperiment() call return value
+		 */
+		/* long readCount = 0; */
+		long readCount = session.startExperiment();
+		JSONObject response = new JSONObject();
+		response.put("status", "success");
+		response.put("sessionName", session.getSessionName());
+		response.put("packetCount", readCount);
+		return response.toString();
+	}
 
-    /*
-     * later this method can be converted to an API.
-     */
-    private void init(String pcapPath) {
-        this.session = context.getBean(Session.class);
-        Random rand = new Random();
-        session.init("session_" + rand.nextInt(), pcapPath);
-        System.out.println("Session init complete!!");
-        protocol.init();
-        checker.checkNAdd();
-        System.out.println(
-                "Successfully completed init method in session controller!!");
-    }
+	/*
+	 * later this method can be converted to an API.
+	 */
+	private void init(String pcapPath) {
+		this.session = context.getBean(Session.class);
+		Random rand = new Random();
+		session.init("session_" + rand.nextInt(), pcapPath);
+		log.info("Session init complete!!");
+		protocol.init();
+		checker.checkNAdd();
+		log.info("Successfully completed init method in session controller!!");
+	}
 }

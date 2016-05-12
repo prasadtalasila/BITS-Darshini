@@ -7,6 +7,8 @@ package in.ac.bits.protocolanalyzer.mvc.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,7 @@ import in.ac.bits.protocolanalyzer.utils.Security;
  */
 @Controller
 @RequestMapping("/")
+@Log4j
 public class HomeController {
 
     @Autowired
@@ -53,8 +56,8 @@ public class HomeController {
         } else if (!lie.getLoginHash().equals(loginHash)) {
             return "failure";
         } else {
-            System.out.println("Login id entity = \n" + lie.toString());
-            System.out.println("ID = " + lie.getId());
+        	log.info("Login id entity = \n" + lie.toString());
+			log.info("ID = " + lie.getId());
             return "success";
         }
 
