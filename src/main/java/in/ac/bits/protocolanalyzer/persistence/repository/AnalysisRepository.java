@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,7 +33,7 @@ public class AnalysisRepository {
 	private int bucketCapacity = 20000;
 
 	public void configure() {
-		this.queries = new ConcurrentLinkedQueue<IndexQuery>();
+		this.queries = new ArrayBlockingQueue<>(100000);
 		executorService = Executors.newFixedThreadPool(2);
 		currentBucket = new ArrayList<IndexQuery>();
 		pullTimer = new Timer("pullTimer");
