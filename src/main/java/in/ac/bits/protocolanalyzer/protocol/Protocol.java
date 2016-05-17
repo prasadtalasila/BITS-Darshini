@@ -49,6 +49,8 @@ public class Protocol {
 		String proto = protocolTable.get(protocol);
 		if (proto == null) {
 			proto = "NULL";
+			log.warn("Protocol table is returning null value for protocol::"
+					+ protocol);
 		}
 		return proto;
 	}

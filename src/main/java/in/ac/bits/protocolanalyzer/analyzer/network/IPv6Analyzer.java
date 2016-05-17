@@ -135,6 +135,7 @@ public class IPv6Analyzer implements CustomAnalyzer {
     switch(nextHeaderType) {
       case "11": return Protocol.get("UDP");
       case "06": return Protocol.get("TCP");
+      case "01": return Protocol.get("ICMP");
       default: return Protocol.get("END_PROTOCOL");
     }
   }

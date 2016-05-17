@@ -1,7 +1,5 @@
 package in.ac.bits.protocolanalyzer.analyzer.network;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import in.ac.bits.protocolanalyzer.analyzer.CustomAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.PacketWrapper;
 import in.ac.bits.protocolanalyzer.analyzer.event.PacketTypeDetectionEvent;
@@ -11,14 +9,18 @@ import in.ac.bits.protocolanalyzer.protocol.Protocol;
 import in.ac.bits.protocolanalyzer.utils.Beautify;
 import in.ac.bits.protocolanalyzer.utils.BitOperator;
 import in.ac.bits.protocolanalyzer.utils.ByteOperator;
-import java.lang.String;
+
 import java.util.Arrays;
+
 import org.apache.commons.codec.binary.Hex;
 import org.pcap4j.packet.Packet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 @Component
 @Scope("prototype")
@@ -161,6 +163,7 @@ public class IPv4Analyzer implements CustomAnalyzer {
     switch(nextHeaderType) {
       case "11": return Protocol.get("UDP");
       case "06": return Protocol.get("TCP");
+      case "01": return Protocol.get("ICMP");
       default: return Protocol.get("END_PROTOCOL");
     }
   }
