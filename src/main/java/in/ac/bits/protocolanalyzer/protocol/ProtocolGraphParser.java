@@ -41,11 +41,9 @@ public class ProtocolGraphParser {
 					linePtr);
 		}
 		linePtr++;
-		int count = 0;
-		while (!graphLines.get(linePtr).contains("end") && count < 5) {
+		while (!graphLines.get(linePtr).contains("end")) {
 			linePtr = collectNodes(session, linePtr);
 			log.info("Line pointer now = " + linePtr);
-			count++;
 		}
 		protocolGraph.configureSessionCells(session);
 	}
