@@ -4,7 +4,6 @@ import in.ac.bits.protocolanalyzer.analyzer.link.EthernetAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.network.IPv4Analyzer;
 import in.ac.bits.protocolanalyzer.analyzer.network.IPv6Analyzer;
 import in.ac.bits.protocolanalyzer.analyzer.transport.IcmpAnalyzer;
-import in.ac.bits.protocolanalyzer.analyzer.transport.Icmpv6Analyzer;
 import in.ac.bits.protocolanalyzer.analyzer.transport.TcpAnalyzer;
 import in.ac.bits.protocolanalyzer.analyzer.transport.UdpAnalyzer;
 
