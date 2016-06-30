@@ -1,4 +1,3 @@
-# PacketAnalyzer
 BITS Darshini project is a web application that serves as a generic workbench for protocol analysis. Backend for the project is written in Java whereas front-end is developed with [Backbone.js](http://backbonejs.org/).
 
 ##Important links##
