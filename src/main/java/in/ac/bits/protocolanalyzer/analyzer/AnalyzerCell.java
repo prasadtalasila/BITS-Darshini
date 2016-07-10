@@ -34,7 +34,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class AnalyzerCell implements Runnable {
 
-	public static final String CONTROLLER_BUS = "pipeline_controller_bus";
+	private String controllerBus;
 
 	@Autowired
 	private EventBusFactory eventBusFactory;
@@ -75,7 +75,8 @@ public class AnalyzerCell implements Runnable {
 		this.customAnalyzers = new LinkedList<CustomAnalyzer>();
 		this.genericAnalyzer.setEventBus(eventBus);
 		this.eventBus.register(this);
-		eventBusFactory.getEventBus(CONTROLLER_BUS).register(this);
+		this.controllerBus = session.getControllerBus();
+		eventBusFactory.getEventBus(controllerBus).register(this);
 		this.inputQueue = new ArrayBlockingQueue<PacketWrapper>(100);
 		this.isProcessing = false;
 		this.isRunning = true;

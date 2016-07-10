@@ -31,7 +31,9 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class Session {
 
-	public static final String CONTROLLER_BUS = "pipeline_controller_bus";
+	public static final String CONTROLLER_BUS_PREFIX = "pipeline_controller_bus";
+
+	private String controllerBus;
 
 	@Autowired
 	private PcapAnalyzer pcapAnalyzer;
@@ -70,6 +72,7 @@ public class Session {
 
 	public void init(String sessionName, String pcapPath) {
 		this.sessionName = sessionName;
+		this.controllerBus = CONTROLLER_BUS_PREFIX + "_" + this.sessionName;
 		log.info("The session name = " + sessionName);
 		this.cellMap = new HashMap<Integer, AnalyzerCell>();
 		setLinkCell();
@@ -80,23 +83,23 @@ public class Session {
 		this.pcapAnalyzer.setNextAnalyzerCell(linkCell);
 		this.pcapAnalyzer.setPcapPath(pcapPath);
 		/* Register pcap analyzer to controller event bus */
-		factory.getEventBus(CONTROLLER_BUS).register(pcapAnalyzer);
+		factory.getEventBus(this.controllerBus).register(pcapAnalyzer);
 	}
 
 	public long startExperiment() {
 		executorService = Executors.newFixedThreadPool(5);
-		log.info("Starting linkcell at: " + System.currentTimeMillis());
+		log.info("Session " + this.sessionName + "::Starting linkcell at: " + System.currentTimeMillis());
 		executorService.execute(linkCell);
-		log.info("Starting networkcell at: " + System.currentTimeMillis());
+		log.info("Session " + this.sessionName + "::Starting networkcell at: " + System.currentTimeMillis());
 		executorService.execute(networkCell);
-		log.info("Starting transportcell at: " + System.currentTimeMillis());
+		log.info("Session " + this.sessionName + "::Starting transportcell at: " + System.currentTimeMillis());
 		executorService.execute(transportCell);
 		repository.start();
 		this.packetReadCount = pcapAnalyzer.readFile();
-		log.info("Read count at session = " + packetReadCount
+		log.info("Read count at session " + this.sessionName + ":: = " + packetReadCount
 				+ " Process count now = " + packetProcessedCount);
 		if (packetReadCount == packetProcessedCount) {
-			endSession();
+			this.endSession();
 		}
 		return packetReadCount;
 	}
@@ -138,13 +141,13 @@ public class Session {
 	public void incrementPacketProcessedCount() {
 		this.packetProcessedCount++;
 		if (packetReadCount == packetProcessedCount) {
-			endSession();
+			this.endSession();
 		}
 	}
 
-	public void endSession() {
-		log.info("Ending session...");
-		factory.getEventBus(CONTROLLER_BUS).post(new EndAnalysisEvent());
+	private void endSession() {
+		log.info("Ending " + this.sessionName + "...");
+		factory.getEventBus(this.controllerBus).post(new EndAnalysisEvent());
 		executorService.shutdown();
 		/* repository.terminate(); */
 		log.info("Session ended!");
