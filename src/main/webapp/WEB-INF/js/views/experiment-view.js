@@ -1,4 +1,4 @@
-window.ExperimentView = Backbone.View.extend({
+window.ExperimentView = BaseView.extend({
 		el : $('body'),
 
 		events: {
@@ -65,17 +65,6 @@ window.ExperimentView = Backbone.View.extend({
             } else { 
                 alert("Failed to load file");
             }
-        },
-        userHelpPage : function(){
-            window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
-        },
-        userLogout  : function(){
-            sessionStorage.clear();
-            Cookies.remove('userName');
-            Cookies.remove('userAuth');
-            alert("You have been logged out. Please login to continue");
-            app.navigate("#",{trigger: true});
-            return false;
         },
 		render: function () { 
 			$(this.el).html(this.template());

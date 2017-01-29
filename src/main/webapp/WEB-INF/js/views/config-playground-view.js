@@ -1,4 +1,4 @@
-window.ConfigPlaygroundView = Backbone.View.extend({
+window.ConfigPlaygroundView =  BaseView.extend({
 	el : $('body'),
 
 	events: {
@@ -19,18 +19,6 @@ window.ConfigPlaygroundView = Backbone.View.extend({
   disableAnalyzeButton:function(){
     document.getElementById('analyzeBtn').disabled = true; 
   },
-	userHelpPage : function(){
-	  window.open("https://github.com/prasadtalasila/packetanalyzer",'_blank');
-	},
-	userLogout  : function(){
-    sessionStorage.clear();
-		Cookies.remove('userName');
-		Cookies.remove('userAuth');		
-    
-		app.navigate("#",{trigger: true});
-		alert("You have been logged out. Please login to continue");
-        return false;
-	},
 	analysis : function(event){
 		event.preventDefault();
     _this = this;
