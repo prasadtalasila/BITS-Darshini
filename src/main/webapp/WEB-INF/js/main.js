@@ -14,6 +14,35 @@ $.ajaxSetup({
     }
 });
 
+function loginCheck(callback) {
+     $.ajax({
+            url:'/protocolanalyzer/auth',
+             type:'GET',
+             contentType: 'application/json; charset=utf-8',
+             dataType:'text',
+             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
+             success:function (data) {
+                 if(data==="success"){
+                    callback(true);
+                 }
+                 else{
+                    Cookies.remove('userName');
+                    Cookies.remove('userAuth');
+                    app.navigate("#",{trigger:true});
+                    alert("You have been logged out. Please login to continue");
+                    callback(false);
+                 }
+             },
+             error:function(){
+                Cookies.remove('userName');
+                Cookies.remove('userAuth');
+                app.navigate("#",{trigger:true});
+                alert("You have been logged out. Please login to continue");
+                callback(false);
+             }
+             });
+}
+
 window.Router = Backbone.Router.extend({
     routes: {
         '':'loginViewDisplay',
@@ -31,88 +60,30 @@ window.Router = Backbone.Router.extend({
     },
     experimentViewDisplay: function () {    
         _this = this;
-        $.ajax({
-            url:'/protocolanalyzer/auth',
-             type:'GET',
-             contentType: 'application/json; charset=utf-8',
-             dataType:'text',
-             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
-             success:function (data) {
-                 if(data==="success"){
-                    view = new ExperimentView();
-                    _this.render(view);
-                 }
-                 else{
-                    Cookies.remove('userName');
-                    Cookies.remove('userAuth');
-                    app.navigate("#",{trigger:true});
-                    alert("You have been logged out. Please login to continue");
-                 }
-             },
-             error:function(){
-                Cookies.remove('userName');
-                Cookies.remove('userAuth');
-                app.navigate("#",{trigger:true});
-                alert("You have been logged out. Please login to continue");
-             }
-             });
+        loginCheck(function(result) {
+            if (result) {
+             view = new ExperimentView();
+            }
+            _this.render(view);
+        });
     },
     configPlaygroundViewDisplay: function () {
         _this = this;
-        $.ajax({
-            url:'/protocolanalyzer/auth',
-             type:'GET',
-             contentType: 'application/json; charset=utf-8',
-             dataType:'text',
-             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
-             success:function (data) {
-                 if(data==="success"){
-                    view = new ConfigPlaygroundView();
-                    _this.render(view);
-                 }
-                 else{
-                    Cookies.remove('userName');
-                    Cookies.remove('userAuth');
-                    app.navigate("#",{trigger:true});
-                    alert("You have been logged out. Please login to continue");
-                    
-                 }
-             },
-             error:function(){
-                Cookies.remove('userName');
-                Cookies.remove('userAuth');
-                app.navigate("#",{trigger:true});
-                alert("You have been logged out. Please login to continue");
-             }
-             });
+        loginCheck(function(result) {
+            if (result) {
+             view = new ConfigPlaygroundView();
+            }
+            _this.render(view);
+        });
     },
     analysisViewDisplay: function(){
         _this = this;
-        $.ajax({
-            url:'/protocolanalyzer/auth',
-             type:'GET',
-             contentType: 'application/json; charset=utf-8',
-             dataType:'text',
-             data: {loginHash : Cookies.get('userAuth'), user : Cookies.get('userName')},
-             success:function (data) {
-                 if(data==="success"){
-                    view = new AnalysisView();
-                    _this.render(view);
-                 }
-                 else{
-                    Cookies.remove('userName');
-                    Cookies.remove('userAuth');
-                    app.navigate("#",{trigger:true});
-                    alert("You have been logged out. Please login to continue");
-                 }
-             },
-             error:function(){
-                Cookies.remove('userName');
-                Cookies.remove('userAuth');
-                app.navigate("#",{trigger:true});
-                alert("You have been logged out. Please login to continue");
-             }
-             });    
+        loginCheck(function(result) {
+            if (result) {
+             view = new AnalysisView();
+            }
+            _this.render(view);
+        });    
     },
     render : function(view){
         //Close the current view
