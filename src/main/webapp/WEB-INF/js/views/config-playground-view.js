@@ -45,11 +45,12 @@ window.ConfigPlaygroundView =  BaseView.extend({
 	},
 
   graphValidation : function(){
-    var f = document.getElementById("fileInput").files[0]; 
+    var f = document.getElementById("fileInput").files[0];
+    var editor = ace.edit("editor");
+    var pre = editor.getSession().getValue();
     _this = this;
-    if (f) {
-      var r = new FileReader();
-      r.onload = function(e) { 
+    if (f || pre) {
+      function validator(code, type) { 
           var flag =0;
           //test graph is the main graph, user graph checked against this
           //ECMA 6 : replace with backticks , is cleaner
@@ -81,7 +82,11 @@ window.ConfigPlaygroundView =  BaseView.extend({
           var indexOfGraphElements=0;
           var mainCounter =0; //for seeing if graph has appropriate number of layer matches
 
-          _this.userParseGraph = e.target.result;
+          if (type=='editor')
+            _this.userParseGraph = code;
+          else if (type=='file')
+            _this.userParseGraph = code.target.result;
+
           var userParsing = _this.userParseGraph.split(/[\{\};]/);
           for (var i = 0; i < userParsing.length; i++) {
             userParsing[i] = userParsing[i].trim();
@@ -160,7 +165,16 @@ window.ConfigPlaygroundView =  BaseView.extend({
             alert("P4 Graph is not valid, please enter a valid configuration");
           }
       }
-      r.readAsText(f);
+      var r = new FileReader();
+      r.onload = function(e) { 
+          validator(e, 'file');
+      }
+      if (f)
+        r.readAsText(f);
+      else
+        validator(pre, 'editor');
+
+
     } else { 
       alert("Failed to load file");
     }

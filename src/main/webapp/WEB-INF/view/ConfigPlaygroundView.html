@@ -4,6 +4,52 @@
   <div>
     <input type="file" id="fileInput" />
   </div>
+<style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+    #editor {
+        /*margin: 40px;*/
+        position: absolute;
+        top: 120px;
+        bottom: 0;
+        left: 30px;
+        right: 440px;
+    }
+  </style>
+  <pre id="editor">
+graph start {
+
+  ethernet;
+
+}
+
+graph ethernet {
+  switch(ethertype) {
+    case 0800:       ipv4;
+  }
+}
+graph ipv4 {
+  switch(protocol) {
+    case 06: tcp;
+  }
+}
+
+
+graph tcp {
+
+}
+
+graph end {
+}
+</pre>
+
+<script src="js/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    // editor.session.setMode("ace/mode/javascript");
+</script>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
