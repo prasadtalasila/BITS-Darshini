@@ -45,3 +45,4 @@ exclude_paths:
 - src/main/webapp/WEB-INF/css/bootstrap/
 - src/main/webapp/WEB-INF/css/dragula/
 - src/main/webapp/WEB-INF/css/w2ui/
+- src/main/java/in/ac/bits/protocolanalyzer/
