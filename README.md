@@ -1,5 +1,5 @@
 
-[![Code Climate](https://codeclimate.com/github/prasadtalasila/BITS-Darshini/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/BITS-Darshini)    
+javascript code review - [![Code Climate](https://codeclimate.com/github/prasadtalasila/BITS-Darshini/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/BITS-Darshini), complete project code review - [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f21f85aec9c4467383229516883d15b7)](https://www.codacy.com/app/prasadtalasila/BITS-Darshini?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=prasadtalasila/BITS-Darshini&amp;utm_campaign=Badge_Grade)    
 
 BITS Darshini project is a web application that serves as a generic workbench for protocol analysis. Backend for the project is written in Java whereas front-end is developed with [Backbone.js](http://backbonejs.org/).
 
