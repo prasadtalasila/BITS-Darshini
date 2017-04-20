@@ -21,7 +21,8 @@ window.LoadView =  BaseView.extend({
     fillTable : function(event) {
       $.ajax({
       url:'http://localhost:9200/protocol/info/_search',
-      type:'GET',
+      type:'POST',
+      data : '{"from": 0,"size": 200,"query":{"match":{"experimenter":"' + Cookies.get('userName') + '"}}}',
       contentType: 'application/json; charset=utf-8',
       success:function (data) {
           LoadView.globalData = JSON.parse(JSON.stringify(data)).hits.hits;
@@ -53,7 +54,7 @@ window.LoadView =  BaseView.extend({
           var select = document.getElementById("share");
           for(var id=1; id<=options.length;id+=1) {
             var opt = document.createElement("option");
-            opt.value= id;
+            opt.value= options[id-1]._source.email;
             opt.innerHTML = options[id-1]._source.email;
             select.appendChild(opt);
           }
@@ -108,19 +109,17 @@ window.LoadView =  BaseView.extend({
     sidePanel.appendChild(newDiv);
     newDiv.outerHTML = '<p>'+
           'Experiment Name : ' + LoadView.globalData[id]._source.experimentName + '<br/>' +
-          // 'Experimenter : '+ LoadView.globalData[id]._source.experimenter + '<br/>' +
           'Description : '+ LoadView.globalData[id]._source.description +'<br/>' +
           'PCAP Path : '+ LoadView.globalData[id]._source.pcapPath + '<br/>' +
           'Session: '+ LoadView.globalData[id]._source.id +
         '</p>';
     document.getElementById('loadExperiment').setAttribute('session',LoadView.globalData[id]._source.id);
     document.getElementById('shareExperiment').setAttribute('expId',LoadView.globalData[id]._id);
-    var col = LoadView.globalDelegate[id]._source.collaborators.split(/\s*,\s*/)
-    for (var i = 0; i < col.length; i++) {
-      // var opt = document.querySelector('select#share option[value=' + col[i] + ']')
-      // // document.getElementById('share').value = col[i];
-      // alert(opt);
-    }
+    var col = LoadView.globalDelegate[id]._source.collaborators.split(/\s*,\s*/);
+    var selectEl = $('select');
+    selectEl.material_select();
+    selectEl.val(col);
+    selectEl.material_select('refresh');
     },
 
     share: function(event) {
@@ -128,15 +127,7 @@ window.LoadView =  BaseView.extend({
     },
 
     shareExperiment: function(event) {
-        var share = [];
-      $('#share :selected').each(function(i, selected){ 
-        share[i] = $(selected).text(); 
-      });
-      // var index = share.indexOf(Cookies.get('userName'));
-      // if (index) {
-      //   share.splice(index, 1);
-      // }
-      share.shift();
+      var share = $('select').val();
       var experimentId = document.getElementById('shareExperiment').getAttribute('expId')
       $.ajax({
             url:'http://localhost:9200/protocol/delegate/' + experimentId + '/_update',
@@ -145,9 +136,18 @@ window.LoadView =  BaseView.extend({
             dataType:'text',
             data: '{"doc":{"collaborators":"' + share + '"}}',
             success:function (data) {
-                alert("Successfully shared with " + share);
+              // $.ajax({
+              //       url:'http://localhost:9200/protocol/delegate/_search',
+              //       type:'GET',
+              //       contentType: 'application/json; charset=utf-8',
+              //       success:function (data) {
+              //           LoadView.globalDelegate = JSON.parse(JSON.stringify(data)).hits.hits;
+              //         }
+              // });
+              alert("Successfully shared with " + share);
             }
           });
+
     },
 
     render: function () {

@@ -17,15 +17,28 @@
             <div class="card blue-grey darken-3">
             <div class="card-content white-text">
                 <span class="card-title center-align">Experiment Dashboard</span>
-                <p class="center-align">Fill the required details</p> <br><br><br>
+                <p class="center-align">Fill the required details</p> <br>
                 <div class="row">
                 <div class="col l6 m12 s12">
-                    <table>
-                    <thead><tr><th>Experiment</th></tr></thead>
-                    </table>
+                <ul class="collapsible" data-collapsible="accordion">
+                    <li>
+                    <div class="collapsible-header blue-grey darken-3"><i class="material-icons">filter_drama</i>My Experiment</div>
+                    <div class="collapsible-body">
                     <table id="expList" class="bordered highlight">
                     <tbody></tbody>
                     </table>
+                    </div>
+                    </li>
+                    <li>
+                    <div class="collapsible-header blue-grey darken-3"><i class="material-icons">filter_drama</i>Shared with me</div>
+                    <div class="collapsible-body">
+                    <table id="expList" class="bordered highlight">
+                    <tbody></tbody>
+                    </table>
+                    </div>
+                    </li>
+                  </ul> 
+                  
                   </div>
                   <div class="col l6 m12 s12"> 
                   <table>
@@ -61,5 +74,8 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('select').material_select();
+  });
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
   });
 </script>

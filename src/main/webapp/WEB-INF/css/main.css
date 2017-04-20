@@ -18,9 +18,9 @@
 }
 #expList {
   display: block;
-  height: 35vh;
+  height: 18vh;
   overflow-y: scroll;
-  border: solid 2px #eee;
+  /*border: solid 2px #eee;*/
   cursor: pointer;
 }
 
