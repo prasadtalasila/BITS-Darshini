@@ -6,7 +6,8 @@ window.LoadView =  BaseView.extend({
       'click #logout' : 'userLogout',
       'click #loadExperiment' : 'load',
       'click #validateBtn' : 'graphValidation',
-      'click #expList tbody tr': 'rowClick',
+      'click #expListMy tbody tr': 'rowClick',
+      'click #expListShared tbody tr': 'rowClick',
       'slidechange #slider': 'setPrefetchValue',
       'change #share' : 'share',
       'click #shareExperiment' : 'shareExperiment'
@@ -22,13 +23,34 @@ window.LoadView =  BaseView.extend({
       $.ajax({
       url:'http://localhost:9200/protocol/info/_search',
       type:'POST',
-      data : '{"from": 0,"size": 200,"query":{"match":{"experimenter":"' + Cookies.get('userName') + '"}}}',
+      data : '{"from": 0,"size": 200,"query":{"bool":{"should":{"term":{ "experimenter":"' + Cookies.get('userName') + '"}},"should":{"term":{"collaborators":".*' + Cookies.get('userName') + '.*"}}}}}',
       contentType: 'application/json; charset=utf-8',
       success:function (data) {
           LoadView.globalData = JSON.parse(JSON.stringify(data)).hits.hits;
-          for(var id=1; id<=LoadView.globalData.length;id+=1){    //index of array starts from 0
+          var expMy = [];
+          var expShared = [];
+          for(var id=1; id<=LoadView.globalData.length;id+=1){
+            if (LoadView.globalData[id-1]._source.experimenter==Cookies.get('userName')) {
+              expMy.push(LoadView.globalData[id-1]);
+            }
+            if (LoadView.globalData[id-1]._source.collaborators.indexOf(Cookies.get('userName')) !== -1) {
+              expShared.push(LoadView.globalData[id-1]);
+            }
+          }
+          for(var id=1; id<=expMy.length;id+=1){    //index of array starts from 0
           var td, tr;
-          var tdata = $("#expList tbody")
+          var tdata = $("#expListMy tbody")
+          tr = $("<tr>");
+          td = $("<td>").text(id);
+          tr.append(td);
+          //packetList
+          td = $("<td>").text(LoadView.globalData[id-1]._source.experimentName);
+          tr.append(td);
+          tdata.append(tr);
+      }
+      for(var id=1; id<=expShared.length;id+=1){    //index of array starts from 0
+          var td, tr;
+          var tdata = $("#expListShared tbody")
           tr = $("<tr>");
           td = $("<td>").text(id);
           tr.append(td);
@@ -59,14 +81,6 @@ window.LoadView =  BaseView.extend({
             select.appendChild(opt);
           }
           $('select').material_select();
-          $.ajax({
-            url:'http://localhost:9200/protocol/delegate/_search',
-            type:'GET',
-            contentType: 'application/json; charset=utf-8',
-            success:function (data) {
-                LoadView.globalDelegate = JSON.parse(JSON.stringify(data)).hits.hits;
-              }
-            });
         },
         error:function(){
           alert("Error running experiment. Please try again later.");
@@ -115,7 +129,7 @@ window.LoadView =  BaseView.extend({
         '</p>';
     document.getElementById('loadExperiment').setAttribute('session',LoadView.globalData[id]._source.id);
     document.getElementById('shareExperiment').setAttribute('expId',LoadView.globalData[id]._id);
-    var col = LoadView.globalDelegate[id]._source.collaborators.split(/\s*,\s*/);
+    var col = LoadView.globalData[id]._source.collaborators.split(/\s*,\s*/);
     var selectEl = $('select');
     selectEl.material_select();
     selectEl.val(col);
@@ -130,7 +144,7 @@ window.LoadView =  BaseView.extend({
       var share = $('select').val();
       var experimentId = document.getElementById('shareExperiment').getAttribute('expId')
       $.ajax({
-            url:'http://localhost:9200/protocol/delegate/' + experimentId + '/_update',
+            url:'http://localhost:9200/protocol/info/' + experimentId + '/_update',
             type:'POST',
             contentType: 'application/json; charset=utf-8',
             dataType:'text',

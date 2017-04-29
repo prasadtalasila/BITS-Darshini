@@ -46,7 +46,7 @@ window.ExperimentView = BaseView.extend({
                                 type:'POST',
                                 contentType: 'application/json; charset=utf-8',
                                 dataType:'text',
-                                data: '{"experimenter" : "' + Cookies.get('userName') + '","collaborators" : ""}',
+                                data: '{"doc":{"collaborators":""}}',
                                 success:function (data) {
                                     app.navigate("#/config");
                                 }
