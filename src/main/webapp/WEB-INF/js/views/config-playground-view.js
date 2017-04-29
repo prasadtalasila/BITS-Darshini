@@ -16,9 +16,6 @@ window.ConfigPlaygroundView =  BaseView.extend({
   setPrefetchValue : function(){
     sessionStorage.setItem('sliderValue',$('#slider').slider("option", "value"));  
   },
-  disableAnalyzeButton:function(){
-    document.getElementById('analyzeBtn').disabled = true; 
-  },
 	analysis : function(event){
 		event.preventDefault();
     _this = this;
@@ -218,7 +215,10 @@ window.ConfigPlaygroundView =  BaseView.extend({
       });
       $("#prefetch-amount").val($("#slider").slider("value"));
     });
-    $(document).ready(this.disableAnalyzeButton);
+    $(document).ready(function() {
+      document.getElementById('analyzeBtn').disabled = true;
+      document.getElementById("username").innerHTML = Cookies.get('userName');
+    });
 		return this;
 	}
 });

@@ -169,6 +169,7 @@ window.LoadView =  BaseView.extend({
     $(document).ready(function() {
       document.getElementById('shareExperiment').disabled = true;
       document.getElementById('loadExperiment').disabled = true;
+      document.getElementById("username").innerHTML = Cookies.get('userName');
     });
         return this;
     }

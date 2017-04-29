@@ -153,6 +153,9 @@ window.AnalysisView = BaseView.extend({
             });
             $("#prefetch-amount").val($("#slider").slider("value"));
           });
+          $(document).ready(function() {
+            document.getElementById("username").innerHTML = Cookies.get('userName');
+          });
 
           //collapsible sidebar intialization
           (function() {

@@ -103,6 +103,10 @@ window.ExperimentView = BaseView.extend({
                 });
                 $("#prefetch-amount").val($("#slider").slider("value"));
             });
+
+            $(document).ready(function() {
+              document.getElementById("username").innerHTML = Cookies.get('userName');
+            });
             return this;
 		}
 	});
