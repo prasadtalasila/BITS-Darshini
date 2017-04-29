@@ -14,8 +14,8 @@ window.LoadView =  BaseView.extend({
     },
     initialize: function () {
       this.fillShare();
-      LoadView.globalData = [];
-      LoadView.globalDelegate = [];
+      LoadView.globalMy = [];
+      LoadView.globalShared = [];
       this.fillTable();
     },  
 
@@ -23,39 +23,41 @@ window.LoadView =  BaseView.extend({
       $.ajax({
       url:'http://localhost:9200/protocol/info/_search',
       type:'POST',
-      data : '{"from": 0,"size": 200,"query":{"bool":{"should":{"term":{ "experimenter":"' + Cookies.get('userName') + '"}},"should":{"term":{"collaborators":".*' + Cookies.get('userName') + '.*"}}}}}',
+      data : '{"from":0,"size":200,"query":{"multi_match":{"query":"'+Cookies.get('userName')+'","fields":["experimenter","collaborators"]}}}',
       contentType: 'application/json; charset=utf-8',
       success:function (data) {
-          LoadView.globalData = JSON.parse(JSON.stringify(data)).hits.hits;
-          var expMy = [];
-          var expShared = [];
-          for(var id=1; id<=LoadView.globalData.length;id+=1){
-            if (LoadView.globalData[id-1]._source.experimenter==Cookies.get('userName')) {
-              expMy.push(LoadView.globalData[id-1]);
+          var jsonData = JSON.parse(JSON.stringify(data)).hits.hits;
+          for(var id=1; id<=jsonData.length;id+=1){
+            if (jsonData[id-1]._source.experimenter==Cookies.get('userName')) {
+              LoadView.globalMy.push(jsonData[id-1]);
             }
-            if (LoadView.globalData[id-1]._source.collaborators.indexOf(Cookies.get('userName')) !== -1) {
-              expShared.push(LoadView.globalData[id-1]);
+            if (jsonData[id-1]._source.collaborators.indexOf(Cookies.get('userName')) !== -1) {
+              LoadView.globalShared.push(jsonData[id-1]);
             }
           }
-          for(var id=1; id<=expMy.length;id+=1){    //index of array starts from 0
+          for(var id=1; id<=LoadView.globalMy.length;id+=1){    //index of array starts from 0
           var td, tr;
           var tdata = $("#expListMy tbody")
           tr = $("<tr>");
           td = $("<td>").text(id);
           tr.append(td);
           //packetList
-          td = $("<td>").text(LoadView.globalData[id-1]._source.experimentName);
+          td = $("<td>").text(LoadView.globalMy[id-1]._source.experimentName);
+          tr.append(td);
+          td = $("<td style='display:none'>").text("Owned");
           tr.append(td);
           tdata.append(tr);
       }
-      for(var id=1; id<=expShared.length;id+=1){    //index of array starts from 0
+      for(var id=1; id<=LoadView.globalShared.length;id+=1){    //index of array starts from 0
           var td, tr;
           var tdata = $("#expListShared tbody")
           tr = $("<tr>");
           td = $("<td>").text(id);
           tr.append(td);
           //packetList
-          td = $("<td>").text(LoadView.globalData[id-1]._source.experimentName);
+          td = $("<td>").text(LoadView.globalShared[id-1]._source.experimentName);
+          tr.append(td);
+          td = $("<td style='display:none'>").text("Shared");
           tr.append(td);
           tdata.append(tr);
       }
@@ -75,6 +77,9 @@ window.LoadView =  BaseView.extend({
           var options = JSON.parse(JSON.stringify(data)).hits.hits;
           var select = document.getElementById("share");
           for(var id=1; id<=options.length;id+=1) {
+            if (options[id-1]._source.email == Cookies.get('userName')) {
+              continue;
+            }
             var opt = document.createElement("option");
             opt.value= options[id-1]._source.email;
             opt.innerHTML = options[id-1]._source.email;
@@ -114,26 +119,37 @@ window.LoadView =  BaseView.extend({
     },
 
     rowClick: function(event) {
+    $("#shareWrap *").removeAttr("disabled");
+    $("#noneop").attr("disabled", "disabled");
     document.getElementById('loadExperiment').disabled = false;
     document.getElementById('shareExperiment').disabled = false;
     var id = Number(event.currentTarget.children[0].innerHTML) - 1;
+    var share = event.currentTarget.children[2].innerHTML;
     $('#sidePanel').html('');
     var sidePanel = document.getElementById('sidePanel');
     var newDiv = document.createElement('section');
     sidePanel.appendChild(newDiv);
+    var data = [];
+    if (share == "Owned") {
+      data = LoadView.globalMy;
+      var col = data[id]._source.collaborators.split(/\s*,\s*/);
+      var selectEl = $('select');
+      selectEl.material_select();
+      selectEl.val(col);
+      selectEl.material_select('refresh');
+    } else {
+      data = LoadView.globalShared;
+      // document.getElementById("shareWrap").disabled = true;
+      $("#shareWrap *").attr("disabled", "disabled");
+    }
     newDiv.outerHTML = '<p>'+
-          'Experiment Name : ' + LoadView.globalData[id]._source.experimentName + '<br/>' +
-          'Description : '+ LoadView.globalData[id]._source.description +'<br/>' +
-          'PCAP Path : '+ LoadView.globalData[id]._source.pcapPath + '<br/>' +
-          'Session: '+ LoadView.globalData[id]._source.id +
+          'Experiment Name : ' + data[id]._source.experimentName + '<br/>' +
+          'Description : '+ data[id]._source.description +'<br/>' +
+          'PCAP Path : '+ data[id]._source.pcapPath + '<br/>' +
+          'Session: '+ data[id]._source.id +
         '</p>';
-    document.getElementById('loadExperiment').setAttribute('session',LoadView.globalData[id]._source.id);
-    document.getElementById('shareExperiment').setAttribute('expId',LoadView.globalData[id]._id);
-    var col = LoadView.globalData[id]._source.collaborators.split(/\s*,\s*/);
-    var selectEl = $('select');
-    selectEl.material_select();
-    selectEl.val(col);
-    selectEl.material_select('refresh');
+    document.getElementById('loadExperiment').setAttribute('session',data[id]._source.id);
+    document.getElementById('shareExperiment').setAttribute('expId',data[id]._id);
     },
 
     share: function(event) {
