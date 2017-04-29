@@ -141,6 +141,7 @@ window.LoadView =  BaseView.extend({
       data = LoadView.globalShared;
       // document.getElementById("shareWrap").disabled = true;
       $("#shareWrap *").attr("disabled", "disabled");
+      document.getElementById('shareExperiment').disabled = true;
     }
     newDiv.outerHTML = '<p>'+
           'Experiment Name : ' + data[id]._source.experimentName + '<br/>' +
@@ -166,15 +167,8 @@ window.LoadView =  BaseView.extend({
             dataType:'text',
             data: '{"doc":{"collaborators":"' + share + '"}}',
             success:function (data) {
-              // $.ajax({
-              //       url:'http://localhost:9200/protocol/delegate/_search',
-              //       type:'GET',
-              //       contentType: 'application/json; charset=utf-8',
-              //       success:function (data) {
-              //           LoadView.globalDelegate = JSON.parse(JSON.stringify(data)).hits.hits;
-              //         }
-              // });
               alert("Successfully shared with " + share);
+              app.navigate("#/load",{trigger: true});
             }
           });
 
