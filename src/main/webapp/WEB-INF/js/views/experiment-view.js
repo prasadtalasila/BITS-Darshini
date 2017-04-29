@@ -42,7 +42,7 @@ window.ExperimentView = BaseView.extend({
                             var experimentId = JSON.parse(data).hits.hits[0]._id;
                             sessionStorage.setItem('experimentId', experimentId);
                             $.ajax({
-                                url:'http://localhost:9200/protocol/delegate/' + experimentId,
+                                url:'http://localhost:9200/protocol/info/' + experimentId + '/_update',
                                 type:'POST',
                                 contentType: 'application/json; charset=utf-8',
                                 dataType:'text',
