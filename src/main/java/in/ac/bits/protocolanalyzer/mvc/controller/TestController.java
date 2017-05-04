@@ -36,7 +36,7 @@ public class TestController {
 
 	@Autowired
 	@Qualifier("concurrentExp")
-	private Callable<Long> exp1,exp2;
+	private ConcurrentExp exp1,exp2;
 
 	@RequestMapping(value = "/srun", method = RequestMethod.GET)
 	public void runSequentialExp()throws Exception {
@@ -44,9 +44,11 @@ public class TestController {
 		String protocolGraphStr = "graph start {\n\tethernet;\n}\ngraph ethernet {\n\tswitch(ethertype) {\n\t\tcase 0800:			 ipv4;\n\t}\n}\ngraph ipv4 {\n\tswitch(protocol) {\n\t\tcase 06: tcp;\n\t}\n}\ngraph tcp {\n}\ngraph end {\n}";
 
 		log.info("EXECUTING IN THREAD");
-		exp1.call(pcapPath, protocolGraphStr);
+		exp1.init(pcapPath, protocolGraphStr);
+		exp1.call();
 		TimeUnit.SECONDS.sleep(10);
-		exp2.call(pcapPath, protocolGraphStr);
+		exp2.init(pcapPath, protocolGraphStr);
+		exp2.call();
 		log.info("FINISHED");
 	}
 
