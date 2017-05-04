@@ -23,6 +23,7 @@ import in.ac.bits.protocolanalyzer.protocol.ProtocolGraphParser;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 
 @Controller
@@ -37,13 +38,24 @@ public class TestController {
 	@Qualifier("concurrentExp")
 	private Callable<Long> exp1,exp2;
 
-	@RequestMapping(value = "/run", method = RequestMethod.GET)
-	public void checkTwoExp()throws Exception {
+	@RequestMapping(value = "/srun", method = RequestMethod.GET)
+	public void runSequentialExp()throws Exception {
+		String pcapPath = "/home/vagrant/darshini/data/packet/packet_data.pcap";
+		String protocolGraphStr = "graph start {\n\tethernet;\n}\ngraph ethernet {\n\tswitch(ethertype) {\n\t\tcase 0800:			 ipv4;\n\t}\n}\ngraph ipv4 {\n\tswitch(protocol) {\n\t\tcase 06: tcp;\n\t}\n}\ngraph tcp {\n}\ngraph end {\n}";
+
+		log.info("EXECUTING IN THREAD");
+		exp1.call(pcapPath, protocolGraphStr);
+		TimeUnit.SECONDS.sleep(10);
+		exp2.call(pcapPath, protocolGraphStr);
+		log.info("FINISHED");
+	}
+
+	@RequestMapping(value = "/crun", method = RequestMethod.GET)
+	public void runConcurrentExp()throws Exception {
 		ExecutorService executors =  Executors.newFixedThreadPool(2);
 		log.info("EXECUTING IN THREAD");
 		executors.submit(exp1);
     executors.submit(exp2);
 		log.info("FINISHED");
 	}
-
 }

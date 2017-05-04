@@ -36,11 +36,20 @@ public class ConcurrentExp implements Callable<Long> {
 
 	private ProtocolGraphParser graphParser;
 
+	private String pcapPath;
+
+	private String protocolGraphStr;
+
 	@Autowired
 	private Protocol protocol;
 
 	@Autowired
 	private ProtocolChecker checker;
+
+	public void init(String pcapPath, String protocolGraphStr) {
+		this.pcapPath = pcapPath;
+		this.protocolGraphStr = protocolGraphStr;
+	}
 
 	public Long call() throws Exception {
 		log.info("In call method of the Concurrent exp");
@@ -50,14 +59,13 @@ public class ConcurrentExp implements Callable<Long> {
 	public long analyze() {
 		// Initializing session and protocol
 		log.info("Starting to analyze ..........");
-		String pcapPath = "/home/vagrant/darshini/data/packet/sample_capture_test76.pcap";
-		String protocolGraphStr = "graph start {\n\tethernet;\n}\ngraph ethernet {\n\tswitch(ethertype) {\n\t\tcase 0800:			 ipv4;\n\t}\n}\ngraph ipv4 {\n\tswitch(protocol) {\n\t\tcase 06: tcp;\n\t}\n}\ngraph tcp {\n}\ngraph end {\n}";
 		init(pcapPath);
 		graphParser = context.getBean(ProtocolGraphParser.class);
 		graphParser.configureSession(session, protocolGraphStr);
 		log.info("Successfully completed session configuration!!");
 
 		long readCount = session.startExperiment();
+		log.info("------------Successfully completed one analysis!!----------------");
 		return readCount;
 	}
 
