@@ -6,6 +6,8 @@ import lombok.extern.log4j.Log4j;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,7 +34,7 @@ public class TestController {
 	private WebApplicationContext context;
 
 	@Autowired
-	//@Qualifier("concurrentExp")
+	@Qualifier("concurrentExp")
 	private Callable<Long> exp1;
 
 	@RequestMapping(value = "/run", method = RequestMethod.GET)

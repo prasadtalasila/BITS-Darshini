@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.WebApplicationContext;
 
 import in.ac.bits.protocolanalyzer.analyzer.Session;
@@ -22,6 +23,7 @@ import java.util.concurrent.Callable;
 
 @Component
 @Scope("prototype")
+@Qualifier("concurrentExp")
 @Getter
 @Setter
 @Log4j
