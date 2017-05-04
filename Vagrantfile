@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 9200, host: 9200
   config.vm.synced_folder ".", "/home/vagrant/darshini"
   config.vm.provider :virtualbox do |v|
-  	v.customize ["modifyvm", :id, "--memory", 4096]
-  	v.customize ["modifyvm", :id, "--cpus", 8]
+  	v.customize ["modifyvm", :id, "--memory", 3096]
+  	v.customize ["modifyvm", :id, "--cpus", 2]
   end
 end
