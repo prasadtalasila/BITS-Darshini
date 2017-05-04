@@ -35,13 +35,14 @@ public class TestController {
 
 	@Autowired
 	@Qualifier("concurrentExp")
-	private Callable<Long> exp1;
+	private Callable<Long> exp1,exp2;
 
 	@RequestMapping(value = "/run", method = RequestMethod.GET)
 	public void checkTwoExp()throws Exception {
 		ExecutorService executors =  Executors.newFixedThreadPool(2);
 		log.info("EXECUTING IN THREAD");
 		executors.submit(exp1);
+    executors.submit(exp2);
 		log.info("FINISHED");
 	}
 
