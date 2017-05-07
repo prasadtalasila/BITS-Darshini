@@ -101,7 +101,7 @@ public class SaveRepository implements Runnable {
             // Calculate the used memory
             long memory = runtime.totalMemory() - runtime.freeMemory();
             log.info("Used memory is bytes: " + memory);
-            log.info("Used memory is megabytes: "+ bytesToMegabytes(memory));
+            log.info(System.currentTimeMillis() + " Used memory is megabytes: "+ bytesToMegabytes(memory));
 
 			log.info(
 					"SaveRepository started at " + System.currentTimeMillis() + " with bucket size: " + buckets.size());
@@ -126,6 +126,7 @@ public class SaveRepository implements Runnable {
 	}
 
 	private void publishLow() {
+		log.info(System.currentTimeMillis());
 		eventBus.post(new BucketLimitEvent("GO"));
 	}
 

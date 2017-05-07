@@ -58,7 +58,7 @@ public class ConcurrentExp implements Callable<Long> {
 
 	public long analyze() {
 		// Initializing session and protocol
-		log.info("Starting to analyze ..........");
+		//log.info("Starting to analyze ..........");
 		init(pcapPath);
 		graphParser = context.getBean(ProtocolGraphParser.class);
 		graphParser.configureSession(session, protocolGraphStr);

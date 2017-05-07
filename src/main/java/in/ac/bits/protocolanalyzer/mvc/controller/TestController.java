@@ -40,16 +40,18 @@ public class TestController {
 
 	@RequestMapping(value = "/srun", method = RequestMethod.GET)
 	public void runSequentialExp()throws Exception {
-		String pcapPath = "/home/vagrant/darshini/data/packet/packet_data.pcap";
+		String pcapPath = "/home/anurag/Downloads/Tests/sample_capture_test_109.pcap";
 		String protocolGraphStr = "graph start {\n\tethernet;\n}\ngraph ethernet {\n\tswitch(ethertype) {\n\t\tcase 0800:			 ipv4;\n\t}\n}\ngraph ipv4 {\n\tswitch(protocol) {\n\t\tcase 06: tcp;\n\t}\n}\ngraph tcp {\n}\ngraph end {\n}";
 
-		log.info("EXECUTING IN THREAD");
+		log.info("] LAUNCHING EXPERIMENT ONE");
 		exp1.init(pcapPath, protocolGraphStr);
 		exp1.call();
+		log.info("EXPERIMENT ONE ENDED");
+		/*
 		TimeUnit.SECONDS.sleep(10);
+		log.info("] LAUNCHING EXPERIMENT TWO");
 		exp2.init(pcapPath, protocolGraphStr);
-		exp2.call();
-		log.info("FINISHED");
+		exp2.call();*/
 	}
 
 	@RequestMapping(value = "/crun", method = RequestMethod.GET)
@@ -57,7 +59,7 @@ public class TestController {
 		ExecutorService executors =  Executors.newFixedThreadPool(2);
 		log.info("EXECUTING IN THREAD");
 		executors.submit(exp1);
-    executors.submit(exp2);
+    	executors.submit(exp2);
 		log.info("FINISHED");
 	}
 }
