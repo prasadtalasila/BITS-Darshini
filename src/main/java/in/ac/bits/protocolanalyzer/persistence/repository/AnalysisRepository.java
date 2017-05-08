@@ -119,6 +119,7 @@ public class AnalysisRepository {
 
 	private void publishHigh() {
 		// log.info("Publishing STOP");
+		log.info(System.currentTimeMillis());
 		eventBus.post(new BucketLimitEvent("STOP"));
 	}
 }
