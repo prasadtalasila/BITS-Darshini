@@ -117,6 +117,7 @@ public class PcapAnalyzer {
 
 	@Subscribe
 	public void bucketThings(BucketLimitEvent event) {
+		log.info(System.currentTimeMillis());
 		if ( event.getStatus().equals("GO") ) {
 			readFromPcap = true;
 		}

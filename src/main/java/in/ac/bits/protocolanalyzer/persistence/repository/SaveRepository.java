@@ -83,19 +83,35 @@ public class SaveRepository implements Runnable {
 		return this.buckets.size();
 	}
 
+    private static final long MEGABYTE = 1024L * 1024L;
+
+    public static long bytesToMegabytes(long bytes) {
+        return bytes / MEGABYTE;
+    }
+
 	@Override
 	public void run() {
 		this.isRunning = true;
 		while (!buckets.isEmpty()) {
+
+			// Get the Java runtime
+            Runtime runtime = Runtime.getRuntime();
+            // Run the garbage collector
+            //runtime.gc();
+            // Calculate the used memory
+            long memory = runtime.totalMemory() - runtime.freeMemory();
+            log.info("Used memory is bytes: " + memory);
+            log.info(System.currentTimeMillis() + " Used memory is megabytes: "+ bytesToMegabytes(memory));
+
 			log.info(
 					"SaveRepository started at " + System.currentTimeMillis() + " with bucket size: " + buckets.size());
-			
+
 			if ( analysisOnly ) {
 				log.info("Not saving ... but polling");
 				buckets.poll();
 			} else {
 				template.bulkIndex(buckets.poll()); // blocking call
-			}			
+			}
 			log.info("SaveRepository finished at " + System.currentTimeMillis());
 
 			if ( buckets.size() == 0 && !analysisRunning ) {
@@ -110,6 +126,7 @@ public class SaveRepository implements Runnable {
 	}
 
 	private void publishLow() {
+		log.info(System.currentTimeMillis());
 		eventBus.post(new BucketLimitEvent("GO"));
 	}
 

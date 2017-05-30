@@ -21,6 +21,7 @@
    		<env-entry-name>analysisOnly</env-entry-name>
     	<env-entry-type>java.lang.String</env-entry-type>
     	<env-entry-value>false</env-entry-value> 
+    	<!--<env-entry-value>true</env-entry-value> -->
 	</env-entry>	
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
