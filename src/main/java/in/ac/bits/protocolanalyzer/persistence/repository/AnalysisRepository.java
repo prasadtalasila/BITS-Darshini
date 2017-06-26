@@ -109,11 +109,11 @@ public class AnalysisRepository {
 		pullTimer.schedule(pull, 0, 10);
 	}
 
-		/**
-		*	AnalysisRepo repeatedly checks the size of the Queue in SaveRepo everytime a bucket is filled.
-		*	If the number of buckets is more than high water-mark. Analysis stops.
-		*/
-		private void checkBucketLevel() {
+	/**
+	*	AnalysisRepo repeatedly checks the size of the Queue in SaveRepo everytime a bucket is filled.
+	*	If the number of buckets is more than high water-mark. Analysis stops.
+	*/
+	private void checkBucketLevel() {
 		// log.info("BUCKET SIZE: " + saveRepo.getBucketSize() + " ||
 		// highWaterMark =" + this.highWaterMark);
 		if (saveRepo.getBucketSize() >= highWaterMark) {

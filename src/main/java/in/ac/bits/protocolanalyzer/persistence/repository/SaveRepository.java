@@ -83,11 +83,11 @@ public class SaveRepository implements Runnable {
 		return this.buckets.size();
 	}
 
-    private static final long MEGABYTE = 1024L * 1024L;
+	private static final long MEGABYTE = 1024L * 1024L;
 
-    public static long bytesToMegabytes(long bytes) {
+	public static long bytesToMegabytes(long bytes) {
         return bytes / MEGABYTE;
-    }
+	}
 
 	@Override
 	public void run() {
@@ -125,16 +125,16 @@ public class SaveRepository implements Runnable {
 		isRunning = false;
 	}
 
-		/**
-		*	Since AnalysisRepository is blocked when SaveRepository is running, this thread itself ensures that
-		*	analysis will resume when low water-mark is reached.
-		*/
-		private void publishLow() {
+	/**
+	*	Since AnalysisRepository is blocked when SaveRepository is running, this thread itself ensures that
+	*	analysis will resume when low water-mark is reached.
+	*/
+	private void publishLow() {
 		log.info(System.currentTimeMillis());
 		eventBus.post(new BucketLimitEvent("GO"));
 	}
 
-    @Subscribe
+	@Subscribe
 	public void end(EndAnalysisEvent event) {
 		//log.info("Save repo received signal that analysis has ended");
 		analysisRunning = false;
