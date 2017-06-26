@@ -125,7 +125,11 @@ public class SaveRepository implements Runnable {
 		isRunning = false;
 	}
 
-	private void publishLow() {
+		/**
+		*	Since AnalysisRepository is blocked when SaveRepository is running, this thread itself ensures that
+		*	analysis will resume when low water-mark is reached.
+		*/
+		private void publishLow() {
 		log.info(System.currentTimeMillis());
 		eventBus.post(new BucketLimitEvent("GO"));
 	}

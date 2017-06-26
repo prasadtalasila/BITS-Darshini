@@ -53,6 +53,11 @@ public class PcapAnalyzer {
 
 	private long sizeOfPcap = 0;
 
+	/**
+	*	The 'volatile' keyword is needed. The absence of it shows inconsistent behaviour
+	*	in different runs of the experiment during the save in Elastic Search.
+	*	Having it 'volatile' makes the variable thread-safe.
+	*/
 	private volatile boolean readFromPcap = true;
 
 	public void setNextAnalyzerCell(AnalyzerCell cell) {
