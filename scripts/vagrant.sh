@@ -7,6 +7,11 @@ apt-get update
 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
 apt-get install -y oracle-java8-installer
 printf 'Y\n' | apt-get install -y oracle-java8-set-default
+JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA_HOME
+PATH=${JAVA_HOME}/bin:$PATH
+export PATH
+
 printf 'Y\n' | apt-get install -y maven
 printf 'Y\n' | apt-get install git
 printf 'Y\n' | apt-get install npm
@@ -22,13 +27,13 @@ sudo sed -i '/JAVA_OPTS="-Djava.awt.*/c\JAVA_OPTS="-Djava.awt.headless=true -Xmx
 echo "JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> /etc/default/tomcat7
 
 #copy the correct property files and create the required directories
-cp -f conf/vagrant/*.properties src/main/resources/META-INF/*.properties
+cp -f conf/vagrant/*.properties src/main/resources/META-INF/
 mkdir -p /home/vagrant/darshini-es/data
 chmod 777 /home/vagrant/darshini-es/data
 mkdir -p /home/vagrant/darshini-es/logs
 chmod 777 /home/vagrant/darshini-es/logs
-mkdir -p /home/vagrant/darshini-logs/darshini
-chmod 777 /home/vagrant/darshini-logs/darshini
+mkdir -p /home/vagrant/darshini-logs/
+chmod 777 /home/vagrant/darshini-logs/
 
 
 #get the npm modules for js files of webpages
