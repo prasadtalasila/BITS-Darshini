@@ -7,30 +7,29 @@
 # Output: results in "darshini-test.log"
 ######################
 
-truncate -s 0 data/log/darshini-test.log
+LOGFILE="data/log/darshini-test.log"
+WEBAPPLOG="/opt/darshini-logs/darshini"
+truncate -s 0 "$LOGFILE"
 
 
-echo "--------------------------------------" >> data/log/darshini-test.log
+echo "--------------------------------------" >> "$LOGFILE"
 dir=$(pwd)
-for pcapFile in `ls $dir/data/packet/*.pcap`
+for pcapFile in $dir/data/packet/*.pcap
 do
     #perform a trial run to get all the data into RAM
-    /usr/bin/time bro -r $pcapFile > /dev/null 2>&1
-
-    
-        
+    /usr/bin/time bro -r "$pcapFile" > /dev/null 2>&1
+    #truncate application logs of Darshini
+    truncate -s 0 "$WEBAPPLOG"
     cpus=$(cat /sys/devices/system/cpu/online)
-
-    echo -e "\n\n\nExperiment"  >> data/log/darshini-test.log
-    echo -e "---------------" >> data/log/darshini-test.log
-    echo -e "file name = $pcapFile, number of cpus=$cpus" >> data/log/darshini-test.log
-    echo -e "\n\n"  >> data/log/darshini-test.log
+    {
+      echo -e "\n\n\nExperiment"
+      echo -e "---------------"
+      echo -e "file name = $pcapFile, number of cpus=$cpus"
+      echo -e "\n\n"
+    } >> "$LOGFILE"
     #run one experiment in Darshini
     curl -H "Content-Type: application/json" -d '{"email": "abc", "password": "abc"}' http://localhost:8080/protocolanalyzer/signin
-    curl -X GET -H "Content-Type: application/json" http://localhost:8080/protocolanalyzer/test?pcapPath=$pcapFile
+    curl -X GET -H "Content-Type: application/json" http://localhost:8080/protocolanalyzer/test?pcapPath="$pcapFile"
     sleep 10
-    
+    cat "$WEBAPPLOG" >> "$LOGFILE"
 done
-
-
-

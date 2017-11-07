@@ -9,10 +9,16 @@
 # Output: results in "darshini-concurrency.log", "darshini-concurrency-summary.log"
 ######################
 
-truncate -s 0 data/log/darshini-concurrency.log
+LOGFILE="data/log/darshini-test.log"
+CONCURRENCYLOG="data/log/darshini-concurrency.log"
+CONCURRENCYSUMMARY="data/log/darshini-concurrency-summary.log"
 
-echo "performance of darshini on single processor"  >> data/log/darshini-concurrency.log
-echo "-------------------------------------------" >> data/log/darshini-concurrency.log
+truncate -s 0 "$CONCURRENCYLOG"
+
+{
+  echo "performance of darshini on single processor"
+  echo "-------------------------------------------"
+} >> "$CONCURRENCYLOG"
 
 #turn off three processors
 sudo bash -c 'echo 0 > /sys/devices/system/cpu/cpu3/online'
@@ -21,13 +27,14 @@ sudo bash -c 'echo 0 > /sys/devices/system/cpu/cpu1/online'
 sleep 10
 #run darshini on single processor
 ./scripts/measurements/darshini-test.sh
-#save the darshini-test.log to darshini-concurrency.log
-cat data/log/darshini-test.log >> data/log/darshini-concurrency.log
+cat "$LOGFILE" >>  "$CONCURRENCYLOG"
 
-echo -e "\n\n\n" >> data/log/darshini-concurrency.log
-echo "-----------------------------------------" >> data/log/darshini-concurrency.log
-echo "performance of darshini on two processors" >> data/log/darshini-concurrency.log
-echo "-----------------------------------------" >> data/log/darshini-concurrency.log
+{
+  echo -e "\n\n\n"
+  echo "--------------------------------------"
+  echo "performance of tools on two processors"
+  echo "--------------------------------------"
+} >> "$CONCURRENCYLOG"
 
 #turn off two processors
 sudo bash -c 'echo 0 > /sys/devices/system/cpu/cpu3/online'
@@ -36,14 +43,14 @@ sudo bash -c 'echo 1 > /sys/devices/system/cpu/cpu1/online'
 sleep 10
 #run darshini on two processors
 ./scripts/measurements/darshini-test.sh
-#save the darshini-test.log to darshini-concurrency.log
-cat data/log/darshini-test.log >> data/log/darshini-concurrency.log
+cat "$LOGFILE" >>  "$CONCURRENCYLOG"
 
-
-echo -e "\n\n\n" >> data/log/darshini-concurrency.log
-echo "-------------------------------------------" >> data/log/darshini-concurrency.log
-echo "performance of darshini on three processors" >> data/log/darshini-concurrency.log
-echo "-------------------------------------------" >> data/log/darshini-concurrency.log
+{
+  echo -e "\n\n\n"
+  echo "--------------------------------------"
+  echo "performance of tools on three processors"
+  echo "--------------------------------------"
+} >> "$CONCURRENCYLOG"
 
 #turn off one processor
 sudo bash -c 'echo 0 > /sys/devices/system/cpu/cpu3/online'
@@ -52,14 +59,14 @@ sudo bash -c 'echo 1 > /sys/devices/system/cpu/cpu1/online'
 sleep 10
 #run darshini on three processors
 ./scripts/measurements/darshini-test.sh
-#save the darshini-test.log to darshini-concurrency.log
-cat data/log/darshini-test.log >> data/log/darshini-concurrency.log
+cat "$LOGFILE" >>  "$CONCURRENCYLOG"
 
-
-echo -e "\n\n\n" >> data/log/darshini-concurrency.log
-echo "------------------------------------------" >> data/log/darshini-concurrency.log
-echo "performance of darshini on four processors" >> data/log/darshini-concurrency.log
-echo "------------------------------------------" >> data/log/darshini-concurrency.log
+{
+  echo -e "\n\n\n"
+  echo "--------------------------------------"
+  echo "performance of tools on four processors"
+  echo "--------------------------------------"
+} >> "$CONCURRENCYLOG"
 
 #keep all four processors on
 sudo bash -c 'echo 1 > /sys/devices/system/cpu/cpu3/online'
@@ -68,8 +75,8 @@ sudo bash -c 'echo 1 > /sys/devices/system/cpu/cpu1/online'
 sleep 10
 #run darshini on four processors
 ./scripts/measurements/darshini-test.sh
-#save the darshini-test.log to darshini-concurrency.log
-cat data/log/darshini-test.log >> data/log/darshini-concurrency.log
+cat "$LOGFILE" >>  "$CONCURRENCYLOG"
 
 #summarize results into another log file
-grep -f ./scripts	/measurements/darshini-concurrency.grep data/log/darshini-concurrency.log > data/log/	darshini-concurrency-summary.log
+grep -f ./scripts	/measurements/darshini-concurrency.grep "$CONCURRENCYLOG" \
+  > "$CONCURRENCYSUMMARY"
