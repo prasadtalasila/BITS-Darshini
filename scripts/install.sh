@@ -37,6 +37,9 @@ mkdir -p /opt/darshini-es/logs
 chmod 777 /opt/darshini-es/logs
 mkdir -p /opt/darshini-logs
 chmod 777 /opt/darshini-logs
+touch /opt/darshini-logs/darshini
+chown tomcat7:tomcat7 /opt/darshini-logs/darshini
+chmod 777 /opt/darshini-logs/darshini
 
 #install nodejs
 curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
