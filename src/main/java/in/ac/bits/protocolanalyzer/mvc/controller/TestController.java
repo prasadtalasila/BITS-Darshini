@@ -1,5 +1,7 @@
 package in.ac.bits.protocolanalyzer.mvc.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import lombok.extern.log4j.Log4j;
@@ -38,13 +40,13 @@ public class TestController {
 	@Qualifier("Experiment")
 	private Experiment exp1;
 
-//	@RequestMapping(method = RequestMethod.GET)
-	public void runSequentialExp()throws Exception {
-		String pcapPath = "/home/vikram/Darshini/Test_pcap_files/sample_capture_test1.pcap";
-		String protocolGraphStr = "graph start {\n\tethernet;\n}\ngraph ethernet {\n\tswitch(ethertype) {\n\t\tcase 0800:			 ipv4;\n\t}\n}\ngraph ipv4 {\n\tswitch(protocol) {\n\t\tcase 06: tcp;\n\t}\n}\ngraph tcp {\n}\ngraph end {\n}";
-
+	@RequestMapping(value = "/experiment", method = RequestMethod.GET)
+	public @ResponseBody String runSequentialExp(@RequestParam("protocolGraphPath") String protocolGraphPath, @RequestParam("pcapPath") String pcapPath)throws Exception {
+	    String protocolGraphStr = new String(Files.readAllBytes(Paths.get(protocolGraphPath)));
+	    
 		exp1.init(pcapPath, protocolGraphStr);
-		exp1.analyze();
+		return exp1.analyze();
+		
 		/*
 		TimeUnit.SECONDS.sleep(10);
 		log.info("] LAUNCHING EXPERIMENT TWO");
@@ -52,10 +54,8 @@ public class TestController {
 		exp2.call();*/
 	}
 
-//	@RequestMapping(value = "/experiment", method = RequestMethod.GET)
-  @RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody String runExp(@RequestParam("pcapPath") String pcapPath)throws Exception {
-		//String pcapPath = "/home/vikram/Darshini/Test_pcap_files/sample_capture_test1.pcap";
 		String protocolGraphStr = "graph start {\n\tethernet;\n}\ngraph ethernet {\n\tswitch(ethertype) {\n\t\tcase 0800:			 ipv4;\n\t}\n}\ngraph ipv4 {\n\tswitch(protocol) {\n\t\tcase 06: tcp;\n\t}\n}\ngraph tcp {\n}\ngraph end {\n}";
 
 		exp1.init(pcapPath, protocolGraphStr);
