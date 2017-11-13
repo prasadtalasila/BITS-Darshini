@@ -1,4 +1,4 @@
-package in.ac.bits.protocolanalyzer.mvc.controller;
+package in.ac.bits.protocolanalyzer.mvc.model;
 
 import java.util.Random;
 
@@ -28,8 +28,8 @@ import in.ac.bits.protocolanalyzer.protocol.ProtocolGraphParser;
 public class Experiment {
 
 	@Autowired
-	private WebApplicationContext context;
-
+	private  WebApplicationContext context;
+	
 	private Session session;
 
 	private ProtocolGraphParser graphParser;
@@ -77,5 +77,6 @@ public class Experiment {
 		checker.checkNAdd();
 		log.info("Successfully completed init method in session controller!!");
 	}
+
 
 }
