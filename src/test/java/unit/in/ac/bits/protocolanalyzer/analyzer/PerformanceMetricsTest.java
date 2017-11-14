@@ -1,21 +1,24 @@
-package in.ac.bits.protocolanalyzer.analyzer;
-
+package unit.in.ac.bits.protocolanalyzer.analyzer;
+import tests.UnitTest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import config.in.ac.bits.protocolanalyzer.analyzer.PerformanceMetricsConfig;
+import in.ac.bits.protocolanalyzer.analyzer.PerformanceMetrics;
+import unit.config.in.ac.bits.protocolanalyzer.analyzer.PerformanceMetricsConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = PerformanceMetricsConfig.class, loader = AnnotationConfigContextLoader.class)
+@Category(UnitTest.class)
 public class PerformanceMetricsTest {
 
 	@Autowired

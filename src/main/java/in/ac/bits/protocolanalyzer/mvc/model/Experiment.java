@@ -1,5 +1,8 @@
 package in.ac.bits.protocolanalyzer.mvc.model;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import lombok.Getter;
@@ -29,7 +32,7 @@ public class Experiment {
 
 	@Autowired
 	private  WebApplicationContext context;
-	
+
 	private Session session;
 
 	private ProtocolGraphParser graphParser;
@@ -43,11 +46,6 @@ public class Experiment {
 
 	@Autowired
 	private ProtocolChecker checker;
-
-	public void init(String pcapPath, String protocolGraphStr) {
-		this.pcapPath = pcapPath;
-		this.protocolGraphStr = protocolGraphStr;
-	}
 
 	public String analyze() {
 		// Initializing session and protocol
@@ -65,9 +63,6 @@ public class Experiment {
 		return expStatus.toString();
 	}
 
-	/*
-	 * later this method can be converted to an API.
-	 */
 	private void init(String pcapPath) {
 		this.session = context.getBean(Session.class);
 		Random rand = new Random();
@@ -78,5 +73,32 @@ public class Experiment {
 		log.info("Successfully completed init method in session controller!!");
 	}
 
+	public void init(String pcapPath,String protocolGraphPath) throws Exception  
+	{
+	   checkFileAccess(protocolGraphPath);
+	   protocolGraphStr = new String(Files.readAllBytes(Paths.get(protocolGraphPath)));
+	   initWithPcapFileCheck(pcapPath, protocolGraphStr);  
+	}    
+	public void initWithPcapFileCheck(String pcapPath,String protocolGraphStr) throws Exception  
+	{
+	   checkFileAccess(pcapPath);
+	   this.pcapPath = pcapPath;
+	   this.protocolGraphStr = protocolGraphStr;
+       init(pcapPath);
+	}
+	
+	boolean checkFileAccess(String path) throws Exception{
+		File pcapFile = new File(path);
+		if(!(pcapFile.isFile())) {
+			throw new Exception("Error in reading file(s) : No such file(s) found");
+		}
+		if(pcapFile.length()==0) {
+			throw new Exception("Error in reading file(s) : Empty file(s)");
+		}
+		if(!pcapFile.canRead()) {
+			throw new Exception("Error in reading file(s) : Access denied to file(s)");
+		}
+		return true;
+	}
 
 }

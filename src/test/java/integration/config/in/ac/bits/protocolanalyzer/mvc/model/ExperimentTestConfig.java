@@ -1,11 +1,9 @@
-package config.in.ac.bits.protocolanalyzer.mvc.model;
+package integration.config.in.ac.bits.protocolanalyzer.mvc.model;
 
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.web.context.WebApplicationContext;
 
 import in.ac.bits.protocolanalyzer.analyzer.AnalyzerCell;
 import in.ac.bits.protocolanalyzer.analyzer.PcapAnalyzer;
