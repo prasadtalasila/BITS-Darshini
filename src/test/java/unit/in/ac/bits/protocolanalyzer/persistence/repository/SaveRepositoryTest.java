@@ -1,7 +1,6 @@
 package unit.in.ac.bits.protocolanalyzer.persistence.repository;
 
 import static org.junit.Assert.assertEquals;
-import tests.UnitTest;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -27,7 +25,6 @@ import unit.config.in.ac.bits.protocolanalyzer.persistence.repository.SaveReposi
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SaveRepositoryTestConfig.class, loader = AnnotationConfigContextLoader.class)
-@Category(UnitTest.class)
 public class SaveRepositoryTest {
 	@Autowired
 	public SaveRepository saveRepo;

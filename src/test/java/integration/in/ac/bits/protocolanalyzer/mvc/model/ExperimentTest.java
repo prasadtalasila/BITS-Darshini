@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import in.ac.bits.protocolanalyzer.mvc.model.Experiment;
 import integration.config.in.ac.bits.protocolanalyzer.mvc.model.ExperimentTestConfig;
-import tests.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ExperimentTestConfig.class, loader = AnnotationConfigWebContextLoader.class)
-@Category(IntegrationTest.class)
 public class ExperimentTest{
 	@Autowired
 	private WebApplicationContext context;
@@ -46,11 +43,11 @@ public class ExperimentTest{
 	@Test
 	public void testExperiment() throws Exception {
 		String protocolGraphPath = System.getProperty("user.dir") + "/data/graph.p4";
-		String pcapPath = System.getProperty("user.dir") + "/data/packet/DNS_Traffic000.pcap";
+		String pcapPath = System.getProperty("user.dir") + "/data/packet/test_packets_small.pcap";
 		experiment.init(pcapPath  , protocolGraphPath);
 		String experimentResults = experiment.analyze();
 	    JSONObject jsonObj = new JSONObject(experimentResults);
-	    assertEquals(100, jsonObj.get("packetCount"));
+	    assertEquals(17, jsonObj.get("packetCount"));
 	    assertEquals("success", jsonObj.get("status"));
 	}
 }
