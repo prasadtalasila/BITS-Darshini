@@ -47,7 +47,7 @@ public class ExperimentTest{
 		experiment.init(pcapPath  , protocolGraphPath);
 		String experimentResults = experiment.analyze();
 	    JSONObject jsonObj = new JSONObject(experimentResults);
-	    assertEquals(17, jsonObj.get("packetCount"));
+	    assertEquals(100, jsonObj.get("packetCount"));
 	    assertEquals("success", jsonObj.get("status"));
 	}
 }
