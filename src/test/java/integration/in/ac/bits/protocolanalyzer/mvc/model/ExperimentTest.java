@@ -43,7 +43,7 @@ public class ExperimentTest{
 	@Test
 	public void testExperiment() throws Exception {
 		String protocolGraphPath = System.getProperty("user.dir") + "/data/graph.p4";
-		String pcapPath = System.getProperty("user.dir") + "/data/packet/test_packets_small.pcap";
+		String pcapPath = System.getProperty("user.dir") + "/data/packet/DNS_Traffic000.pcap";
 		experiment.init(pcapPath  , protocolGraphPath);
 		String experimentResults = experiment.analyze();
 	    JSONObject jsonObj = new JSONObject(experimentResults);
