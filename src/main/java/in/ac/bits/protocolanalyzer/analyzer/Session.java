@@ -95,7 +95,7 @@ public class Session {
 	}
 
 	public long startExperiment() {
-		executorService = Executors.newFixedThreadPool(1);
+		executorService = Executors.newFixedThreadPool(5);
 		long time = System.currentTimeMillis();
 		log.info("Session " + this.sessionName + "::Starting linkcell at: " + time);
 		this.metrics.setLinkStart(time);

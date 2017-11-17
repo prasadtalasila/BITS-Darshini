@@ -72,22 +72,8 @@ public class Experiment {
 		checker.checkNAdd();
 		log.info("Successfully completed init method in session controller!!");
 	}
-
-	public void init(String pcapPath,String protocolGraphPath) throws Exception  
-	{
-	   checkFileAccess(protocolGraphPath);
-	   protocolGraphStr = new String(Files.readAllBytes(Paths.get(protocolGraphPath)));
-	   initWithPcapFileCheck(pcapPath, protocolGraphStr);  
-	}    
-	public void initWithPcapFileCheck(String pcapPath,String protocolGraphStr) throws Exception  
-	{
-	   checkFileAccess(pcapPath);
-	   this.pcapPath = pcapPath;
-	   this.protocolGraphStr = protocolGraphStr;
-       init(pcapPath);
-	}
 	
-	boolean checkFileAccess(String path) throws Exception{
+	public void checkFileAccess(String path) throws Exception{
 		File pcapFile = new File(path);
 		if(!(pcapFile.isFile())) {
 			throw new Exception("Error in reading file(s) : No such file(s) found");
@@ -98,7 +84,20 @@ public class Experiment {
 		if(!pcapFile.canRead()) {
 			throw new Exception("Error in reading file(s) : Access denied to file(s)");
 		}
-		return true;
 	}
-
+	
+	public void init(String pcapPath,String protocolGraphPath) throws Exception  
+	{
+	   checkFileAccess(protocolGraphPath);
+	   protocolGraphStr = new String(Files.readAllBytes(Paths.get(protocolGraphPath)));
+	   initWithPcapFileCheck(pcapPath, protocolGraphStr);  
+	}
+	
+	public void initWithPcapFileCheck(String pcapPath,String protocolGraphStr) throws Exception  
+	{
+	   checkFileAccess(pcapPath);
+	   this.pcapPath = pcapPath;
+	   this.protocolGraphStr = protocolGraphStr;
+       init(pcapPath);
+	}
 }
