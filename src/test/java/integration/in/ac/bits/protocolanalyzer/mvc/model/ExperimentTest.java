@@ -31,7 +31,7 @@ public class ExperimentTest{
 	private Experiment experiment;
 	
     @Before
-    public void setup() {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 	
