@@ -1,4 +1,4 @@
-package config.in.ac.bits.protocolanalyzer.analyzer;
+package unit.config.in.ac.bits.protocolanalyzer.analyzer;
 
 import in.ac.bits.protocolanalyzer.analyzer.PerformanceMetrics;
 

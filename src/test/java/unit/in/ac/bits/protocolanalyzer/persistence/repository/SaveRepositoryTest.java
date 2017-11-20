@@ -1,6 +1,7 @@
-package in.ac.bits.protocolanalyzer.persistence.repository;
+package unit.in.ac.bits.protocolanalyzer.persistence.repository;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -19,7 +20,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.google.common.eventbus.EventBus;
 
-import config.in.ac.bits.protocolanalyzer.persistence.repository.SaveRepositoryTestConfig;
+import in.ac.bits.protocolanalyzer.persistence.repository.SaveRepository;
+import unit.config.in.ac.bits.protocolanalyzer.persistence.repository.SaveRepositoryTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SaveRepositoryTestConfig.class, loader = AnnotationConfigContextLoader.class)
