@@ -23,7 +23,7 @@ under the License.
     <link>${project.url}</link>
     <description>protocolanalyzer - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2017</copyright>
+    <copyright>&#169;2018</copyright>
     <item>
       <title>File: 64,
              Errors: 1583,
