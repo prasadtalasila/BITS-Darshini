@@ -25,8 +25,8 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2018</copyright>
     <item>
-      <title>File: 67,
-             Errors: 1627,
+      <title>File: 68,
+             Errors: 1652,
              Warnings: 0,
              Infos: 0
       </title>
@@ -447,7 +447,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  15
+                  14
                 </td>
               </tr>
                           <tr>
@@ -587,7 +587,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  41
+                  45
                 </td>
               </tr>
                           <tr>
@@ -742,6 +742,20 @@ under the License.
                 </td>
                 <td>
                   7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#config.in.ac.bits.protocolanalyzer.persistence.repository.AnalysisRepositoryConfig.java">config/in/ac/bits/protocolanalyzer/persistence/repository/AnalysisRepositoryConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  22
                 </td>
               </tr>
                           <tr>
