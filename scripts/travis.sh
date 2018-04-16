@@ -9,7 +9,7 @@ set -ex
 # mvn findbugs:findbugs || echo "========FindBugs checks failed========"
 # csslint src/main/webapp/WEB-INF/css/main.css
 # java -jar node_modules/vnu-jar/build/dist/vnu.jar src/main/webapp/WEB-INF/view
-  
+
 
 #load environment variables set by java_install.sh script
 #source /etc/environment
@@ -20,7 +20,7 @@ sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
 
 #download and install tomcat
 if [ ! -f apache-tomcat-8.5.29.tar.gz ]; then
-    curl -O http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.29/bin/apache-tomcat-8.5.29.tar.gz
+    curl -O http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.30/bin/apache-tomcat-8.5.30.tar.gz
 fi
 sudo mkdir /opt/tomcat
 sudo tar xzf apache-tomcat-8*tar.gz -C /opt/tomcat --strip-components=1
@@ -79,4 +79,3 @@ cat /opt/darshini-logs/darshini
 
 grep 'PcapAnalyzer:104 - Final read count = 214' /opt/darshini-logs/darshini
 grep 'PerformanceMetrics:71 - Total experiment Duration :' /opt/darshini-logs/darshini
-
